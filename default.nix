@@ -258,6 +258,9 @@ rec {
       ./cmake.patch
       ./yosys-plugins.patch
     ];
+    postPatchHook = ''
+      patchShebangs utils/quiet_cmd.sh
+    '';
     configurePhase = ''
       mkdir -p build
       pushd build
