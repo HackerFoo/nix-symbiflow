@@ -2,6 +2,7 @@
 
 with pkgs;
 with lib;
+with import ./nix-fpgapkgs {};
 
 rec {
 
@@ -272,6 +273,32 @@ rec {
       make -C build -j $NIX_BUILD_CORES xc7a200t-virt
     '';
     enableParallelBuilding = true;
+    installPhase = "mkdir $out && cp -r build/* $out";
+
+    # so genericBuild works from source directory in nix-shell
+    shellHook = ''
+      export phases="configurePhase buildPhase"
+    '';
+  };
+
+  prjxray = stdenv.mkDerivation {
+    name = "prjxray";
+    src = fetchgit {
+      url = "https://github.com/SymbiFlow/prjxray.git";
+      fetchSubmodules = true;
+      sha256 = "0m15i2j2ygakwwjgp3bhwjpc4r2qm2y230vkh3mk58scgvxr6h0a";
+    };
+    buildInputs = [ cmake ];
+    propagatedBuildInputs = [ python37 vivado ];
+    preConfigureHook = "export XRAY_VIVADO_SETTINGS=${vivado}/opt/Xilinx/Vivado/2017.2/settings64.sh";
+    configurePhase = ''
+      mkdir -p build $out
+      pushd build
+      cmake .. -DCMAKE_INSTALL_PREFIX=$out
+      popd
+    '';
+    buildPhase = "make -C build";
+    installPhase = "make -C build install";
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
