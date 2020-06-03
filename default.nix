@@ -113,6 +113,11 @@ rec {
     propagatedBuildInputs = with python37Packages; [ lxml pytestrunner pyjson vtr-xml-utils ];
   };
 
+  python-prjxray = mkSFPy {
+    name = "prjxray";
+    propagatedBuildInputs = with pytho37Packages; [ ];
+  };
+
   # third party Python packages
   textx = python37Packages.buildPythonPackage rec {
     pname = "textX";
@@ -196,6 +201,7 @@ rec {
     pyserial
     pytest
     python-constraint
+    python-prjxray
     python-sdf-timing
     python-utils
     python-symbiflow-v2x
@@ -256,13 +262,13 @@ rec {
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     patches = [
-      ./cmake.patch
-      ./yosys-plugins.patch
+      ./patches/symbiflow-arch-defs.patch
     ];
     postPatchHook = ''
       patchShebangs utils/quiet_cmd.sh
     '';
     configurePhase = ''
+      export XRAY_VIVADO_SETTINGS=${vivado_settings}
       mkdir -p build
       pushd build
       cmake -DUSE_CONDA=FALSE -DYOSYS_DATADIR="${yosys}/share/yosys" -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" ..
@@ -281,27 +287,80 @@ rec {
     '';
   };
 
+  vivado_settings = "${vivado}/opt/Vivado/2017.2/.settings64-Vivado.sh";
+
   prjxray = stdenv.mkDerivation {
     name = "prjxray";
-    src = fetchgit {
-      url = "https://github.com/SymbiFlow/prjxray.git";
-      fetchSubmodules = true;
-      sha256 = "0m15i2j2ygakwwjgp3bhwjpc4r2qm2y230vkh3mk58scgvxr6h0a";
-    };
-    buildInputs = [ cmake ];
-    propagatedBuildInputs = [ python37 vivado ];
-    preConfigureHook = "export XRAY_VIVADO_SETTINGS=${vivado}/opt/Xilinx/Vivado/2017.2/settings64.sh";
+    srcs = [
+      (fetchgit {
+        url = "https://github.com/SymbiFlow/prjxray.git";
+        fetchSubmodules = true;
+        sha256 = "0m15i2j2ygakwwjgp3bhwjpc4r2qm2y230vkh3mk58scgvxr6h0a";
+      })
+      (fetchgit {
+        url = "https://github.com/SymbiFlow/prjxray-db.git";
+        sha256 = "1rrlvb0dpd0y24iqqlql6mx54kkw5plnll6smf7i2sh54w67adwp";
+      })
+    ];
+    setSourceRoot = ''
+      sourceRoot="prjxray"
+    '';
+    nativeBuildInputs = [ cmake ];
+    propagatedBuildInputs = [
+      python37
+      vivado
+    ];
+    preConfigureHook = "export XRAY_VIVADO_SETTINGS=${vivado_settings}";
     configurePhase = ''
       mkdir -p build $out
       pushd build
       cmake .. -DCMAKE_INSTALL_PREFIX=$out
       popd
     '';
-    buildPhase = "make -C build";
-    installPhase = "make -C build install";
+    enableParallelBuilding = true;
+    buildPhase = "make -C build -j $NIX_BUILD_CORES";
+    installPhase = ''
+      make -C build install
+      mkdir -p $out/build
+      ln -s $out/bin $out/build/tools
+      cp -r utils $out/utils
+      cp -r ../prjxray-db $out/database
+    '';
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
+      export phases="configurePhase buildPhase"
+    '';
+  };
+
+  nextpnr-xilinx = stdenv.mkDerivation {
+    name = "nextpnr-xilinx";
+    src = fetchgit {
+      url = "https://github.com/daveshah1/nextpnr-xilinx.git";
+      fetchSubmodules = true;
+      sha256 = "0pacjhz8rxrra6g7636fkmk2zkbvq7p9058hj4q90gc22dk9x2ji";
+    };
+    nativeBuildInputs = [ cmake ];
+    buildInputs = [
+      pkgs.yosys
+      prjxray
+      pypy3
+      (boost.override { python = python3; enablePython = true; })
+      python37
+      eigen
+    ];
+    enableParallelBuilding = true;
+    configurePhase = ''
+      export XRAY_DIR=${prjxray}
+      cmake -DARCH=xilinx -DBUILD_GUI=OFF .
+    '';
+    buildPhase = ''
+      make -j $NIX_BUILD_CORES
+      pypy3 xilinx/python/bbaexport.py --device xc7a35tcsg324-1 --bba xilinx/xc7a35t.bba
+      ./bbasm xilinx/xc7a35t.bba xilinx/xc7a35t.bin -l
+    '';
+    shellHook = ''
+      export XRAY_DIR=${prjxray}
       export phases="configurePhase buildPhase"
     '';
   };
