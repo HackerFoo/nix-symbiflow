@@ -1,3 +1,6 @@
+set -e
+VIVADO_VERSION=2017.2
+
 source $stdenv/setup
 
 echo "unpacking $src..."
@@ -40,8 +43,16 @@ done
 rm -rf extracted
 
 # Patch installed files
-patchShebangs $out/opt/Vivado/2017.2/bin
-patchShebangs $out/opt/SDK/2017.2/bin
+for dir in Vivado SDK; do
+    patchShebangs $out/opt/${dir}/${VIVADO_VERSION}/bin
+    patchShebangs $out/opt/${dir}/${VIVADO_VERSION}/scripts
+    sed -i -- 's|/bin/touch|touch|g' $out/opt/${dir}/${VIVADO_VERSION}/scripts/ISEWrap.sh
+done
+mkdir tmp
+bbe -e 's|/bin/touch|touch     |g' $out/opt/Vivado/${VIVADO_VERSION}/lib/lnx64.o/librdi_runs.so -o tmp/librdi_runs.so
+bbe -e 's|/bin/touch|touch     |g' $out/opt/Vivado/${VIVADO_VERSION}/lib/lnx64.o/librdi_runsbase.so -o tmp/librdi_runsbase.so
+cp tmp/*.so $out/opt/Vivado/${VIVADO_VERSION}/lib/lnx64.o/
+rm -rf tmp
 echo "Shebangs patched"
 
 # Hack around lack of libtinfo in NixOS

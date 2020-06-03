@@ -7,6 +7,7 @@ let
   
   self = {
     vivado = callPackage ./pkgs/vivado { };
+    vivado-latest = callPackage ./pkgs/vivado-latest { };
     migen = callPackage ./pkgs/migen { };
   };
 in
