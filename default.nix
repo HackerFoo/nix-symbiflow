@@ -288,7 +288,6 @@ rec {
       yosys
       zlib
     ];
-    archs = [ "xc7a50t" "xc7a200t" ];
     src = fetchgit {
       url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
       branchName = "master";
@@ -311,13 +310,10 @@ rec {
     '';
     buildPhase = ''
       export VPR_NUM_WORKERS=$NIX_BUILD_CORES
-      for arch in ''${archs[@]}; do
-        echo "Building arch $arch"
-        make -C build -j $NIX_BUILD_CORES ''${arch}-virt
-      done
+      make -C build -j $NIX_BUILD_CORES all
     '';
     enableParallelBuilding = true;
-    installPhase = "make -C build install";
+    installPhase = "make -C build -j $NIX_BUILD_CORES install";
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
@@ -425,7 +421,8 @@ rec {
     '';
   };
 
-  symbiflow-arch-defs-install = stdenv.mkDerivation {
+  symbiflow-arch-defs-install = symbiflow-arch-defs; # use symbiflow-arch-defs-download to use prebuilt
+  symbiflow-arch-defs-install-download = stdenv.mkDerivation {
     name = "symbiflow-arch-defs-install";
     src = fetchTarball {
       url = "https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/presubmit/install/206/20200526-034850/symbiflow-arch-defs-install-97519a47.tar.xz";
@@ -455,6 +452,8 @@ rec {
       export PYTHONPATH=${prjxray}
       export VIVADO_SETTINGS=${vivado_settings}
       export XRAY_DATABASE_DIR=${prjxray}/database
+      export XRAY_FASM2FRAMES="${prjxray}/utils/fasm2frames.py"
+      export XRAY_TOOLS_DIR="${prjxray}/bin"
 
       env.sh() {
         mkdir -p env/conda/{bin,pkgs}
