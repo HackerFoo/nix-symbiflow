@@ -1,0 +1,153 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4542cebb..4b3ef89c 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -161,6 +161,7 @@ add_thirdparty_package(
+   BUILD_INSTALL_COMMAND "cd ${symbiflow-arch-defs_SOURCE_DIR}/third_party/vtr-xml-utils && ${PYTHON3} setup.py develop"
+   PROVIDES vtr_xml_utils
+   DEPENDS ${PYTHON3} ${PYTHON3_TARGET}
++  NO_EXE
+ )
+ 
+ add_thirdparty_package(
+diff --git a/common/cmake/env.cmake b/common/cmake/env.cmake
+index 3d8d451a..67cd368b 100644
+--- a/common/cmake/env.cmake
++++ b/common/cmake/env.cmake
+@@ -320,16 +320,22 @@ function(ADD_CONDA_PIP)
+       )
+     add_dependencies(clean_pip _clean_pip_${NAME})
+   else()
+-    if(DEFINED ENV{${binary_upper}})
+-      set(${binary_upper} $ENV{${binary_upper}})
++    if(ADD_CONDA_PIP_NO_EXE)
++      add_custom_target(${NAME})
++      string(TOUPPER ${NAME} name_upper)
++      set_target_properties(env PROPERTIES ${name_upper}_TARGET ${NAME})
+     else()
+-      find_program(${binary_upper} ${NAME})
+-    endif()
+-    if(NOT ${binary_upper})
+-      message(FATAL_ERROR "Could not find program ${NAME}.")
++      if(DEFINED ENV{${binary_upper}})
++        set(${binary_upper} $ENV{${binary_upper}})
++      else()
++        find_program(${binary_upper} ${NAME})
++      endif()
++      if(NOT ${binary_upper})
++        message(FATAL_ERROR "Could not find program ${NAME}.")
++      endif()
++      set_target_properties(env PROPERTIES ${binary_upper} ${${binary_upper}})
++      set_target_properties(env PROPERTIES ${binary_upper}_TARGET "")
+     endif()
+-    set_target_properties(env PROPERTIES ${binary_upper} ${${binary_upper}})
+-    set_target_properties(env PROPERTIES ${binary_upper}_TARGET "")
+   endif()
+ endfunction()
+ 
+@@ -419,6 +425,9 @@ function(ADD_THIRDPARTY_PACKAGE)
+         ${binary_upper}_TARGET ${NAME})
+     endforeach()
+   else()
++    add_custom_target(${NAME})
++    string(TOUPPER ${NAME} name_upper)
++    set_target_properties(env PROPERTIES ${name_upper}_TARGET ${NAME})
+     if(NOT ${ADD_THIRDPARTY_PACKAGE_NO_EXE})
+       # if command not provide, just look the provides
+       foreach(OUTPUT ${ADD_THIRDPARTY_PACKAGE_PROVIDES})
+@@ -431,9 +440,12 @@ function(ADD_THIRDPARTY_PACKAGE)
+         if(NOT ${binary_upper})
+           message(FATAL_ERROR "Could not find program ${OUTPUT}.")
+         endif()
++        if(NOT TARGET ${OUTPUT})
++          add_custom_target(${OUTPUT})
++        endif()
+         set_target_properties(env PROPERTIES
+           ${binary_upper} ${${binary_upper}}
+-          ${binary_upper}_TARGET "")
++          ${binary_upper}_TARGET ${OUTPUT})
+       endforeach()
+     endif()
+   endif()
+diff --git a/common/cmake/util.cmake b/common/cmake/util.cmake
+index b666fee4..1d173f3c 100644
+--- a/common/cmake/util.cmake
++++ b/common/cmake/util.cmake
+@@ -8,11 +8,5 @@ function(get_target_property_required var target property)
+         "${property} not set for target ${target}, check target definition."
+     )
+   endif()
+-  if("${PROP}" STREQUAL "")
+-    message(
+-      FATAL_ERROR
+-        "${property} is empty for target ${target}, check target definition."
+-    )
+-  endif()
+   set(${var} ${PROP} PARENT_SCOPE)
+ endfunction()
+diff --git a/ice40/devices/top-routing-virt/CMakeLists.txt b/ice40/devices/top-routing-virt/CMakeLists.txt
+index 1679463b..4b411191 100644
+--- a/ice40/devices/top-routing-virt/CMakeLists.txt
++++ b/ice40/devices/top-routing-virt/CMakeLists.txt
+@@ -2,7 +2,6 @@ add_subdirectory(tiles)
+ 
+ add_file_target(FILE arch.xml SCANNER_TYPE xml)
+ 
+-get_target_property_required(CONDA_DIR env CONDA_DIR)
+ get_target_property_required(PYTHON3 env PYTHON3)
+ get_target_property_required(PYTHON3_TARGET env PYTHON3_TARGET)
+ get_target_property_required(ICESTORM_TARGET env ICESTORM_TARGET)
+diff --git a/ice40/icestorm.cmake b/ice40/icestorm.cmake
+index 5dc1ef26..be02f4bf 100644
+--- a/ice40/icestorm.cmake
++++ b/ice40/icestorm.cmake
+@@ -5,7 +5,7 @@ function(icestorm_setup)
+   set(ICESTORM_SRC ${symbiflow-arch-defs_SOURCE_DIR}/third_party/icestorm CACHE PATH "Path to icestorm repository")
+   set(PYUTILS_PATH ${symbiflow-arch-defs_SOURCE_DIR}/utils:${symbiflow-arch-defs_SOURCE_DIR}/ice40/utils/fasm_icebox)
+ 
+-  get_target_property_required(PYTHON_PREFIX env CONDA_DIR)
++  get_target_property(PYTHON_PREFIX env CONDA_DIR)
+   set(ICESTORM_PREFIX "PREFIX=${PYTHON_PREFIX}")
+ 
+   add_conda_package(
+diff --git a/quicklogic/yosys/synth.tcl b/quicklogic/yosys/synth.tcl
+index b97adfb2..2ed7aaaf 100644
+--- a/quicklogic/yosys/synth.tcl
++++ b/quicklogic/yosys/synth.tcl
+@@ -8,7 +8,7 @@ synth_quicklogic -flatten
+ 
+ # Assing parameters to IO cells basing on constraints and package pinmap
+ if { $::env(PCF_FILE) != "" && $::env(PINMAP_FILE) != ""} {
+-    plugin -i ql-iob
++    plugin -i $::env(YOSYS_SYMBIFLOW_PLUGINS)/ql-iob.so
+     quicklogic_iob $::env(PCF_FILE) $::env(PINMAP_FILE)
+ }
+ 
+diff --git a/xc/xc7/tests/install_test/CMakeLists.txt b/xc/xc7/tests/install_test/CMakeLists.txt
+index 5f6c0143..0f5297b1 100644
+--- a/xc/xc7/tests/install_test/CMakeLists.txt
++++ b/xc/xc7/tests/install_test/CMakeLists.txt
+@@ -1,3 +1,4 @@
++if(${USE_CONDA})
+ set(INSTALLATION_DIR_BIN "${CMAKE_INSTALL_PREFIX}/bin")
+ get_target_property_required(CONDA_DIR env CONDA_DIR)
+ 
+@@ -10,3 +11,4 @@ add_test(NAME binary_toolchain_test
+ 	PYTHONPATH=${CONDA_DIR}/lib/python3.7/site-packages:${PRJXRAY_DIR}:${PRJXRAY_DIR}/third_party/fasm
+ 	make
+ 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
++endif()
+diff --git a/xc/xc7/yosys/synth.tcl b/xc/xc7/yosys/synth.tcl
+index 428ea9a1..f390d2fb 100644
+--- a/xc/xc7/yosys/synth.tcl
++++ b/xc/xc7/yosys/synth.tcl
+@@ -1,7 +1,7 @@
+ yosys -import
+ 
+-plugin -i xdc
+-plugin -i fasm
++plugin -i $::env(YOSYS_SYMBIFLOW_PLUGINS)/xdc.so -a xdc
++plugin -i $::env(YOSYS_SYMBIFLOW_PLUGINS)/fasm.so -a fasm
+ 
+ # Import the commands from the plugins to the tcl interpreter
+ yosys -import

@@ -48,7 +48,7 @@ rec {
   };
 
   abc-verifier = let
-    rev = "623b5e82513d076a19f864c01930ad1838498894";
+    rev = "ed90ce20df9c7c4d6e1db5d3f786f9b52e06bab1";
   in
     pkgs.abc-verifier.overrideAttrs (oldAttrs: rec {
       src = fetchGit {
@@ -63,8 +63,8 @@ rec {
     inherit abc-verifier;
   }).overrideAttrs (oldAttrs: rec {
     src = fetchGit {
-      url = "https://github.com/SymbiFlow/yosys.git";
-      ref = "master+wip";
+      url = "https://github.com/antmicro/yosys.git";
+      ref = "quicklogic-rebased";
       #rev = "8fe9c84e6c6a17e88ad623f6964bdde7be8f8481";
     };
     doCheck = false;
@@ -73,7 +73,8 @@ rec {
   yosys-symbiflow-plugins = stdenv.mkDerivation {
     name = "yosys-symbiflow-plugins";
     src = fetchGit {
-      url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
+      url = "https://github.com/antmicro/yosys-symbiflow-plugins.git";
+      ref = "ql-ios";
     };
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
@@ -300,7 +301,7 @@ rec {
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     patches = [
-      ./patches/symbiflow-arch-defs.patch
+      ./patches/symbiflow-arch-defs-quicklogic.patch
     ];
     postPatch = ''
       patchShebangs utils/quiet_cmd.sh
@@ -314,14 +315,14 @@ rec {
     '';
     buildPhase = ''
       export VPR_NUM_WORKERS=$NIX_BUILD_CORES
-      make -C build -j $NIX_BUILD_CORES all
+      make -C build -j $NIX_BUILD_CORES counter-ql-chandalar_bit
     '';
     enableParallelBuilding = true;
     installPhase = "make -C build -j $NIX_BUILD_CORES install";
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
-      export phases="configurePhase buildPhase"
+      export phases="patchPhase configurePhase buildPhase"
     '';
   };
 
