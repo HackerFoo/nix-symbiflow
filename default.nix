@@ -1,4 +1,7 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> {},
+  use-prebuilt-symbiflow ? true
+}:
 
 with pkgs;
 with lib;
@@ -421,8 +424,8 @@ rec {
     '';
   };
 
-  symbiflow-arch-defs-install = symbiflow-arch-defs; # use symbiflow-arch-defs-download to use prebuilt
-  symbiflow-arch-defs-install-download = stdenv.mkDerivation {
+  symbiflow-arch-defs-install = if use-prebuilt-symbiflow then symbiflow-arch-defs-download else symbiflow-arch-defs;
+  symbiflow-arch-defs-download = stdenv.mkDerivation {
     name = "symbiflow-arch-defs-install";
     src = fetchTarball {
       url = "https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/presubmit/install/206/20200526-034850/symbiflow-arch-defs-install-97519a47.tar.xz";

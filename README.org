@@ -1,0 +1,13 @@
+#+TITLE: Nix packages for SymbiFlow projects and dependencies
+
+These packages are for developers working on the SymbiFlow project, and not designed for users.
+
+* Usage
+Navigate to the source repo of a project with a corresponding attribute in default.nix, such as fpga-tool-perf, and use =nix-shell=.
+#+BEGIN_EXAMPLE
+cd ~/src/fpga-tool-perf
+nix-shell ~/src/nix-symbiflow -A fpga-tool-perf
+#+END_EXAMPLE
+
+* Documentation
+See [[notes.org]] for more information.
