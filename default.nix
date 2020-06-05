@@ -438,7 +438,7 @@ rec {
     '';
   };
 
-  fpga-tool-perf = stdenv.mkDerivation {
+  fpga-tool-perf = stdenv.mkDerivation rec {
     name = "fpga-tool-perf";
     src = fetchgit {
       url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
@@ -447,6 +447,13 @@ rec {
     };
     nativeBuildInputs = [ python37 vtr nextpnr-xilinx yosys getopt prjxray ];
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
+    env_script = ''
+        mkdir -p env/conda/{bin,pkgs}
+        touch env/conda/bin/activate
+        source env.sh
+        rm -f env/conda/pkgs/nextpnr-xilinx
+        ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
+    '';
     shellHook = ''
       export YOSYS_SYMBIFLOW_PLUGINS
       export PYTHONPATH=${prjxray}
@@ -454,15 +461,15 @@ rec {
       export XRAY_DATABASE_DIR=${prjxray}/database
       export XRAY_FASM2FRAMES="${prjxray}/utils/fasm2frames.py"
       export XRAY_TOOLS_DIR="${prjxray}/bin"
+      export SYMBIFLOW="${symbiflow-arch-defs-install}"
 
-      env.sh() {
-        mkdir -p env/conda/{bin,pkgs}
-        touch env/conda/bin/activate
-        source env.sh
-        rm -f env/install env/conda/pkgs/nextpnr-xilinx
-        ln -s ${symbiflow-arch-defs-install} env/install
-        ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
-      }
+      if [ "''${PWD##*/}" == "fpga-tool-perf" ]; then
+        read -p "Run env script (y/N) " RESPONSE
+        RESPONSE=''${RESPONSE,,} # tolower
+        if [[ "''${RESPONSE}" =~ ^(yes|y)$ ]]; then
+          ${env_script}
+        fi
+      fi
     '';
   };
 }
