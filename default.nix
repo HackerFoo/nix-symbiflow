@@ -91,207 +91,90 @@ rec {
     buildInputs = [ yosys bison flex tk libffi readline ];
   };
 
-  pythonPackages = pkgs: with pkgs; rec {
-    # SymbiFlow Python packages
-    mkSFPy = attrs@{ name, ref ? "master", user ? "SymbiFlow", ... }: buildPythonPackage ({
-      src = fetchGit {
-        url = "https://github.com/${user}/${name}.git";
-        inherit ref;
-      };
-      doCheck = false;
-    } // attrs);
-
-    fasm = mkSFPy {
-      name = "fasm";
-      buildInputs = [ textx ];
-    };
-
-    python-sdf-timing = mkSFPy {
-      name = "python-sdf-timing";
-      propagatedBuildInputs = [ pyjson ply pytestrunner ];
-    };
-
-    vtr-xml-utils = mkSFPy {
-      name = "vtr-xml-utils";
-      propagatedBuildInputs = [ lxml pytestrunner ];
-    };
-
-    python-symbiflow-v2x = mkSFPy {
-      name = "python-symbiflow-v2x";
-      propagatedBuildInputs = [ lxml pytestrunner pyjson vtr-xml-utils ];
-    };
-
-    python-prjxray = mkSFPy {
-      name = "prjxray";
-    };
-
-    edalize = mkSFPy {
-      name = "edalize";
-      ref = "symbiflow";
-      patches = [ ./patches/edalize.patch ];
-      propagatedBuildInputs = [ pytest jinja2 ];
-    };
-
-    # symbiflow-xc-fasm2bels = mkSFPy {
-    #   name = "symbiflow-xc-fasm2bels";
-    #   user = "antmicro";
-    #   ref = "add-fasm2bels";
-    #   nativeBuildInputs = [ git python-prjxray ];
-    # };
-
-    # third party Python packages
-    textx = buildPythonPackage rec {
-      pname = "textX";
-      version = "1.8.0";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "1vhc0774yszy3ql5v7isxr1n3bqh8qz5gb9ahx62b2qn197yi656";
-      };
-      doCheck = false;
-      propagatedBuildInputs = [ arpeggio ];
-    };
-
-    hilbertcurve = buildPythonPackage rec {
-      pname = "hilbertcurve";
-      version = "1.0.1";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "b1ddf58f529219d3b76e8b61ed03e2975a724aff4848b720397c7d5601f49521";
-      };
-      doCheck = false;
-    };
-
-    pycapnp = buildPythonPackage rec {
-      pname = "pycapnp";
-      version = "1.0.0b1";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0sd1ggxbwi28d9by7wg8yp9av4wjh3wy5da6sldyk3m3ry3pwv65";
-      };
-      doCheck = false;
-      propagatedBuildInputs = [ cython capnproto ];
-    };
-
-    tinyfpgab = buildPythonPackage rec {
-      pname = "tinyfpgab";
-      version = "1.1.0";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "1dmpcckz7ibkl30v58wc322ggbcw7myyakb4j6fscm6xav23k4bg";
-      };
-      doCheck = false;
-      propagatedBuildInputs = [ pyserial ];
-    };
-
-    pyjson = buildPythonPackage rec {
-      pname = "pyjson";
-      version = "1.3.0";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "0a4nkmc9yjpc8rxkqvf3cl3w9hd8pcs6f7di738zpwkafrp36grl";
-      };
-      doCheck = false;
-    };
-
-    python-constraint = buildPythonPackage rec {
-      pname = "python-constraint";
-      version = "1.4.0";
-      src = fetchPypi {
-        inherit pname version;
-        extension = "tar.bz2";
-        sha256 = "13nbgkr1w0v1i59yh01zff9gji1fq6ngih56dvy2s0z0mwbny7ah";
-      };
-      doCheck = false;
-    };
-
-    asciitable = buildPythonPackage rec {
-      pname = "asciitable";
-      version = "0.8.0";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "04mnd8zyphsdk5il6khsx38yxm0c1g10hkz5jbxg70i15hzgcbyw";
-      };
-      doCheck = false;
-    };
-
-    jinja2 = buildPythonPackage rec {
-      pname = "Jinja2";
-      version = "2.11.2";
-      src = fetchPypi {
-        inherit pname version;
-        sha256 = "1c1v3djnr0ymp5xpy1h3h60abcaqxdlm4wsqmls9rxby88av5al9";
-      };
-      doCheck = false;
-      propagatedBuildInputs = [ markupsafe ];
+  # custom Python
+  python = pkgs.python37.override {
+    packageOverrides = import ./python-overlay.nix {
+      inherit pkgs;
+      pythonPackages = python37Packages;
     };
   };
-
-  # custom Python
-  python37 = (pkgs.python37.withPackages (p: with p; (attrValues (pythonPackages p)) ++ [
-    arpeggio
-    cairosvg
-    cytoolz
-    fasm
-    flake8
-    intervaltree
-    lxml
-    matplotlib
-    numpy
-    pdfminer
-    pip
-    progressbar2
-    pyserial
-    pytest
-    python-utils
-    scipy
-    setuptools
-    simplejson
-    six
-    sortedcontainers
-    svgwrite
-    tox
-    virtualenv
-    yapf
-    GitPython
-    terminaltables
-    tqdm
-    colorclass
-    pandas
-  ])).override (args: { ignoreCollisions = true; });
 
   # SymbiFlow architecture definitions
   symbiflow-arch-defs = clangStdenv.mkDerivation {
     name = "symbiflow";
-    buildInputs = [
-      cmake
-      git
-      glib
-      icestorm
-      libiconv
-      libxml2
-      libxslt
-      ncurses5
-      nodejs
-      openocd
-      perl
-      pkg-config
-      python37
-      readline
-      sqlite-interactive
-      tcl
-      tinyprog
-      verilog
-      vtr
-      wget
-      xorg.libICE
-      xorg.libSM
-      xorg.libX11
-      xorg.libXext
-      xorg.libXrender
-      xxd
-      yosys
-      zlib
-    ];
+    buildInputs = let
+      python-with-packages = python.withPackages (p: with p; [
+        GitPython
+        arpeggio
+        cairosvg
+        colorclass
+        cytoolz
+        fasm
+        flake8
+        hilbertcurve
+        intervaltree
+        lxml
+        matplotlib
+        numpy
+        pandas
+        pdfminer
+        pip
+        prjxray
+        progressbar2
+        pycapnp
+        pyjson
+        pyserial
+        pytest
+        python-constraint
+        python-sdf-timing
+        python-symbiflow-v2x
+        python-utils
+        scipy
+        setuptools
+        simplejson
+        six
+        sortedcontainers
+        svgwrite
+        terminaltables
+        textx
+        tinyfpgab
+        tox
+        tqdm
+        virtualenv
+        vtr-xml-utils
+        yapf
+      ]);
+    in
+      [
+        cmake
+        git
+        glib
+        icestorm
+        libiconv
+        libxml2
+        libxslt
+        ncurses5
+        nodejs
+        openocd
+        perl
+        pkg-config
+        python-with-packages
+        readline
+        sqlite-interactive
+        tcl
+        tinyprog
+        verilog
+        vtr
+        wget
+        xorg.libICE
+        xorg.libSM
+        xorg.libX11
+        xorg.libXext
+        xorg.libXrender
+        xxd
+        yosys
+        zlib
+      ];
     src = fetchgit {
       url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
       branchName = "master";
@@ -351,10 +234,31 @@ rec {
       sourceRoot="prjxray"
     '';
     nativeBuildInputs = [ cmake ];
-    propagatedBuildInputs = [
-      python37
-      vivado
-    ];
+    propagatedBuildInputs = let
+      python-with-packages = python.withPackages (p: with p; [
+        fasm
+        python-sdf-timing
+        intervaltree
+        #junit-xml
+        numpy
+        openpyxl
+        ordered-set
+        parse
+        progressbar2
+        pyjson5
+        pytest
+        pyyaml
+        scipy
+        simplejson
+        sympy
+        textx
+        yapf
+      ]);
+    in
+      [
+        python-with-packages
+        vivado
+      ];
     preConfigure = "export XRAY_VIVADO_SETTINGS=${vivado_settings}";
     configurePhase = ''
       mkdir -p build $out
@@ -390,8 +294,7 @@ rec {
       pkgs.yosys
       prjxray
       pypy3
-      (boost.override { python = python3; enablePython = true; })
-      python37
+      (boost.override { python = python37; enablePython = true; })
       eigen
     ];
     enableParallelBuilding = true;
@@ -449,7 +352,33 @@ rec {
       fetchSubmodules = true;
       sha256 = "0hssyzym3rfsnj5m4anr5qg3spk8n904l68c1xplng38n6wpi59h";
     };
-    nativeBuildInputs = [ python37 vtr nextpnr-xilinx yosys getopt prjxray ];
+    buildInputs = let
+      python-with-packages = python.withPackages (p: with p; [
+        terminaltables
+        asciitable
+        simplejson
+        tqdm
+        colorclass
+        lxml
+        python-constraint
+        intervaltree
+        jinja2
+        pytest
+        pandas
+        fasm
+        prjxray
+        edalize
+        # TODO symbiflow-xc-fasm2bels
+      ]);
+    in
+      [
+        python-with-packages
+        vtr
+        nextpnr-xilinx
+        yosys
+        getopt
+        prjxray
+      ];
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     env_script = ''
         mkdir -p env/conda/{bin,pkgs}
