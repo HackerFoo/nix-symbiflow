@@ -37,7 +37,7 @@ with self;
     propagatedBuildInputs = [ lxml pytestrunner pyjson vtr-xml-utils ];
   };
 
-  prjxray = mkSFPy {
+  python-prjxray = mkSFPy {
     name = "prjxray";
   };
 

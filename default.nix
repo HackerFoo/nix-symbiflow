@@ -15,29 +15,29 @@ rec {
     name = "vtr-symbiflow";
     nativeBuildInputs = [
       bison
-      flex
       cmake
+      flex
       pkg-config
     ];
     buildInputs = [
-      tbb
-      xorg.libX11
-      xorg.libXft
-      fontconfig
       cairo
-      gtk3
       clang-tools
+      coreutils
+      fontconfig
       gperftools
+      gtk3
+      harfbuzz
+      mount
+      pcre
       perl
       python27
       python3
+      tbb
       time
-      pcre
-      harfbuzz
-      xorg.libpthreadstubs
+      xorg.libX11
       xorg.libXdmcp
-      mount
-      coreutils
+      xorg.libXft
+      xorg.libpthreadstubs
     ];
     src = fetchGit {
       url = "https://github.com/SymbiFlow/vtr-verilog-to-routing.git";
@@ -119,13 +119,13 @@ rec {
         pandas
         pdfminer
         pip
-        prjxray
         progressbar2
         pycapnp
         pyjson
         pyserial
         pytest
         python-constraint
+        python-prjxray
         python-sdf-timing
         python-symbiflow-v2x
         python-utils
@@ -237,7 +237,6 @@ rec {
     propagatedBuildInputs = let
       python-with-packages = python.withPackages (p: with p; [
         fasm
-        python-sdf-timing
         intervaltree
         #junit-xml
         numpy
@@ -247,6 +246,7 @@ rec {
         progressbar2
         pyjson5
         pytest
+        python-sdf-timing
         pyyaml
         scipy
         simplejson
@@ -354,30 +354,31 @@ rec {
     };
     buildInputs = let
       python-with-packages = python.withPackages (p: with p; [
-        terminaltables
         asciitable
-        simplejson
-        tqdm
         colorclass
-        lxml
-        python-constraint
+        edalize
+        fasm
         intervaltree
         jinja2
-        pytest
+        lxml
         pandas
-        fasm
-        prjxray
-        edalize
+        pytest
+        python-constraint
+        python-prjxray
+        simplejson
+        terminaltables
+        textx
+        tqdm
         # TODO symbiflow-xc-fasm2bels
       ]);
     in
       [
+        getopt
+        nextpnr-xilinx
+        prjxray
         python-with-packages
         vtr
-        nextpnr-xilinx
         yosys
-        getopt
-        prjxray
       ];
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     env_script = ''
