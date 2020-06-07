@@ -1,6 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
-  use-prebuilt-symbiflow ? true
+  use-prebuilt-symbiflow ? true,
+  use-vivado ? false
 }:
 
 with pkgs;
@@ -39,11 +40,22 @@ rec {
       xorg.libXft
       xorg.libpthreadstubs
     ];
+    patches = [ ./patches/vtr.patch ];
     src = fetchGit {
       url = "https://github.com/SymbiFlow/vtr-verilog-to-routing.git";
       ref = "master+wip";
       rev = "7d6424bb0bf570844a765feb8472d3e1391a09c5";
     };
+    postInstall =
+      if stdenv.isDarwin
+      then
+        ''
+          for i in vpr genfasm; do
+            install_name_tool -add_rpath ${tbb}/lib $out/bin/$i
+          done
+        ''
+      else
+        "";
     enableParallelBuilding = true;
   };
 
@@ -187,6 +199,7 @@ rec {
     ];
     postPatch = ''
       patchShebangs utils/quiet_cmd.sh
+      patch -d third_party/prjxray -p1 < ${ ./patches/prjxray.patch }
     '';
     configurePhase = ''
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
@@ -208,33 +221,42 @@ rec {
     '';
   };
 
-  vivado_settings = writeScript "settings64.sh" ''
-    export XILINX_VIVADO=${vivado}/opt/Vivado/2017.2
-    if [ -n "''${PATH}" ]; then
-      export PATH=${vivado}/opt/Vivado/2017.2/bin:$PATH
-    else
-      export PATH=${vivado}/opt/Vivado/2017.2/bin
-    fi
-  '';
+  vivado_settings = writeScript "settings64.sh"
+    (if use-vivado
+     then ''
+       export XILINX_VIVADO=${vivado}/opt/Vivado/2017.2
+       if [ -n "''${PATH}" ]; then
+         export PATH=${vivado}/opt/Vivado/2017.2/bin:$PATH
+       else
+         export PATH=${vivado}/opt/Vivado/2017.2/bin
+       fi
+    '' else ''
+       echo "Vivado not installed"
+    '');
 
   prjxray = stdenv.mkDerivation {
     name = "prjxray";
     srcs = [
       (fetchgit {
+        name = "prjxray";
         url = "https://github.com/SymbiFlow/prjxray.git";
         fetchSubmodules = true;
-        sha256 = "0m15i2j2ygakwwjgp3bhwjpc4r2qm2y230vkh3mk58scgvxr6h0a";
+        rev = "46e98b0fca895da2c6b1633ad78d65c74cb5597f";
+        sha256 = "0imx71ywwansagp4gq4kziy0xbyjkyc01yr5sq0rl2pvdx0d1spc";
       })
       (fetchgit {
+        name = "prjxray-db";
         url = "https://github.com/SymbiFlow/prjxray-db.git";
+        rev = "20adf09d395fbd8c3ab90a5bd7e3cdf3e8db33b3";
         sha256 = "1rrlvb0dpd0y24iqqlql6mx54kkw5plnll6smf7i2sh54w67adwp";
       })
     ];
+    patches = [ ./patches/prjxray.patch ];
     setSourceRoot = ''
       sourceRoot="prjxray"
     '';
     nativeBuildInputs = [ cmake ];
-    propagatedBuildInputs = let
+    buildInputs = let
       python-with-packages = python.withPackages (p: with p; [
         fasm
         intervaltree
@@ -257,7 +279,6 @@ rec {
     in
       [
         python-with-packages
-        vivado
       ];
     preConfigure = "export XRAY_VIVADO_SETTINGS=${vivado_settings}";
     configurePhase = ''
@@ -293,9 +314,11 @@ rec {
     buildInputs = [
       pkgs.yosys
       prjxray
-      pypy3
+      python37
       (boost.override { python = python37; enablePython = true; })
       eigen
+    ] ++ optional cc.isClang [
+      llvmPackages.openmp
     ];
     enableParallelBuilding = true;
     DEVICES = [
@@ -314,7 +337,7 @@ rec {
       mkdir -p share
       for device in $DEVICES; do
           echo "Exporting arch for $device"
-          pypy3 xilinx/python/bbaexport.py --device $device --bba share/$device.bba
+          python xilinx/python/bbaexport.py --device $device --bba share/$device.bba
           ./bbasm share/$device.bba share/$device.bin -l
       done
     '';
@@ -345,12 +368,18 @@ rec {
     '';
   };
 
+  mac-lscpu = writeScriptBin "lscpu" ''
+        #!${pkgs.stdenv.shell}
+        sysctl -a | grep machdep.cpu
+  '';
+
   fpga-tool-perf = stdenv.mkDerivation rec {
     name = "fpga-tool-perf";
     src = fetchgit {
       url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
       fetchSubmodules = true;
-      sha256 = "0hssyzym3rfsnj5m4anr5qg3spk8n904l68c1xplng38n6wpi59h";
+      rev = "3374aaad113e0947dfab7f6872a70e454525251b";
+      sha256 = "00d328s0a7b58fq5vhsc9ddx9hr4s234kh0d22gf38mm2n1l10k2";
     };
     buildInputs = let
       python-with-packages = python.withPackages (p: with p; [
@@ -379,6 +408,8 @@ rec {
         python-with-packages
         vtr
         yosys
+      ] ++ optional stdenv.isDarwin [
+        mac-lscpu
       ];
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     env_script = ''
