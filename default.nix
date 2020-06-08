@@ -1,7 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
-  use-prebuilt-symbiflow ? true,
-  use-vivado ? false
+  use-prebuilt-symbiflow ? true, # set to false to build symbiflow-arch-defs
+  use-vivado ? false             # set to true to install and use Vivado, only works on Linux
 }:
 
 with pkgs;
