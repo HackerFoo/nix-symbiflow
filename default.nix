@@ -93,7 +93,7 @@ rec {
     doCheck = false;
   });
 
-  yosys-symbiflow-plugins = stdenv.mkDerivation {
+  yosys-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
     name = "yosys-symbiflow-plugins";
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
@@ -112,7 +112,7 @@ rec {
         cp ''${i}-plugin/''${i}.so $out
       done
     '';
-    buildInputs = [ yosys-git bison flex tk libffi readline ];
+    buildInputs = [ yosys bison flex tk libffi readline ];
   };
 
   # custom Python
@@ -206,7 +206,7 @@ rec {
       rev = "d29e4c867b040af7e59dd2ab8e7222a1aeec00cb";
       sha256 = "0bdbwvs31xsfnjr35k4ggs42j06qhj8zvdawpszkngmx0klp8rd1";
     };
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
+    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { yosys = yosys-symbiflow; };
     patches = [
       ./patches/symbiflow-arch-defs.patch
     ];
@@ -425,7 +425,7 @@ rec {
       ] ++ optional stdenv.isDarwin [
         mac-lscpu
       ];
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
+    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { yosys = yosys-git; };
     env_script = ''
         mkdir -p env/conda/{bin,pkgs}
         touch env/conda/bin/activate
