@@ -411,6 +411,7 @@ rec {
         terminaltables
         textx
         tqdm
+        yapf
         # TODO symbiflow-xc-fasm2bels
       ]);
     in
