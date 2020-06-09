@@ -200,11 +200,11 @@ rec {
         zlib
       ];
     src = fetchgit {
-      url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
-      branchName = "master";
+      url = "https://github.com/HackerFoo/symbiflow-arch-defs.git";
+      branchName = "dont-use-conda";
       fetchSubmodules = true;
-      rev = "32defbb392f79a7ad44801d1665d0434c5a59c91";
-      sha256 = "10c44mi7g8mgvb8w3f6g57mkmm2rsb4zip5zpgqa1wj1mz25b0a1";
+      rev = "d29e4c867b040af7e59dd2ab8e7222a1aeec00cb";
+      sha256 = "0bdbwvs31xsfnjr35k4ggs42j06qhj8zvdawpszkngmx0klp8rd1";
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     patches = [
