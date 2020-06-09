@@ -1,8 +1,9 @@
-{ pkgs, pythonPackages }:
+{ pkgs, pythonPackages, prjxray }:
 
 self: super:
 
 with pkgs;
+with lib;
 with pythonPackages;
 with self;
 
@@ -39,6 +40,7 @@ with self;
 
   python-prjxray = mkSFPy {
     name = "prjxray";
+    src = head (prjxray.srcs);
   };
 
   edalize = mkSFPy {

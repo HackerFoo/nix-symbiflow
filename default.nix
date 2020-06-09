@@ -40,11 +40,10 @@ rec {
       xorg.libXft
       xorg.libpthreadstubs
     ];
-    patches = [ ./patches/vtr.patch ];
     src = fetchGit {
       url = "https://github.com/SymbiFlow/vtr-verilog-to-routing.git";
       ref = "master+wip";
-      rev = "7d6424bb0bf570844a765feb8472d3e1391a09c5";
+      rev = "8980e46218542888fac879961b13aa7b0fba8432";
     };
     postInstall =
       if stdenv.isDarwin
@@ -59,25 +58,37 @@ rec {
     enableParallelBuilding = true;
   };
 
-  abc-verifier = let
-    rev = "623b5e82513d076a19f864c01930ad1838498894";
-  in
+  abc-verifier = { rev, url ? "https://github.com/berkeley-abc/abc" }:
     pkgs.abc-verifier.overrideAttrs (oldAttrs: rec {
       src = fetchGit {
-        url = "https://github.com/berkeley-abc/abc";
-        inherit rev;
+        inherit url rev;
       };
     }) // {
       inherit rev; # this doesn't update otherwise
     };
 
-  yosys = (pkgs.yosys.override {
-    inherit abc-verifier;
+  yosys-symbiflow = (pkgs.yosys.override {
+    abc-verifier = abc-verifier {
+      rev = "623b5e82513d076a19f864c01930ad1838498894";
+    };
   }).overrideAttrs (oldAttrs: rec {
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys.git";
       ref = "master+wip";
-      #rev = "8fe9c84e6c6a17e88ad623f6964bdde7be8f8481";
+      rev = "6bccd35a41ab82f52f0688478310899cfec04e08";
+    };
+    doCheck = false;
+  });
+
+  yosys-git = (pkgs.yosys.override {
+    abc-verifier = abc-verifier {
+      url = "https://github.com/YosysHQ/abc.git";
+      rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
+    };
+  }).overrideAttrs (oldAttrs: rec {
+    src = fetchGit {
+      url = "https://github.com/YosysHQ/yosys.git";
+      rev = "83f84afc0b617fe78fb7cfa31fb9d1cd202e22f2";
     };
     doCheck = false;
   });
@@ -86,6 +97,7 @@ rec {
     name = "yosys-symbiflow-plugins";
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
+      rev = "104f4fc0bcc1614b0dcab833ae6eeee4c6afb0fe";
     };
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
@@ -100,13 +112,13 @@ rec {
         cp ''${i}-plugin/''${i}.so $out
       done
     '';
-    buildInputs = [ yosys bison flex tk libffi readline ];
+    buildInputs = [ yosys-git bison flex tk libffi readline ];
   };
 
   # custom Python
   python = pkgs.python37.override {
     packageOverrides = import ./python-overlay.nix {
-      inherit pkgs;
+      inherit pkgs prjxray;
       pythonPackages = python37Packages;
     };
   };
@@ -184,14 +196,15 @@ rec {
         xorg.libXext
         xorg.libXrender
         xxd
-        yosys
+        yosys-symbiflow
         zlib
       ];
     src = fetchgit {
       url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
       branchName = "master";
       fetchSubmodules = true;
-      sha256 = "0vn2vl89agvhkbgdqqxigx77v5rhn8i8wqwia3n4gslyhcgx1ybd";
+      rev = "32defbb392f79a7ad44801d1665d0434c5a59c91";
+      sha256 = "10c44mi7g8mgvb8w3f6g57mkmm2rsb4zip5zpgqa1wj1mz25b0a1";
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins;
     patches = [
@@ -312,12 +325,12 @@ rec {
     };
     nativeBuildInputs = [ cmake ];
     buildInputs = [
-      pkgs.yosys
+      yosys-git
       prjxray
       python37
       (boost.override { python = python37; enablePython = true; })
       eigen
-    ] ++ optional cc.isClang [
+    ] ++ optional stdenv.cc.isClang [
       llvmPackages.openmp
     ];
     enableParallelBuilding = true;
@@ -407,7 +420,7 @@ rec {
         prjxray
         python-with-packages
         vtr
-        yosys
+        yosys-git
       ] ++ optional stdenv.isDarwin [
         mac-lscpu
       ];
