@@ -211,7 +211,8 @@ rec {
       ./patches/symbiflow-arch-defs.patch
     ];
     postPatch = ''
-      patchShebangs utils/quiet_cmd.sh
+      patchShebangs utils
+      patchShebangs third_party/prjxray/utils
       patch -d third_party/prjxray -p1 < ${ ./patches/prjxray.patch }
     '';
     configurePhase = ''
@@ -230,6 +231,7 @@ rec {
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
+      export XRAY_VIVADO_SETTINGS=${vivado_settings}
       export phases="configurePhase buildPhase"
     '';
   };
@@ -265,6 +267,9 @@ rec {
       })
     ];
     patches = [ ./patches/prjxray.patch ];
+    postPatch = ''
+      patchShebangs utils
+    '';
     setSourceRoot = ''
       sourceRoot="prjxray"
     '';
@@ -301,7 +306,9 @@ rec {
       popd
     '';
     enableParallelBuilding = true;
-    buildPhase = "make -C build -j $NIX_BUILD_CORES";
+    buildPhase = ''
+      make -C build -j $NIX_BUILD_CORES ''${TARGET:-all}
+    '';
     installPhase = ''
       make -C build install
       mkdir -p $out/build
@@ -312,7 +319,7 @@ rec {
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
-      export phases="configurePhase buildPhase"
+      export phases="patchPhase configurePhase buildPhase"
     '';
   };
 
