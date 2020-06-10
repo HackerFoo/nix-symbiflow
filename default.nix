@@ -124,8 +124,9 @@ rec {
   };
 
   # SymbiFlow architecture definitions
-  symbiflow-arch-defs = clangStdenv.mkDerivation {
+  symbiflow-arch-defs = clangStdenv.mkDerivation rec {
     name = "symbiflow";
+    yosys = yosys-symbiflow;
     buildInputs = let
       python-with-packages = python.withPackages (p: with p; [
         GitPython
@@ -196,7 +197,7 @@ rec {
         xorg.libXext
         xorg.libXrender
         xxd
-        yosys-symbiflow
+        yosys
         zlib
       ];
     src = fetchgit {
@@ -206,7 +207,7 @@ rec {
       rev = "d29e4c867b040af7e59dd2ab8e7222a1aeec00cb";
       sha256 = "0bdbwvs31xsfnjr35k4ggs42j06qhj8zvdawpszkngmx0klp8rd1";
     };
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { yosys = yosys-symbiflow; };
+    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     patches = [
       ./patches/symbiflow-arch-defs.patch
     ];
@@ -401,6 +402,7 @@ rec {
       rev = "3374aaad113e0947dfab7f6872a70e454525251b";
       sha256 = "00d328s0a7b58fq5vhsc9ddx9hr4s234kh0d22gf38mm2n1l10k2";
     };
+    yosys = yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
     buildInputs = let
       python-with-packages = python.withPackages (p: with p; [
         asciitable
@@ -428,11 +430,11 @@ rec {
         prjxray
         python-with-packages
         vtr
-        yosys-git
+        yosys
       ] ++ optional stdenv.isDarwin [
         mac-lscpu
       ];
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { yosys = yosys-git; };
+    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     env_script = ''
         mkdir -p env/conda/{bin,pkgs}
         touch env/conda/bin/activate
