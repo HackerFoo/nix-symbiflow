@@ -56,7 +56,6 @@ in
   edalize = mkSFPy {
     name = "edalize";
     ref = "symbiflow";
-    patches = [ ./patches/edalize.patch ];
     propagatedBuildInputs = [ pytest jinja2 ];
     rev = "f72286e1c28a7cb23d8228521370b05e94287455";
   };
