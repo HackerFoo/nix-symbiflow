@@ -7,35 +7,45 @@ with lib;
 with pythonPackages;
 with self;
 
-{
+let
+
+  # Build a set with only the attributes listed in `names` from `attrs`.
+  intersectAttrs = names: attrs: getAttrs (intersectLists names (attrNames attrs)) attrs;
+
   # SymbiFlow Python packages
-  mkSFPy = attrs@{ name, ref ? "master", user ? "SymbiFlow", ... }: buildPythonPackage ({
+  mkSFPy = attrs@{ name, user ? "SymbiFlow", ... }: buildPythonPackage ({
     src = fetchGit {
       url = "https://github.com/${user}/${name}.git";
-      inherit ref;
-    };
+    } // (intersectAttrs [ "ref" "rev" ] attrs);
     doCheck = false;
   } // attrs);
 
+in
+
+{
   fasm = mkSFPy {
     name = "fasm";
     buildInputs = [ textx ];
     patches = [ ./patches/fasm.patch ];
+    rev = "052f629217119b699ea83e03c412bc6fafb2313a";
   };
 
   python-sdf-timing = mkSFPy {
     name = "python-sdf-timing";
     propagatedBuildInputs = [ pyjson ply pytestrunner ];
+    rev = "0afbbfe5cec97330b3261d811a4d604a471a5d98";
   };
 
   vtr-xml-utils = mkSFPy {
     name = "vtr-xml-utils";
     propagatedBuildInputs = [ lxml pytestrunner ];
+    rev = "41d8a8d9e912bdae210830cb95b00ad076123726";
   };
 
   python-symbiflow-v2x = mkSFPy {
     name = "python-symbiflow-v2x";
     propagatedBuildInputs = [ lxml pytestrunner pyjson vtr-xml-utils ];
+    rev = "09a9cbeda0448566b3b3e88a95c3e69efbeccea6";
   };
 
   python-prjxray = mkSFPy {
@@ -48,6 +58,7 @@ with self;
     ref = "symbiflow";
     patches = [ ./patches/edalize.patch ];
     propagatedBuildInputs = [ pytest jinja2 ];
+    rev = "f72286e1c28a7cb23d8228521370b05e94287455";
   };
 
   # symbiflow-xc-fasm2bels = mkSFPy {

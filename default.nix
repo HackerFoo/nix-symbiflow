@@ -58,7 +58,7 @@ rec {
     enableParallelBuilding = true;
   };
 
-  abc-verifier = { rev, url ? "https://github.com/berkeley-abc/abc" }:
+  abc-verifier = { url ? "https://github.com/berkeley-abc/abc", rev }:
     pkgs.abc-verifier.overrideAttrs (oldAttrs: rec {
       src = fetchGit {
         inherit url rev;
@@ -88,7 +88,7 @@ rec {
   }).overrideAttrs (oldAttrs: rec {
     src = fetchGit {
       url = "https://github.com/YosysHQ/yosys.git";
-      rev = "83f84afc0b617fe78fb7cfa31fb9d1cd202e22f2";
+      rev = "8f1a32064639fa17d67bda508df941c8846a0664";
     };
     doCheck = false;
   });
@@ -97,7 +97,7 @@ rec {
     name = "yosys-symbiflow-plugins";
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
-      rev = "104f4fc0bcc1614b0dcab833ae6eeee4c6afb0fe";
+      rev = "1c495fd47ddfc54a9f815c0ba97dc112e1731bd6";
     };
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
@@ -204,8 +204,8 @@ rec {
       url = "https://github.com/HackerFoo/symbiflow-arch-defs.git";
       branchName = "dont-use-conda";
       fetchSubmodules = true;
-      rev = "d29e4c867b040af7e59dd2ab8e7222a1aeec00cb";
-      sha256 = "0bdbwvs31xsfnjr35k4ggs42j06qhj8zvdawpszkngmx0klp8rd1";
+      rev = "718b11060997641ed84b538eebcd6f127aab3cc0";
+      sha256 = "1lvcfw72wb9k1l4bs42hyviyn8brsgb98hj0lyx3v8k725ba0lb6";
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     patches = [
@@ -257,14 +257,13 @@ rec {
         name = "prjxray";
         url = "https://github.com/SymbiFlow/prjxray.git";
         fetchSubmodules = true;
-        rev = "46e98b0fca895da2c6b1633ad78d65c74cb5597f";
-        sha256 = "0imx71ywwansagp4gq4kziy0xbyjkyc01yr5sq0rl2pvdx0d1spc";
+        rev = "35ead5e40f6a9fdc4d338e4471d8de2bd47ef787";
+        sha256 = "05h2pw0nkq9zhsaw2zblma2im8ywd5nvcwn8wjdl4jpva1av0yyj";
       })
-      (fetchgit {
+      (fetchGit {
         name = "prjxray-db";
         url = "https://github.com/SymbiFlow/prjxray-db.git";
         rev = "20adf09d395fbd8c3ab90a5bd7e3cdf3e8db33b3";
-        sha256 = "1rrlvb0dpd0y24iqqlql6mx54kkw5plnll6smf7i2sh54w67adwp";
       })
     ];
     patches = [ ./patches/prjxray.patch ];
@@ -329,6 +328,7 @@ rec {
     src = fetchgit {
       url = "https://github.com/daveshah1/nextpnr-xilinx.git";
       fetchSubmodules = true;
+      rev = "7e46c6a3703d029c9776d57b64e4ba94f7bc8264";
       sha256 = "0pacjhz8rxrra6g7636fkmk2zkbvq7p9058hj4q90gc22dk9x2ji";
     };
     nativeBuildInputs = [ cmake ];
@@ -399,8 +399,8 @@ rec {
     src = fetchgit {
       url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
       fetchSubmodules = true;
-      rev = "3374aaad113e0947dfab7f6872a70e454525251b";
-      sha256 = "00d328s0a7b58fq5vhsc9ddx9hr4s234kh0d22gf38mm2n1l10k2";
+      rev = "87e7472a38cbedd66450a305ec31fbf41f8fecdc";
+      sha256 = "09x0sy6hg8y0l6qy4a14v8wyfdi3xj57b1yxmc50lrkw94r1d2bc";
     };
     yosys = yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
     buildInputs = let
