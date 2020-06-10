@@ -204,8 +204,8 @@ rec {
       url = "https://github.com/HackerFoo/symbiflow-arch-defs.git";
       branchName = "dont-use-conda";
       fetchSubmodules = true;
-      rev = "718b11060997641ed84b538eebcd6f127aab3cc0";
-      sha256 = "1lvcfw72wb9k1l4bs42hyviyn8brsgb98hj0lyx3v8k725ba0lb6";
+      rev = "79fdbcfa5c8581038dc53b59b02d95db4f9f02fd";
+      sha256 = "03n76jngaiii99l1ak2h79iw26d6xwxg30fyrnaysfmnmpy36zfv";
     };
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     patches = [
