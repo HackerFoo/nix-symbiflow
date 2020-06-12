@@ -14,9 +14,9 @@ let
 
   # SymbiFlow Python packages
   mkSFPy = attrs@{ name, user ? "SymbiFlow", ... }: buildPythonPackage ({
-    src = fetchGit {
+    src = fetchGit ({
       url = "https://github.com/${user}/${name}.git";
-    } // (intersectAttrs [ "ref" "rev" ] attrs);
+    } // (intersectAttrs [ "ref" "rev" ] attrs));
     doCheck = false;
   } // attrs);
 
@@ -26,8 +26,7 @@ in
   fasm = mkSFPy {
     name = "fasm";
     buildInputs = [ textx ];
-    patches = [ ./patches/fasm.patch ];
-    rev = "052f629217119b699ea83e03c412bc6fafb2313a";
+    rev = "4857dde757edd88688c2faf808774d85bdbe3900";
   };
 
   python-sdf-timing = mkSFPy {
