@@ -75,7 +75,7 @@ in
       sha256 = "1vhc0774yszy3ql5v7isxr1n3bqh8qz5gb9ahx62b2qn197yi656";
     };
     doCheck = false;
-    propagatedBuildInputs = [ arpeggio ];
+    propagatedBuildInputs = [ arpeggio setuptools ];
   };
 
   hilbertcurve = buildPythonPackage rec {

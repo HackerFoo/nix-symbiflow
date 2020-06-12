@@ -446,7 +446,7 @@ rec {
       export PYTHONPATH=${prjxray}
       export VIVADO_SETTINGS=${vivado_settings}
       export XRAY_DATABASE_DIR=${prjxray}/database
-      export XRAY_FASM2FRAMES="${prjxray}/utils/fasm2frames.py"
+      export XRAY_FASM2FRAMES="${python-with-packages}/lib/python*/site-packages/prjxray/fasm2frames.py"
       export XRAY_TOOLS_DIR="${prjxray}/bin"
       export SYMBIFLOW="${symbiflow-arch-defs-install}"
 
@@ -457,6 +457,39 @@ rec {
           ${env_script}
         fi
       fi
+    '';
+  };
+
+  symbiflow-examples = stdenv.mkDerivation rec {
+    name = "symbiflow-examples";
+    src = fetchGit {
+      url = "https://github.com/SymbiFlow/symbiflow-examples.git";
+      rev = "8338e1df18e9b763b6efc8dab142e67dd982955d";
+    };
+    yosys = yosys-symbiflow;
+    python-with-packages = python.withPackages (p: with p; [
+      lxml
+      simplejson
+      intervaltree
+      python-constraint
+      python-prjxray
+      fasm
+      textx
+    ]);
+   buildInputs =  [
+      symbiflow-arch-defs-install
+      yosys
+      vtr
+      python-with-packages
+      prjxray
+    ];
+    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
+    shellHook = ''
+      export YOSYS_SYMBIFLOW_PLUGINS
+      export XRAY_DATABASE_DIR=${prjxray}/database
+      export XRAY_FASM2FRAMES="${python-with-packages}/lib/python*/site-packages/prjxray/fasm2frames.py"
+      export XRAY_TOOLS_DIR="${prjxray}/bin"
+      #export SYMBIFLOW="${symbiflow-arch-defs-install}"
     '';
   };
 }
