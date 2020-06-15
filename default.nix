@@ -402,37 +402,35 @@ rec {
       sha256 = "09x0sy6hg8y0l6qy4a14v8wyfdi3xj57b1yxmc50lrkw94r1d2bc";
     };
     yosys = yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
-    buildInputs = let
-      python-with-packages = python.withPackages (p: with p; [
-        asciitable
-        colorclass
-        edalize
-        fasm
-        intervaltree
-        jinja2
-        lxml
-        pandas
-        pytest
-        python-constraint
-        python-prjxray
-        simplejson
-        terminaltables
-        textx
-        tqdm
-        yapf
-        # TODO symbiflow-xc-fasm2bels
-      ]);
-    in
-      [
-        getopt
-        nextpnr-xilinx
-        prjxray
-        python-with-packages
-        vtr
-        yosys
-      ] ++ optional stdenv.isDarwin [
-        mac-lscpu
-      ];
+    python-with-packages = python.withPackages (p: with p; [
+      asciitable
+      colorclass
+      edalize
+      fasm
+      intervaltree
+      jinja2
+      lxml
+      pandas
+      pytest
+      python-constraint
+      python-prjxray
+      simplejson
+      terminaltables
+      textx
+      tqdm
+      yapf
+      # TODO symbiflow-xc-fasm2bels
+    ]);
+    buildInputs = [
+      getopt
+      nextpnr-xilinx
+      prjxray
+      python-with-packages
+      vtr
+      yosys
+    ] ++ optional stdenv.isDarwin [
+      mac-lscpu
+    ];
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     env_script = ''
         mkdir -p env/conda/{bin,pkgs}

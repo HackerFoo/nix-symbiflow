@@ -56,7 +56,7 @@ in
     name = "edalize";
     ref = "symbiflow";
     propagatedBuildInputs = [ pytest jinja2 ];
-    rev = "f72286e1c28a7cb23d8228521370b05e94287455";
+    rev = "062dbc7ab3fa41cb9fe5cb01a9705ed71f066772";
   };
 
   # symbiflow-xc-fasm2bels = mkSFPy {
