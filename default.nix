@@ -68,35 +68,39 @@ rec {
       inherit rev; # this doesn't update otherwise
     };
 
-  yosys-symbiflow = (pkgs.yosys.override {
-    abc-verifier = abc-verifier {
-      rev = "623b5e82513d076a19f864c01930ad1838498894";
-    };
-  }).overrideAttrs (oldAttrs: rec {
-    src = fetchGit {
-      url = "https://github.com/SymbiFlow/yosys.git";
-      ref = "master+wip";
-      rev = "6bccd35a41ab82f52f0688478310899cfec04e08";
-    };
-    doCheck = false;
-  });
+  yosys-symbiflow = yosys-with-symbiflow-plugins {
+    yosys = (pkgs.yosys.override {
+      abc-verifier = abc-verifier {
+        rev = "623b5e82513d076a19f864c01930ad1838498894";
+      };
+    }).overrideAttrs (oldAttrs: rec {
+      src = fetchGit {
+        url = "https://github.com/SymbiFlow/yosys.git";
+        ref = "master+wip";
+        rev = "6bccd35a41ab82f52f0688478310899cfec04e08";
+      };
+      doCheck = false;
+    });
+  };
 
-  yosys-git = (pkgs.yosys.override {
-    abc-verifier = abc-verifier {
-      url = "https://github.com/YosysHQ/abc.git";
-      ref = "yosys-experimental";
-      rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
-    };
-  }).overrideAttrs (oldAttrs: rec {
-    src = fetchGit {
-      url = "https://github.com/YosysHQ/yosys.git";
-      rev = "8f1a32064639fa17d67bda508df941c8846a0664";
-    };
-    doCheck = false;
-  });
+  yosys-git = yosys-with-symbiflow-plugins {
+    yosys = (pkgs.yosys.override {
+      abc-verifier = abc-verifier {
+        url = "https://github.com/YosysHQ/abc.git";
+        ref = "yosys-experimental";
+        rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
+      };
+    }).overrideAttrs (oldAttrs: rec {
+      src = fetchGit {
+        url = "https://github.com/YosysHQ/yosys.git";
+        rev = "8f1a32064639fa17d67bda508df941c8846a0664";
+      };
+      doCheck = false;
+    });
+  };
 
-  yosys-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
-    name = "yosys-symbiflow-plugins";
+  yosys-with-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
+    name = "${yosys.name}-with-symbiflow-plugins";
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
       rev = "1c495fd47ddfc54a9f815c0ba97dc112e1731bd6";
@@ -109,9 +113,13 @@ rec {
       done
     '';
     installPhase = ''
-      mkdir $out
+      mkdir -p $out/bin $out/share/yosys/plugins
+      cp -rs ${yosys}/share $out/
+      cp -s ${yosys}/bin/{yosys,yosys-filterlib,yosys-smtbmc} $out/bin/
+      sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
+      chmod +x $out/bin/yosys-config
       for i in $plugins; do
-        cp ''${i}-plugin/''${i}.so $out
+        make -C ''${i}-plugin install PLUGINS_DIR=$out/share/yosys/plugins
       done
     '';
     buildInputs = [ yosys bison flex tk libffi readline ];
@@ -208,10 +216,6 @@ rec {
       rev = "fb5be9e5c9bd5ebf862227b8c9e4bdb807ceddde";
       sha256 = "03n76jngaiii99l1ak2h79iw26d6xwxg30fyrnaysfmnmpy36zfv";
     };
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
-    patches = [
-      ./patches/symbiflow-arch-defs.patch
-    ];
     postPatch = ''
       patchShebangs utils
       patchShebangs third_party/prjxray/utils
@@ -374,10 +378,7 @@ rec {
       url = "https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/presubmit/install/206/20200526-034850/symbiflow-arch-defs-install-97519a47.tar.xz";
       sha256 = "0jvb556k2q92sym94y696b5hcr84ab6mfdn52qb1v5spk7fd77db";
     };
-    phases = [ "unpackPhase" "patchPhase" "installPhase" ];
-    patchPhase = ''
-      sed -i -E -e "s|^plugin -i +([a-zA-Z0-9]+)|plugin -i $::env(YOSYS_SYMBIFLOW_PLUGINS)/\1.so|" share/symbiflow/scripts/xc7/synth.tcl
-    '';
+    phases = [ "unpackPhase" "installPhase" ];
     installPhase = ''
       mkdir $out
       cp -r * $out/
@@ -437,9 +438,7 @@ rec {
       ] ++ optional stdenv.isDarwin [
         mac-lscpu
       ];
-      YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
       buildPhase = ''
-        export YOSYS_SYMBIFLOW_PLUGINS
         export PYTHONPATH=${prjxray}
         export VIVADO_SETTINGS=${vivado_settings}
         export XRAY_DATABASE_DIR=${prjxray-db}
@@ -497,9 +496,7 @@ rec {
       python-with-packages
       prjxray
     ];
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     shellHook = ''
-      export YOSYS_SYMBIFLOW_PLUGINS
       export XRAY_DATABASE_DIR=${prjxray-db}
       export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
       export XRAY_TOOLS_DIR="${prjxray}/bin"
