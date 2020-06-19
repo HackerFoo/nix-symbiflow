@@ -448,6 +448,7 @@ rec {
         mkdir -p env/conda/pkgs
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
+        source $VIVADO_SETTINGS
         python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out
       '';
       installPhase = ''

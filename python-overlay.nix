@@ -56,6 +56,7 @@ in
     name = "edalize";
     ref = "symbiflow";
     propagatedBuildInputs = [ pytest jinja2 ];
+    patches = [ ./patches/edalize.patch ];
     rev = "062dbc7ab3fa41cb9fe5cb01a9705ed71f066772";
   };
 
