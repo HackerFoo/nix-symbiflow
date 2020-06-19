@@ -429,6 +429,7 @@ rec {
         nextpnr-xilinx
         prjxray
         python-with-packages
+        symbiflow-arch-defs-install
         vtr
         yosys
       ] ++ optional stdenv.isLinux [
@@ -445,16 +446,13 @@ rec {
         export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
         export XRAY_TOOLS_DIR="${prjxray}/bin"
         export SYMBIFLOW="${symbiflow-arch-defs-install}"
-        mkdir -p env/conda/{bin,pkgs}
-        touch env/conda/bin/activate
-        source env.sh
+        mkdir -p env/conda/pkgs
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
-        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board}
+        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out
       '';
       installPhase = ''
         mkdir -p $out/nix-support
-        cp build/${projectName}_${toolchain}_*/* $out/
         if [ -e $out/meta.json ]; then
           echo "file json $out/meta.json" > $out/nix-support/hydra-build-products
         fi
