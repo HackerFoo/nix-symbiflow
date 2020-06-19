@@ -383,6 +383,7 @@ rec {
     installPhase = ''
       mkdir $out
       cp -r * $out/
+      patchShebangs $out/bin
     '';
   };
 
@@ -424,7 +425,7 @@ rec {
         textx
         tqdm
         yapf
-        # TODO symbiflow-xc-fasm2bels
+        symbiflow-xc-fasm2bels
       ]);
       buildInputs = [
         getopt

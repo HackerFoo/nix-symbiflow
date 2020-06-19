@@ -60,12 +60,25 @@ in
     rev = "062dbc7ab3fa41cb9fe5cb01a9705ed71f066772";
   };
 
-  # symbiflow-xc-fasm2bels = mkSFPy {
-  #   name = "symbiflow-xc-fasm2bels";
-  #   user = "antmicro";
-  #   ref = "add-fasm2bels";
-  #   nativeBuildInputs = [ git python-prjxray ];
-  # };
+  symbiflow-xc-fasm2bels = mkSFPy {
+    name = "symbiflow-xc-fasm2bels";
+    propagatedBuildInputs = [
+      fasm
+      intervaltree
+      parameterized
+      progressbar2
+      pycapnp
+      python-prjxray
+      rr_graph
+      simplejson
+      textx
+    ];
+  };
+
+  rr_graph = mkSFPy {
+    name = "symbiflow-rr-graph";
+    propagatedBuildInputs = [ simplejson pycapnp lxml ];
+  };
 
   # third party Python packages
   textx = buildPythonPackage rec {
