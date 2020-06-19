@@ -10,7 +10,7 @@ with lib;
 
 rec {
 
-  inherit (import ./nix-fpgapkgs {}) vivado;
+  inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado;
 
   # toolchain
   vtr = stdenv.mkDerivation {
