@@ -251,28 +251,22 @@ rec {
        echo "Vivado not installed"
     '');
 
+  prjxray-db = fetchGit {
+    url = "https://github.com/SymbiFlow/prjxray-db.git";
+    rev = "20adf09d395fbd8c3ab90a5bd7e3cdf3e8db33b3";
+  };
+
   prjxray = stdenv.mkDerivation {
     name = "prjxray";
-    srcs = [
-      (fetchgit {
-        name = "prjxray";
-        url = "https://github.com/SymbiFlow/prjxray.git";
-        fetchSubmodules = true;
-        rev = "35ead5e40f6a9fdc4d338e4471d8de2bd47ef787";
-        sha256 = "05h2pw0nkq9zhsaw2zblma2im8ywd5nvcwn8wjdl4jpva1av0yyj";
-      })
-      (fetchGit {
-        name = "prjxray-db";
-        url = "https://github.com/SymbiFlow/prjxray-db.git";
-        rev = "20adf09d395fbd8c3ab90a5bd7e3cdf3e8db33b3";
-      })
-    ];
+    src = fetchgit {
+      url = "https://github.com/SymbiFlow/prjxray.git";
+      fetchSubmodules = true;
+      rev = "35ead5e40f6a9fdc4d338e4471d8de2bd47ef787";
+      sha256 = "05h2pw0nkq9zhsaw2zblma2im8ywd5nvcwn8wjdl4jpva1av0yyj";
+    };
     patches = [ ./patches/prjxray.patch ];
     postPatch = ''
       patchShebangs utils
-    '';
-    setSourceRoot = ''
-      sourceRoot="prjxray"
     '';
     nativeBuildInputs = [ cmake ];
     buildInputs = let
@@ -315,7 +309,7 @@ rec {
       mkdir -p $out/build
       ln -s $out/bin $out/build/tools
       cp -r utils $out/utils
-      cp -r ../prjxray-db $out/database
+      ln -s ${prjxray-db} $out/database
     '';
 
     # so genericBuild works from source directory in nix-shell
@@ -447,7 +441,7 @@ rec {
         export YOSYS_SYMBIFLOW_PLUGINS
         export PYTHONPATH=${prjxray}
         export VIVADO_SETTINGS=${vivado_settings}
-        export XRAY_DATABASE_DIR=${prjxray}/database
+        export XRAY_DATABASE_DIR=${prjxray-db}
         export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
         export XRAY_TOOLS_DIR="${prjxray}/bin"
         export SYMBIFLOW="${symbiflow-arch-defs-install}"
@@ -508,7 +502,7 @@ rec {
     YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
     shellHook = ''
       export YOSYS_SYMBIFLOW_PLUGINS
-      export XRAY_DATABASE_DIR=${prjxray}/database
+      export XRAY_DATABASE_DIR=${prjxray-db}
       export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
       export XRAY_TOOLS_DIR="${prjxray}/bin"
       #export SYMBIFLOW="${symbiflow-arch-defs-install}"

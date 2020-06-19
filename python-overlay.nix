@@ -49,7 +49,7 @@ in
 
   python-prjxray = mkSFPy {
     name = "prjxray";
-    src = head (prjxray.srcs);
+    inherit (prjxray) src;
   };
 
   edalize = mkSFPy {
