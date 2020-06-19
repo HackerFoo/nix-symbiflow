@@ -100,7 +100,7 @@ rec {
   };
 
   yosys-with-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
-    name = "${yosys.name}-with-symbiflow-plugins";
+    inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
       rev = "1c495fd47ddfc54a9f815c0ba97dc112e1731bd6";
@@ -115,9 +115,10 @@ rec {
     installPhase = ''
       mkdir -p $out/bin $out/share/yosys/plugins
       cp -rs ${yosys}/share $out/
-      cp -s ${yosys}/bin/{yosys,yosys-filterlib,yosys-smtbmc} $out/bin/
+      cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc} $out/bin/
       sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
-      chmod +x $out/bin/yosys-config
+      ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
+      chmod +x $out/bin/{yosys,yosys-config}
       for i in $plugins; do
         make -C ''${i}-plugin install PLUGINS_DIR=$out/share/yosys/plugins
       done
