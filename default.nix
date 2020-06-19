@@ -429,6 +429,8 @@ rec {
       ]);
       buildInputs = [
         getopt
+        nextpnr
+        icestorm
         nextpnr-xilinx
         prjxray
         python-with-packages
