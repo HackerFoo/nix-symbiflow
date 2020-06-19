@@ -1,9 +1,10 @@
 {
   pkgs ? import <nixpkgs> {},
-  use-prebuilt-symbiflow ? true, # set to false to build symbiflow-arch-defs
-  use-vivado ? false             # set to true to install and use Vivado, only works on Linux
+  use-prebuilt-symbiflow ? false, # set to true to use prebuilt symbiflow-arch-defs
+  use-vivado ? false              # set to true to install and use Vivado, only works on Linux
 }:
 
+with builtins;
 with pkgs;
 with lib;
 
@@ -58,11 +59,11 @@ rec {
     enableParallelBuilding = true;
   };
 
-  abc-verifier = { url ? "https://github.com/berkeley-abc/abc", rev }:
+  abc-verifier = attrs@{ rev, ... }:
     pkgs.abc-verifier.overrideAttrs (oldAttrs: rec {
-      src = fetchGit {
-        inherit url rev;
-      };
+      src = fetchGit ({
+        url = "https://github.com/berkeley-abc/abc";
+      } // attrs);
     }) // {
       inherit rev; # this doesn't update otherwise
     };
@@ -83,6 +84,7 @@ rec {
   yosys-git = (pkgs.yosys.override {
     abc-verifier = abc-verifier {
       url = "https://github.com/YosysHQ/abc.git";
+      ref = "yosys-experimental";
       rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
     };
   }).overrideAttrs (oldAttrs: rec {
@@ -393,70 +395,92 @@ rec {
         sysctl -a | grep machdep.cpu
   '';
 
-  fpga-tool-perf = stdenv.mkDerivation rec {
-    name = "fpga-tool-perf";
+  no-lscpu = writeScriptBin "lscpu" ''
+        #!${pkgs.stdenv.shell}
+        echo "lscpu not available"
+  '';
+
+  fpga-tool-perf = let
     src = fetchgit {
       url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
       fetchSubmodules = true;
       rev = "87e7472a38cbedd66450a305ec31fbf41f8fecdc";
       sha256 = "09x0sy6hg8y0l6qy4a14v8wyfdi3xj57b1yxmc50lrkw94r1d2bc";
     };
-    yosys = yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
-    python-with-packages = python.withPackages (p: with p; [
-      asciitable
-      colorclass
-      edalize
-      fasm
-      intervaltree
-      jinja2
-      lxml
-      pandas
-      pytest
-      python-constraint
-      python-prjxray
-      simplejson
-      terminaltables
-      textx
-      tqdm
-      yapf
-      # TODO symbiflow-xc-fasm2bels
-    ]);
-    buildInputs = [
-      getopt
-      nextpnr-xilinx
-      prjxray
-      python-with-packages
-      vtr
-      yosys
-    ] ++ optional stdenv.isDarwin [
-      mac-lscpu
-    ];
-    YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
-    env_script = ''
+    mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
+      name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
+      inherit src;
+      yosys = if toolchain == "nextpnr" then yosys-git else yosys-symbiflow; # https://github.com/SymbiFlow/yosys/issues/79
+      python-with-packages = python.withPackages (p: with p; [
+        asciitable
+        colorclass
+        edalize
+        fasm
+        intervaltree
+        jinja2
+        lxml
+        pandas
+        pytest
+        python-constraint
+        python-prjxray
+        simplejson
+        terminaltables
+        textx
+        tqdm
+        yapf
+        # TODO symbiflow-xc-fasm2bels
+      ]);
+      buildInputs = [
+        getopt
+        nextpnr-xilinx
+        prjxray
+        python-with-packages
+        vtr
+        yosys
+      ] ++ optional stdenv.isLinux [
+        no-lscpu
+      ] ++ optional stdenv.isDarwin [
+        mac-lscpu
+      ];
+      YOSYS_SYMBIFLOW_PLUGINS = yosys-symbiflow-plugins { inherit yosys; };
+      buildPhase = ''
+        export YOSYS_SYMBIFLOW_PLUGINS
+        export PYTHONPATH=${prjxray}
+        export VIVADO_SETTINGS=${vivado_settings}
+        export XRAY_DATABASE_DIR=${prjxray}/database
+        export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
+        export XRAY_TOOLS_DIR="${prjxray}/bin"
+        export SYMBIFLOW="${symbiflow-arch-defs-install}"
         mkdir -p env/conda/{bin,pkgs}
         touch env/conda/bin/activate
         source env.sh
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
-    '';
-    shellHook = ''
-      export YOSYS_SYMBIFLOW_PLUGINS
-      export PYTHONPATH=${prjxray}
-      export VIVADO_SETTINGS=${vivado_settings}
-      export XRAY_DATABASE_DIR=${prjxray}/database
-      export XRAY_FASM2FRAMES="${python-with-packages}/lib/python*/site-packages/prjxray/fasm2frames.py"
-      export XRAY_TOOLS_DIR="${prjxray}/bin"
-      export SYMBIFLOW="${symbiflow-arch-defs-install}"
-
-      if [ "''${PWD##*/}" == "fpga-tool-perf" ]; then
-        read -p "Run env script (y/N) " RESPONSE
-        RESPONSE=''${RESPONSE,,} # tolower
-        if [[ "''${RESPONSE}" =~ ^(yes|y)$ ]]; then
-          ${env_script}
+        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board}
+      '';
+      installPhase = ''
+        mkdir -p $out/nix-support
+        cp build/${projectName}_${toolchain}_*/* $out/
+        if [ -e $out/meta.json ]; then
+          echo "file json $out/meta.json" > $out/nix-support/hydra-build-products
         fi
-      fi
-    '';
-  };
+      '';
+    };
+    projectNames = map (n: head (match "([^.]*).json" n)) (attrNames (readDir (src + "/project/")));
+  in
+    listToAttrs (map (projectName:
+      let
+        projectInfo = fromJSON (readFile (src + "/project/${projectName}.json"));
+      in
+        {
+          name = projectName;
+          value = mapAttrs (toolchain: boards:
+            mapAttrs (board: dont-care: {
+              name = board;
+              value = mkTest { inherit projectName toolchain board; };
+            }) boards)
+            projectInfo.toolchains;
+        }) projectNames);
 
   symbiflow-examples = stdenv.mkDerivation rec {
     name = "symbiflow-examples";
@@ -485,7 +509,7 @@ rec {
     shellHook = ''
       export YOSYS_SYMBIFLOW_PLUGINS
       export XRAY_DATABASE_DIR=${prjxray}/database
-      export XRAY_FASM2FRAMES="${python-with-packages}/lib/python*/site-packages/prjxray/fasm2frames.py"
+      export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
       export XRAY_TOOLS_DIR="${prjxray}/bin"
       #export SYMBIFLOW="${symbiflow-arch-defs-install}"
     '';
