@@ -401,8 +401,8 @@ rec {
     src = fetchgit {
       url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
       fetchSubmodules = true;
-      rev = "87e7472a38cbedd66450a305ec31fbf41f8fecdc";
-      sha256 = "09x0sy6hg8y0l6qy4a14v8wyfdi3xj57b1yxmc50lrkw94r1d2bc";
+      rev = "3f0a054cf0652228adec635948583d21d31c0d68";
+      sha256 = "02c3aq23yqd841xsgi2mb4g4g9pqrky6s5k4jf4pnc242llskcyk";
     };
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
