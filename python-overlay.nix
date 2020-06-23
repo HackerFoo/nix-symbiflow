@@ -62,6 +62,7 @@ in
 
   symbiflow-xc-fasm2bels = mkSFPy {
     name = "symbiflow-xc-fasm2bels";
+    rev = "41f0640462799306731660cce21f0b6057835c7f";
     propagatedBuildInputs = [
       fasm
       intervaltree
@@ -77,6 +78,7 @@ in
 
   rr_graph = mkSFPy {
     name = "symbiflow-rr-graph";
+    rev = "8ce6e11d89971f8457bac0eada40b81dae007b1c";
     propagatedBuildInputs = [ simplejson pycapnp lxml ];
   };
 
