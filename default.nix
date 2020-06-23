@@ -10,7 +10,7 @@ with lib;
 
 rec {
 
-  inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado;
+  inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado migen;
 
   # toolchain
   vtr = stdenv.mkDerivation {
@@ -129,7 +129,7 @@ rec {
   # custom Python
   python = pkgs.python37.override {
     packageOverrides = import ./python-overlay.nix {
-      inherit pkgs prjxray;
+      inherit pkgs prjxray migen;
       pythonPackages = python37Packages;
     };
   };
@@ -508,4 +508,71 @@ rec {
       #export SYMBIFLOW="${symbiflow-arch-defs-install}"
     '';
   };
+
+  litex-buildenv = let
+    riscvPkgs = bits: import <nixpkgs> {
+      crossSystem = {
+        config = "riscv${bits}-none-elf";
+        libc = "newlib";
+        platform = systems.platforms.riscv-multiplatform "${bits}";
+      };
+    };
+    with-litex-buildenv = attrs@{ name, platform, cpu, target, bits }:
+      (riscvPkgs bits).stdenv.mkDerivation rec {
+        name = "litex-buildenv-${attrs.name}";
+        src = fetchgit {
+          url = "https://github.com/timvideos/litex-buildenv.git";
+          rev = "bbe77980b3006f0c656dab3b9fa886eb0c86f59b";
+          sha256 = "0c8js5mvj2fdpfqcwz5w90yn091223an09573jxd2x9r08krsi4y";
+          leaveDotGit = true;
+          deepClone = true;
+        };
+        python-with-packages = python.withPackages (p:
+          with p.litexPackages;
+          [
+            litex
+            liteeth
+            litedram
+            litepcie
+            litevideo
+            liteiclink
+            litesdcard
+            litex-boards
+            pythondata-cpu-vexriscv
+            pythondata-cpu-rocket
+          ]);
+        nativeBuildInputs = [
+          python-with-packages
+          verilator
+          dtc
+          git
+          vivado
+        ];
+        patches = [ ./patches/litex-buildenv.patch ];
+        buildPhase = ''
+          export PLATFORM=${platform}
+          export CPU=${cpu}
+          export TARGET=${target}
+          python make.py --platform=${platform} --cpu-type=${cpu} --cpu-variant=linux --target=${target}
+        '';
+        installPhase = ''
+          cp -r build $out
+        '';
+      };
+    configs = mapAttrs (name: attrs: with-litex-buildenv (attrs // { inherit name; }));
+  in
+    configs {
+      vexriscv = {
+        platform = "arty";
+        cpu = "vexriscv";
+        target = "base";
+        bits = "64";
+      };
+      rocket = {
+        platform = "arty";
+        cpu = "rocket";
+        target = "base";
+        bits = "64";
+      };
+    };
 }

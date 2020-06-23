@@ -1,0 +1,65 @@
+diff --git a/firmware/asm.h b/firmware/asm.h
+index b5062b6..08e1354 100644
+--- a/firmware/asm.h
++++ b/firmware/asm.h
+@@ -8,17 +8,7 @@
+ #define REBOOT __asm__("l.j 0")
+ #define NOP __asm__("l.nop")
+ 
+-#elif __minerva__
+-
+-#define REBOOT __asm__("jalr x0, 0")
+-#define NOP __asm__("nop")
+-
+-#elif __picorv32__
+-
+-#define REBOOT __asm__("jalr x0, 0")
+-#define NOP __asm__("nop")
+-
+-#elif __vexriscv__
++#elif ( __minerva__ || __picorv32__ || __vexriscv__ || __rocket__ )
+ 
+ #define REBOOT __asm__("jalr x0, 0")
+ #define NOP __asm__("nop")
+diff --git a/firmware/version.c b/firmware/version.c
+index a568768..c18e62e 100644
+--- a/firmware/version.c
++++ b/firmware/version.c
+@@ -15,10 +15,14 @@
+ 
+ #define ALIGNMENT 4
+ 
++// Why does this fail?
++// Workaround: Use size_t
++// _Static_assert(sizeof(size_t) == sizeof(void *));
++
+ static void print_csr_string(unsigned int addr, size_t size);
+ static void print_csr_string(unsigned int addr, size_t size) {
+ 	size_t i;
+-	void* ptr = (void*)addr;
++	void* ptr = (void*)(size_t)addr;
+ 	for (i = 0; i < (size * ALIGNMENT); i += ALIGNMENT) {
+ 		unsigned char c = MMPTR(ptr+i);
+ 		if (c == '\0')
+@@ -30,7 +34,7 @@ static void print_csr_string(unsigned int addr, size_t size) {
+ static void print_csr_hex(unsigned int addr, size_t size);
+ static void print_csr_hex(unsigned int addr, size_t size) {
+ 	size_t i = 0;
+-	void* ptr = (void*)addr;
++	void* ptr = (void*)(size_t)addr;
+ 	for (i = 0; i < (size * ALIGNMENT); i += ALIGNMENT) {
+ 		unsigned char v = MMPTR(ptr+i);
+ 		wprintf("%02x", v);
+diff --git a/firmware/version_data.sh b/firmware/version_data.sh
+index 17e06f2..81d1258 100755
+--- a/firmware/version_data.sh
++++ b/firmware/version_data.sh
+@@ -5,7 +5,7 @@ set -e
+ # These must be outside the heredoc below otherwise the script won't error.
+ COMMIT="$(git log --format="%H" -n 1)"
+ BRANCH="$(git symbolic-ref --short HEAD)"
+-DESCRIBE="$(git describe --dirty)"
++DESCRIBE="$(git describe --all --dirty)"
+ 
+ TMPFILE_H=$(tempfile -s .h 2>/dev/null || mktemp --suffix=.h)
+ TMPFILE_C=$(tempfile -s .c 2>/dev/null || mktemp --suffix=.c)

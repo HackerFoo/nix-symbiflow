@@ -1,4 +1,4 @@
-{ pkgs, pythonPackages, prjxray }:
+{ pkgs, pythonPackages, prjxray, migen }:
 
 self: super:
 
@@ -166,4 +166,60 @@ in
     doCheck = false;
     propagatedBuildInputs = [ markupsafe ];
   };
+
+  litexPackages = let
+    buildLitexPackages = attrs: listToAttrs (concatMap (user:
+      map (name: {
+        inherit name;
+        value = buildPythonPackage {
+          inherit name;
+          src = fetchGit {
+            url = "https://github.com/${user}/${name}";
+          };
+          propagatedBuildInputs = [ pyyaml ];
+          doCheck = false;
+        };
+      }) attrs.${user}) (attrNames attrs));
+    packages = buildLitexPackages {
+      enjoy-digital = [
+        "litex"
+        "liteeth"
+        "litedram"
+        "litepcie"
+        "litevideo"
+        "liteiclink"
+        "litesdcard"
+      ];
+      litex-hub = [
+        "litex-boards"
+        "pythondata-cpu-vexriscv"
+        "pythondata-cpu-rocket"
+        "pythondata-software-compiler_rt"
+      ];
+    };
+  in packages // (with packages; {
+    litex = buildPythonPackage rec {
+      name = "litex";
+      src = fetchGit {
+        url = "https://github.com/enjoy-digital/litex.git";
+        rev = "56aa7897df99d7ad68ea537ab096c3abdc683666"; # 2020.04
+      };
+      propagatedBuildInputs = [ migen pyserial requests pythondata-software-compiler_rt ];
+      doCheck = false;
+      postPatch = ''
+        cat << 'EOF' >> MANIFEST.in
+        graft litex/soc/software
+        graft litex/soc/cores/cpu/blackparrot
+        graft litex/soc/cores/cpu/lm32
+        graft litex/soc/cores/cpu/microwatt
+        graft litex/soc/cores/cpu/minerva
+        graft litex/soc/cores/cpu/mor1kx
+        graft litex/soc/cores/cpu/picorv32
+        graft litex/soc/cores/cpu/rocket
+        graft litex/soc/cores/cpu/serv
+        graft litex/soc/cores/cpu/vexriscv
+        EOF
+      '';
+    };
+  });
 }

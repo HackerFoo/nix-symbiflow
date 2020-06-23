@@ -2,17 +2,15 @@
   colorama, sphinx, sphinx_rtd_theme, verilator }:
 
 buildPythonPackage rec {
-  version = "git-09a9fc";
+  version = "0.9.2";
   pname = "migen";
   name = "${pname}-${version}";
-  
-  src = fetchFromGitHub {
-    owner = "m-labs";
-    repo = "migen";
-    rev = "09a9fc9b584005a37e3ab9ceee0570890700bf46";
-    sha256 = "0dxqgyb8xavryy4kjg12i5vaqxd8lnx2dlf7rhyzih1k2fnhmdfs";
+
+  src = fetchGit {
+    url = "https://github.com/m-labs/migen.git";
+    rev = "94db7295fd4942d0ee27de1148a6cc7be356329d";
   };
-  
+
   propagatedBuildInputs = [ colorama sphinx sphinx_rtd_theme verilator ];
 
   meta = with stdenv.lib; {
