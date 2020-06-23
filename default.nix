@@ -71,13 +71,15 @@ rec {
   yosys-symbiflow = yosys-with-symbiflow-plugins {
     yosys = (pkgs.yosys.override {
       abc-verifier = abc-verifier {
-        rev = "623b5e82513d076a19f864c01930ad1838498894";
+        url = "https://github.com/YosysHQ/abc.git";
+        ref = "yosys-experimental";
+        rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
       };
     }).overrideAttrs (oldAttrs: rec {
       src = fetchGit {
         url = "https://github.com/SymbiFlow/yosys.git";
-        ref = "master+wip";
-        rev = "6bccd35a41ab82f52f0688478310899cfec04e08";
+        ref = "new-master+wip";
+        rev = "4d68589056d71b738a6c86a543cab9e2d761b983";
       };
       doCheck = false;
     });
