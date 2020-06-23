@@ -399,15 +399,16 @@ rec {
 
   fpga-tool-perf = let
     src = fetchgit {
-      url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
+      url = "https://github.com/HackerFoo/fpga-tool-perf.git";
+      branchName = "nextpnr-vexriscv";
       fetchSubmodules = true;
-      rev = "3f0a054cf0652228adec635948583d21d31c0d68";
-      sha256 = "02c3aq23yqd841xsgi2mb4g4g9pqrky6s5k4jf4pnc242llskcyk";
+      rev = "ec7321d536a42ed2ab2925902c87a6306cddc99e";
+      sha256 = "0ggpzjjq8m9q818hsajkg5q8dcaf4p2lb2jzv4kg7653c748ihzj";
     };
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
-      yosys = if toolchain == "nextpnr" then yosys-git else yosys-symbiflow; # https://github.com/SymbiFlow/yosys/issues/79
+      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -453,7 +454,7 @@ rec {
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
-        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out
+        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out --verbose
       '';
       installPhase = ''
         mkdir -p $out/nix-support
