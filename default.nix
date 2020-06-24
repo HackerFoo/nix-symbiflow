@@ -402,8 +402,8 @@ rec {
       url = "https://github.com/HackerFoo/fpga-tool-perf.git";
       branchName = "nextpnr-vexriscv";
       fetchSubmodules = true;
-      rev = "ec7321d536a42ed2ab2925902c87a6306cddc99e";
-      sha256 = "0ggpzjjq8m9q818hsajkg5q8dcaf4p2lb2jzv4kg7653c748ihzj";
+      rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
+      sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
     };
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
