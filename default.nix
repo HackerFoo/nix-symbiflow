@@ -577,3 +577,7 @@ rec {
       };
     };
 }
+
+# Local Variables:
+# eval: (add-to-list 'imenu-generic-expression '("Package" "^  \\([a-zA-Z0-9_-]+\\) =.*$" 1))
+# End:
