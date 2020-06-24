@@ -83,21 +83,19 @@ rec {
     });
   };
 
-  yosys-git = yosys-with-symbiflow-plugins {
-    yosys = (pkgs.yosys.override {
-      abc-verifier = abc-verifier {
-        url = "https://github.com/YosysHQ/abc.git";
-        ref = "yosys-experimental";
-        rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
-      };
-    }).overrideAttrs (oldAttrs: rec {
-      src = fetchGit {
-        url = "https://github.com/YosysHQ/yosys.git";
-        rev = "8f1a32064639fa17d67bda508df941c8846a0664";
-      };
-      doCheck = false;
-    });
-  };
+  yosys-git = (pkgs.yosys.override {
+    abc-verifier = abc-verifier {
+      url = "https://github.com/YosysHQ/abc.git";
+      ref = "yosys-experimental";
+      rev = "341db25668f3054c87aa3372c794e180f629af5d";
+    };
+  }).overrideAttrs (oldAttrs: rec {
+    src = fetchGit {
+      url = "https://github.com/YosysHQ/yosys.git";
+      rev = "8f12c5b063a458ac5f751f54651baebd84006307";
+    };
+    doCheck = false;
+  });
 
   yosys-with-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
