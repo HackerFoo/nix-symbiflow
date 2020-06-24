@@ -212,10 +212,11 @@ rec {
         zlib
       ];
     src = fetchgit {
-      url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
+      url = "https://github.com/antmicro/symbiflow-arch-defs.git";
       fetchSubmodules = true;
-      rev = "fb5be9e5c9bd5ebf862227b8c9e4bdb807ceddde";
-      sha256 = "03n76jngaiii99l1ak2h79iw26d6xwxg30fyrnaysfmnmpy36zfv";
+      branchName = "testing-new-yosys-master+wip";
+      rev = "8419493f701efafb91b194ba970c65933988de06";
+      sha256 = "0pwyp60pjnaqmb33jhhbs6q64aff8dpc1mqvy20v1dm54xk8cwwx";
     };
     postPatch = ''
       patchShebangs utils
@@ -399,16 +400,15 @@ rec {
 
   fpga-tool-perf = let
     src = fetchgit {
-      url = "https://github.com/HackerFoo/fpga-tool-perf.git";
-      branchName = "nextpnr-vexriscv";
+      url = "https://github.com/SymbiFlow/fpga-tool-perf.git";
       fetchSubmodules = true;
-      rev = "ec7321d536a42ed2ab2925902c87a6306cddc99e";
-      sha256 = "0ggpzjjq8m9q818hsajkg5q8dcaf4p2lb2jzv4kg7653c748ihzj";
+      rev = "fb234c7b48f21f055233db9d0a8e77ad153ba4a0";
+      sha256 = "1hci139z2mhf9shcqqb4znha7m0795q1z6s1hcihv0jlnr1700lm";
     };
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
-      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+      yosys = yosys-symbiflow;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
