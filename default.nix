@@ -452,12 +452,15 @@ rec {
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
-        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out --verbose
+        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir ${name} --verbose
       '';
       installPhase = ''
         mkdir -p $out/nix-support
+        cp ${name}/meta.json $out/
+        tar czf $out/${name}.tar.gz ${name}
         if [ -e $out/meta.json ]; then
           echo "file json $out/meta.json" > $out/nix-support/hydra-build-products
+          echo "file tarball $out/${name}.tar.gz" >> $out/nix-support/hydra-build-products
         fi
       '';
     };
