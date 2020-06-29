@@ -42,9 +42,9 @@ rec {
       xorg.libpthreadstubs
     ];
     src = fetchGit {
-      url = "https://github.com/SymbiFlow/vtr-verilog-to-routing.git";
-      ref = "master+wip";
-      rev = "8980e46218542888fac879961b13aa7b0fba8432";
+      url = "https://github.com/HackerFoo/vtr-verilog-to-routing.git";
+      ref = "dusty_sa+wip";
+      rev = "a19843f1dd4184d94506b8b00fe8ddc7827bb21d";
     };
     postInstall =
       if stdenv.isDarwin
