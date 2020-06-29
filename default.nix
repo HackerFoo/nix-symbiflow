@@ -103,7 +103,8 @@ rec {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
     src = fetchGit {
       url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
-      rev = "1c495fd47ddfc54a9f815c0ba97dc112e1731bd6";
+      ref = "fix-override-for-new-yosys";
+      rev = "809a2eac0c3132cfbdd84d7f4069186a1d7905bb";
     };
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
