@@ -226,6 +226,7 @@ rec {
       rev = "fb5be9e5c9bd5ebf862227b8c9e4bdb807ceddde";
       sha256 = "03n76jngaiii99l1ak2h79iw26d6xwxg30fyrnaysfmnmpy36zfv";
     };
+    patches = [ ./patches/symbiflow-arch-defs.patch ];
     postPatch = ''
       patchShebangs utils
       patchShebangs third_party/prjxray/utils

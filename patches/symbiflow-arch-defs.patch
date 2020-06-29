@@ -1,0 +1,12 @@
+diff --git a/common/cmake/devices.cmake b/common/cmake/devices.cmake
+index 7da203bb..3f5d6857 100644
+--- a/common/cmake/devices.cmake
++++ b/common/cmake/devices.cmake
+@@ -602,7 +602,6 @@ function(DEFINE_DEVICE)
+         --device ${DEVICE_FULL}
+         ${WIRE_EBLIF}
+         --place_algorithm bounding_box
+-        --enable_timing_computations off
+         --route_chan_width 6
+         --echo_file on
+         --min_route_chan_width_hint 1
