@@ -8,6 +8,17 @@ with builtins;
 with pkgs;
 with lib;
 
+# helper functions
+let
+  toString = x:
+    if isString x
+    then x
+    else
+      assert isInt x || isFloat x;
+      toJSON x;
+  flags_to_string = attrs: foldl (flags: flag: "${flags} --${flag} ${toString (getAttr flag attrs)}") "" (attrNames attrs);
+in
+
 rec {
 
   inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado migen;
@@ -403,10 +414,18 @@ rec {
       rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
       sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
     };
+    extra_vpr_flags = {
+      alpha_min = 0.8;
+      alpha_max = 0.9;
+      alpha_decay = 0.4;
+      anneal_success_target = 0.6;
+      anneal_success_min = 0.15;
+    };
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
-      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+      usesVPR = hasPrefix "vpr" toolchain;
+      yosys = if usesVPR then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -452,7 +471,13 @@ rec {
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
-        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out --verbose
+        python3 fpgaperf.py \
+          --project ${projectName} \
+          --toolchain ${toolchain} \
+          --board ${board} \
+          --out-dir $out \
+          --verbose \
+          ${optionalString usesVPR ''--params_string="${flags_to_string extra_vpr_flags}"''}
       '';
       installPhase = ''
         mkdir -p $out/nix-support
