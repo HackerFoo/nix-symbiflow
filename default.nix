@@ -73,13 +73,13 @@ rec {
       abc-verifier = abc-verifier {
         url = "https://github.com/YosysHQ/abc.git";
         ref = "yosys-experimental";
-        rev = "fd2c9b1c19216f6b756f88b18f5ca67b759ca128";
+        rev = "341db25668f3054c87aa3372c794e180f629af5d";
       };
     }).overrideAttrs (oldAttrs: rec {
       src = fetchGit {
         url = "https://github.com/SymbiFlow/yosys.git";
         ref = "new-master+wip";
-        rev = "4d68589056d71b738a6c86a543cab9e2d761b983";
+        rev = "988d5358f4e448d519491f5b549c36989c578b3a";
       };
       doCheck = false;
     });
