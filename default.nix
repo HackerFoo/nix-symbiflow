@@ -415,7 +415,30 @@ rec {
       rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
       sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
     };
-    extra_vpr_flags = {
+    default_vpr_flags = {
+      max_router_iterations = 500;
+      routing_failure_predictor = "off";
+      router_high_fanout_threshold = -1;
+      constant_net_method = "route";
+      route_chan_width = 500;
+      router_heap = "bucket";
+      clock_modeling = "route";
+      place_delta_delay_matrix_calculation_method = "dijkstra";
+      place_delay_model = "delta_override";
+      router_lookahead = "connection_box_map";
+      check_route = "quick";
+      strict_checks = "off";
+      allow_dangling_combinational_nodes = "on";
+      disable_errors = "check_unbuffered_edges:check_route";
+      congested_routing_iteration_threshold = 0.8;
+      incremental_reroute_delay_ripup = "off";
+      base_cost_type = "delay_normalized_length_bounded";
+      bb_factor = 10;
+      initial_pres_fac = 4.0;
+      check_rr_graph = "off";
+      suppress_warnings = ''''${OUT_NOISY_WARNINGS},sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment'';
+    };
+    vpr_flags = default_vpr_flags // {
       alpha_min = 0.8;
       alpha_max = 0.9;
       alpha_decay = 0.4;
@@ -478,7 +501,7 @@ rec {
           --board ${board} \
           --out-dir $out \
           --verbose \
-          ${optionalString usesVPR ''--params_string="${flags_to_string extra_vpr_flags}"''}
+          ${optionalString usesVPR ''--params_string="${flags_to_string vpr_flags}"''}
       '';
       installPhase = ''
         mkdir -p $out/nix-support
