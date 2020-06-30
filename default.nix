@@ -501,7 +501,7 @@ rec {
           --board ${board} \
           --out-dir $out \
           --verbose \
-          ${optionalString usesVPR ''--params_string="${flags_to_string vpr_flags}"''}
+          ${optionalString usesVPR '' --params_string='${flags_to_string vpr_flags}' ''}
       '';
       installPhase = ''
         mkdir -p $out/nix-support
