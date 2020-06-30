@@ -357,7 +357,7 @@ rec {
       python37
       (boost.override { python = python37; enablePython = true; })
       eigen
-    ] ++ optional stdenv.cc.isClang [
+    ] ++ optionals stdenv.cc.isClang [
       llvmPackages.openmp
     ];
     enableParallelBuilding = true;
@@ -416,7 +416,15 @@ rec {
         echo "lscpu not available"
   '';
 
-  fpga-tool-perf = let
+  fpga-tool-perf = make-fpga-tool-perf {};
+  fpga-tool-perf_dusty_sa = make-fpga-tool-perf {
+    alpha_min = 0.8;
+    alpha_max = 0.9;
+    alpha_decay = 0.4;
+    anneal_success_target = 0.6;
+    anneal_success_min = 0.15;
+  };
+  make-fpga-tool-perf = extra_vpr_flags: let
     src = fetchgit {
       url = "https://github.com/HackerFoo/fpga-tool-perf.git";
       branchName = "nextpnr-vexriscv";
@@ -447,13 +455,7 @@ rec {
       check_rr_graph = "off";
       suppress_warnings = ''''${OUT_NOISY_WARNINGS},sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment'';
     };
-    vpr_flags = default_vpr_flags // {
-      alpha_min = 0.8;
-      alpha_max = 0.9;
-      alpha_decay = 0.4;
-      anneal_success_target = 0.6;
-      anneal_success_min = 0.15;
-    };
+    vpr_flags = default_vpr_flags // extra_vpr_flags;
     mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
@@ -488,9 +490,9 @@ rec {
         symbiflow-arch-defs-install
         vtr-fpga-tool-perf
         yosys
-      ] ++ optional stdenv.isLinux [
+      ] ++ optionals stdenv.isLinux [
         no-lscpu
-      ] ++ optional stdenv.isDarwin [
+      ] ++ optionals stdenv.isDarwin [
         mac-lscpu
       ];
       patches = [ ./patches/fpga-tool-perf.patch ];
