@@ -493,6 +493,7 @@ rec {
       ] ++ optional stdenv.isDarwin [
         mac-lscpu
       ];
+      patches = [ ./patches/fpga-tool-perf.patch ];
       buildPhase = ''
         export PYTHONPATH=${prjxray}
         export VIVADO_SETTINGS=${vivado_settings}

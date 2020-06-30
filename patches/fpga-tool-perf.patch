@@ -1,0 +1,13 @@
+diff --git a/symbiflow.py b/symbiflow.py
+index 2336413..d8b7a93 100644
+--- a/symbiflow.py
++++ b/symbiflow.py
+@@ -384,7 +384,7 @@ class VPR(Toolchain):
+         fasm_log = os.path.join(self.out_dir, 'fasm.log')
+ 
+         log['pack'] = get_step_runtime('Packing', pack_log, 3)
+-        log['place'] = get_step_runtime('Placement', place_log, 3)
++        log['place'] = get_step_runtime('# Placement', place_log, 3)
+         log['route'] = get_step_runtime('Routing', route_log, 3)
+         # XXX: Need add to genfasm the amount of time it took to create the fasm file.
+         #      For now the whole command execution time is considered
