@@ -75,7 +75,7 @@ rec {
     src = fetchGit {
       url = "https://github.com/HackerFoo/vtr-verilog-to-routing.git";
       ref = "dusty_sa+wip";
-      rev = "7e35d152ce2d1f05aa70bbbc017f9b8f44668138";
+      rev = "ec62954ffc611f8d743bbd520e395c8e594ae3d4";
     };
   });
 
