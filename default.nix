@@ -55,7 +55,7 @@ rec {
     src = fetchGit {
       url = "https://github.com/HackerFoo/vtr-verilog-to-routing.git";
       ref = "dusty_sa+wip";
-      rev = "a19843f1dd4184d94506b8b00fe8ddc7827bb21d";
+      rev = "adbbedb906472096420e453c48f973a61aa30af0";
     };
     postInstall =
       if stdenv.isDarwin
