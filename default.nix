@@ -1,7 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
   use-prebuilt-symbiflow ? false, # set to true to use prebuilt symbiflow-arch-defs
-  use-vivado ? false              # set to true to install and use Vivado, only works on Linux
+  use-vivado ? true               # set to true to install and use Vivado, only works on Linux
 }:
 
 with builtins;
@@ -212,8 +212,8 @@ rec {
     src = fetchgit {
       url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
       fetchSubmodules = true;
-      rev = "fb5be9e5c9bd5ebf862227b8c9e4bdb807ceddde";
-      sha256 = "03n76jngaiii99l1ak2h79iw26d6xwxg30fyrnaysfmnmpy36zfv";
+      rev = "5b56d66daa1a79e8b948f3ef0f0c0ec0697dba13";
+      sha256 = "11p26rrnqsljxd0g1dnskv0n8m206r6rfn17fp0kl9p3j2ha85nd";
     };
     postPatch = ''
       patchShebangs utils
