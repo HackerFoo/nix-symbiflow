@@ -1,5 +1,6 @@
 {
-  pkgs ? import <nixpkgs> {},
+  sources ? import ./nix/sources.nix,
+  pkgs ? import sources.nixpkgs {},
   use-prebuilt-symbiflow ? false, # set to true to use prebuilt symbiflow-arch-defs
   use-vivado ? true               # set to true to install and use Vivado, only works on Linux
 }:
@@ -41,11 +42,7 @@ rec {
       xorg.libXft
       xorg.libpthreadstubs
     ];
-    src = fetchGit {
-      url = "https://github.com/SymbiFlow/vtr-verilog-to-routing.git";
-      ref = "master+wip";
-      rev = "8980e46218542888fac879961b13aa7b0fba8432";
-    };
+    src = sources.vtr;
     postInstall =
       if stdenv.isDarwin
       then
@@ -74,11 +71,7 @@ rec {
         rev = "623b5e82513d076a19f864c01930ad1838498894";
       };
     }).overrideAttrs (oldAttrs: rec {
-      src = fetchGit {
-        url = "https://github.com/SymbiFlow/yosys.git";
-        ref = "master+wip";
-        rev = "6bccd35a41ab82f52f0688478310899cfec04e08";
-      };
+      src = sources.yosys-symbiflow;
       doCheck = false;
     });
   };
@@ -99,10 +92,7 @@ rec {
 
   yosys-with-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
-    src = fetchGit {
-      url = "https://github.com/SymbiFlow/yosys-symbiflow-plugins.git";
-      rev = "1c495fd47ddfc54a9f815c0ba97dc112e1731bd6";
-    };
+    src = sources.yosys-symbiflow-plugins;
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
     buildPhase = ''
@@ -254,10 +244,7 @@ rec {
        echo "Vivado not installed"
     '');
 
-  prjxray-db = fetchGit {
-    url = "https://github.com/SymbiFlow/prjxray-db.git";
-    rev = "20adf09d395fbd8c3ab90a5bd7e3cdf3e8db33b3";
-  };
+  inherit (sources) prjxray-db;
 
   prjxray = stdenv.mkDerivation {
     name = "prjxray";
@@ -482,10 +469,7 @@ rec {
 
   symbiflow-examples = stdenv.mkDerivation rec {
     name = "symbiflow-examples";
-    src = fetchGit {
-      url = "https://github.com/SymbiFlow/symbiflow-examples.git";
-      rev = "8338e1df18e9b763b6efc8dab142e67dd982955d";
-    };
+    src = sources.symbiflow-examples;
     yosys = yosys-symbiflow;
     python-with-packages = python.withPackages (p: with p; [
       lxml
