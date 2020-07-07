@@ -1,8 +1,12 @@
 {
   sources ? import ./nix/sources.nix,
-  pkgs ? import sources.nixpkgs {},
   use-prebuilt-symbiflow ? false, # set to true to use prebuilt symbiflow-arch-defs
-  use-vivado ? true               # set to true to install and use Vivado, only works on Linux
+  use-vivado ? true,              # set to true to install and use Vivado, only works on Linux
+  pkgs ? import <nixpkgs> (
+    if use-vivado
+    then { config.allowUnfree = true; }
+    else { }
+  )
 }:
 
 with builtins;
