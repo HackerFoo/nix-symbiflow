@@ -15,7 +15,7 @@ let
         alpha_max = [0.7 0.8 0.86 0.9];
         alpha_decay = [0.55 0.5 0.45 0.4 0.3];
         anneal_success_target = [0.5 0.55 0.6 0.65 0.7];
-        anneal_success_min = [0.1 0.15 0.18];
+        anneal_success_min = [0.1 0.15 0.18 0.25 0.4 0.5];
       });
 in
 
