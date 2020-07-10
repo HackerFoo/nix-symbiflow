@@ -412,7 +412,7 @@ rec {
     alpha_max = 0.9;
     alpha_decay = 0.4;
     anneal_success_target = 0.6;
-    anneal_success_min = 0.15;
+    anneal_success_min = 0.18;
   };
   make-fpga-tool-perf = extra_vpr_flags: let
     src = fetchgit {
