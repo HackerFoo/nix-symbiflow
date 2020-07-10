@@ -7,17 +7,7 @@
 with builtins;
 with pkgs;
 with lib;
-
-# helper functions
-let
-  toString = x:
-    if isString x
-    then x
-    else
-      assert isInt x || isFloat x;
-      toJSON x;
-  flags_to_string = attrs: foldl (flags: flag: "${flags} --${flag} ${toString (getAttr flag attrs)}") "" (attrNames attrs);
-in
+with callPackage ./library.nix {};
 
 rec {
 

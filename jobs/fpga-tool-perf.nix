@@ -3,7 +3,7 @@
 with builtins;
 with pkgs;
 with lib;
-with import ../default.nix { inherit pkgs; use-vivado = true; };
+with callPackage ../default.nix { use-vivado = true; };
 
 let
   baseline_tests = concatMap (project:
