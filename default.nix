@@ -514,6 +514,7 @@ rec {
           ! -name hydra-build-products \
             -printf "file data %p\n" >> $out/nix-support/hydra-build-products
       '';
+      requiredSystemFeatures = [ "benchmark" ]; # only run these on benchmark machines
     };
     projectNames = map (n: head (match "([^.]*).json" n)) (attrNames (readDir (src + "/project/")));
   in
