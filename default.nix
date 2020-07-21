@@ -68,7 +68,9 @@ rec {
   yosys-symbiflow = yosys-with-symbiflow-plugins {
     yosys = (pkgs.yosys.override {
       abc-verifier = abc-verifier {
-        rev = "623b5e82513d076a19f864c01930ad1838498894";
+        url = "https://github.com/YosysHQ/abc.git";
+        ref = "yosys-experimental";
+        rev = "341db25668f3054c87aa3372c794e180f629af5d";
       };
     }).overrideAttrs (oldAttrs: rec {
       src = sources.yosys-symbiflow;
@@ -117,7 +119,7 @@ rec {
   # custom Python
   python = pkgs.python37.override {
     packageOverrides = import ./python-overlay.nix {
-      inherit pkgs prjxray migen;
+      inherit pkgs sources prjxray migen;
       pythonPackages = python37Packages;
     };
   };
@@ -166,6 +168,7 @@ rec {
         tqdm
         virtualenv
         vtr-xml-utils
+        xc-fasm
         yapf
       ]);
     in
@@ -199,16 +202,10 @@ rec {
         yosys
         zlib
       ];
-    src = fetchgit {
-      url = "https://github.com/SymbiFlow/symbiflow-arch-defs.git";
-      fetchSubmodules = true;
-      rev = "5b56d66daa1a79e8b948f3ef0f0c0ec0697dba13";
-      sha256 = "11p26rrnqsljxd0g1dnskv0n8m206r6rfn17fp0kl9p3j2ha85nd";
-    };
+    src = sources.symbiflow-arch-defs;
     postPatch = ''
       patchShebangs utils
       patchShebangs third_party/prjxray/utils
-      patch -d third_party/prjxray -p1 < ${ ./patches/prjxray.patch }
     '';
     configurePhase = ''
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
@@ -248,13 +245,7 @@ rec {
 
   prjxray = stdenv.mkDerivation {
     name = "prjxray";
-    src = fetchgit {
-      url = "https://github.com/SymbiFlow/prjxray.git";
-      fetchSubmodules = true;
-      rev = "35ead5e40f6a9fdc4d338e4471d8de2bd47ef787";
-      sha256 = "05h2pw0nkq9zhsaw2zblma2im8ywd5nvcwn8wjdl4jpva1av0yyj";
-    };
-    patches = [ ./patches/prjxray.patch ];
+    src = sources.prjxray;
     postPatch = ''
       patchShebangs utils
     '';
@@ -310,12 +301,7 @@ rec {
 
   nextpnr-xilinx = stdenv.mkDerivation {
     name = "nextpnr-xilinx";
-    src = fetchgit {
-      url = "https://github.com/daveshah1/nextpnr-xilinx.git";
-      fetchSubmodules = true;
-      rev = "7e46c6a3703d029c9776d57b64e4ba94f7bc8264";
-      sha256 = "0pacjhz8rxrra6g7636fkmk2zkbvq7p9058hj4q90gc22dk9x2ji";
-    };
+    src = sources.nextpnr-xilinx;
     nativeBuildInputs = [ cmake ];
     buildInputs = [
       yosys-git

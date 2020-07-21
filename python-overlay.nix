@@ -1,4 +1,4 @@
-{ pkgs, pythonPackages, prjxray, migen }:
+{ pkgs, sources, pythonPackages, prjxray, migen }:
 
 self: super:
 
@@ -12,57 +12,54 @@ let
   # Build a set with only the attributes listed in `names` from `attrs`.
   intersectAttrs = names: attrs: getAttrs (intersectLists names (attrNames attrs)) attrs;
 
-  # SymbiFlow Python packages
-  mkSFPy = attrs@{ name, user ? "SymbiFlow", ... }: buildPythonPackage ({
-    src = fetchGit ({
-      url = "https://github.com/${user}/${name}.git";
-    } // (intersectAttrs [ "ref" "rev" ] attrs));
-    doCheck = false;
-  } // attrs);
-
 in
 
 {
-  fasm = mkSFPy {
+  fasm = buildPythonPackage {
     name = "fasm";
+    src = sources.fasm;
     buildInputs = [ textx ];
-    rev = "4857dde757edd88688c2faf808774d85bdbe3900";
+    doCheck = false;
   };
 
-  python-sdf-timing = mkSFPy {
+  python-sdf-timing = buildPythonPackage {
     name = "python-sdf-timing";
+    src = sources.python-sdf-timing;
     propagatedBuildInputs = [ pyjson ply pytestrunner ];
-    rev = "0afbbfe5cec97330b3261d811a4d604a471a5d98";
+    doCheck = false;
   };
 
-  vtr-xml-utils = mkSFPy {
+  vtr-xml-utils = buildPythonPackage {
     name = "vtr-xml-utils";
+    src = sources.vtr-xml-utils;
     propagatedBuildInputs = [ lxml pytestrunner ];
-    rev = "41d8a8d9e912bdae210830cb95b00ad076123726";
+    doCheck = false;
   };
 
-  python-symbiflow-v2x = mkSFPy {
+  python-symbiflow-v2x = buildPythonPackage {
     name = "python-symbiflow-v2x";
+    src = sources.python-symbiflow-v2x;
     propagatedBuildInputs = [ lxml pytestrunner pyjson vtr-xml-utils ];
-    rev = "09a9cbeda0448566b3b3e88a95c3e69efbeccea6";
+    doCheck = false;
   };
 
-  python-prjxray = mkSFPy {
+  python-prjxray = buildPythonPackage {
     name = "prjxray";
     inherit (prjxray) src;
+    doCheck = false;
   };
 
-  edalize = mkSFPy {
+  edalize = buildPythonPackage {
     name = "edalize";
-    ref = "symbiflow";
+    src = sources.edalize;
     propagatedBuildInputs = [ pytest jinja2 ];
     patches = [ ./patches/edalize.patch ];
-    rev = "e215665670fa6ddaacc5032941b0a4eb3026fa01";
+    doCheck = false;
   };
 
-  symbiflow-xc-fasm2bels = mkSFPy {
+  symbiflow-xc-fasm2bels = buildPythonPackage {
     name = "symbiflow-xc-fasm2bels";
-    rev = "41f0640462799306731660cce21f0b6057835c7f";
+    src = sources.symbiflow-xc-fasm2bels;
     propagatedBuildInputs = [
       fasm
       intervaltree
@@ -74,12 +71,21 @@ in
       simplejson
       textx
     ];
+    doCheck = false;
   };
 
-  rr_graph = mkSFPy {
+  rr_graph = buildPythonPackage {
     name = "symbiflow-rr-graph";
-    rev = "8ce6e11d89971f8457bac0eada40b81dae007b1c";
+    src = sources.symbiflow-rr-graph;
     propagatedBuildInputs = [ simplejson pycapnp lxml ];
+    doCheck = false;
+  };
+
+  xc-fasm = buildPythonPackage {
+    name = "xc-fasm";
+    src = sources.xc-fasm;
+    propagatedBuildInputs = [ textx simplejson intervaltree python-prjxray fasm yapf ];
+    doCheck = false;
   };
 
   # third party Python packages

@@ -1,14 +1,54 @@
 {
+    "edalize": {
+        "branch": "symbiflow",
+        "description": "An abstraction library for interfacing EDA tools",
+        "homepage": "",
+        "owner": "SymbiFlow",
+        "repo": "edalize",
+        "rev": "cd577ade41774005691cd16f2dcbdfe37a339da5",
+        "sha256": "0qxyz8mpc83bwfwqcjqylfj7gzlidkz8a1mbs77bnrn4s588aqzp",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/edalize/archive/cd577ade41774005691cd16f2dcbdfe37a339da5.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "fasm": {
+        "branch": "master",
+        "description": "FPGA Assembly (FASM) Parser and Generator",
+        "homepage": "https://fasm.readthedocs.io",
+        "owner": "SymbiFlow",
+        "repo": "fasm",
+        "rev": "4857dde757edd88688c2faf808774d85bdbe3900",
+        "sha256": "1za7f8slf8wvp1mfbfc3vdv61115p49k0vwngs4db6ips1qg1435",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/fasm/archive/4857dde757edd88688c2faf808774d85bdbe3900.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "fpga-tool-perf": {
+        "fetchSubmodules": true,
+        "ref": "nextpnr-vexriscv",
+        "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
+        "rev": "978d76d47a29013e49a295badd9ccb5b296bdf67",
+        "sha256": "00d328s0a7b58fq5vhsc9ddx9hr4s234kh0d22gf38mm2n1l10k2",
+        "type": "git"
+    },
+    "nextpnr-xilinx": {
+        "fetchSubmodules": true,
+        "ref": "xilinx-upstream",
+        "repo": "https://github.com/daveshah1/nextpnr-xilinx.git",
+        "rev": "7e46c6a3703d029c9776d57b64e4ba94f7bc8264",
+        "sha256": "0pacjhz8rxrra6g7636fkmk2zkbvq7p9058hj4q90gc22dk9x2ji",
+        "type": "git"
+    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",
         "homepage": "https://github.com/nmattia/niv",
         "owner": "nmattia",
         "repo": "niv",
-        "rev": "dd17834c49aa765c222d77b6d22f8de7af03a3c1",
-        "sha256": "1g2z8mq4lid1vy61rhyib9z2xhy096z28jbjxpx6xf3cf0kvjjc1",
+        "rev": "febd3530f0c2f2fb74752ee4d9dd2518d302f618",
+        "sha256": "1gifi50k4h6wk9ix0yvp66p7jk8rrqgr39r5rf4lyha6pbs7dbk6",
         "type": "tarball",
-        "url": "https://github.com/nmattia/niv/archive/dd17834c49aa765c222d77b6d22f8de7af03a3c1.tar.gz",
+        "url": "https://github.com/nmattia/niv/archive/febd3530f0c2f2fb74752ee4d9dd2518d302f618.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -17,11 +57,19 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
         "repo": "nixpkgs-channels",
-        "rev": "41aa2272feb21b1300b9f99de3f8371a6ddd8986",
-        "sha256": "0qj3x0jcsz3lbia93a06dzvp2psayxxqxly62kjmsywvsm0picby",
+        "rev": "190e79d0f381ee44fa7d72eb1dc0f0b0124ae7f1",
+        "sha256": "0yn3yvzy69nlx72rz2hi05jpjlsf9pjzdbdy4rgfpa0r0b494sfb",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/41aa2272feb21b1300b9f99de3f8371a6ddd8986.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/190e79d0f381ee44fa7d72eb1dc0f0b0124ae7f1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "prjxray": {
+        "fetchSubmodules": true,
+        "ref": "master",
+        "repo": "https://github.com/SymbiFlow/prjxray.git",
+        "rev": "ec6f9c517c320401edb65e363d6679709fbb9518",
+        "sha256": "0f4dm0z3a5wi597gdgrz9n6d7jwpyzngw53swy5jvzc4g95f24qb",
+        "type": "git"
     },
     "prjxray-db": {
         "branch": "master",
@@ -29,11 +77,43 @@
         "homepage": "https://symbiflow.github.io/prjxray-db/",
         "owner": "SymbiFlow",
         "repo": "prjxray-db",
-        "rev": "e45604d941615d6eef722f61fe857b6688088b6b",
-        "sha256": "1v8320kx7fjnl9qypakac26r9lknma5pvxp244zb2gnpq7j92dxp",
+        "rev": "485a8378c3342e5ca9ba481bf928bd0fc07b5bdd",
+        "sha256": "1vwmcr0drm35blkfms4y1q7rf15pjhq5w4yl3fs6ibxwwil4a7sy",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/prjxray-db/archive/e45604d941615d6eef722f61fe857b6688088b6b.tar.gz",
+        "url": "https://github.com/SymbiFlow/prjxray-db/archive/485a8378c3342e5ca9ba481bf928bd0fc07b5bdd.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "python-sdf-timing": {
+        "branch": "master",
+        "description": "Python library for working Standard Delay Format (SDF) Timing Annotation files.",
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "python-sdf-timing",
+        "rev": "0afbbfe5cec97330b3261d811a4d604a471a5d98",
+        "sha256": "0crqa6k9ih1ngnzdrmx6yghb9zq530y2rjb4qflpqlwcvbhfg2n5",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/python-sdf-timing/archive/0afbbfe5cec97330b3261d811a4d604a471a5d98.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "python-symbiflow-v2x": {
+        "branch": "master",
+        "description": "Tool for converting specialized annotated Verilog models into XML needed for Verilog to Routing flow.",
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "python-symbiflow-v2x",
+        "rev": "21da32a7818df89a7815011d5ac38af476585a0a",
+        "sha256": "1jvlgaf4dwimg9h26qabq4sn1lswr4yzpsizkhx39cv41mahjqpb",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/python-symbiflow-v2x/archive/21da32a7818df89a7815011d5ac38af476585a0a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "symbiflow-arch-defs": {
+        "fetchSubmodules": true,
+        "ref": "master",
+        "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
+        "rev": "206bd5657b5882647c2952dbaf118a0e9f6672f1",
+        "sha256": "1wxq4spb188irxc841mbf3hbk9bal3azfmapv9rb3rd9kygqr6f8",
+        "type": "git"
     },
     "symbiflow-examples": {
         "branch": "master",
@@ -41,10 +121,34 @@
         "homepage": "https://symbiflow.github.io",
         "owner": "SymbiFlow",
         "repo": "symbiflow-examples",
-        "rev": "d2d845110227859b3d168c327cfa1b0efde1c27d",
-        "sha256": "1nh358nnvk226511s6qf2g9sx150x2jrm71sp50a3zbp5515ywdw",
+        "rev": "1a185929a5128ad851f40d7e37a27305fad4ca4d",
+        "sha256": "0vfbdx3ahxf7aik75k0zxwxnh7lk2k18r23jjzk7ngdcqpz8cs2p",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/symbiflow-examples/archive/d2d845110227859b3d168c327cfa1b0efde1c27d.tar.gz",
+        "url": "https://github.com/SymbiFlow/symbiflow-examples/archive/1a185929a5128ad851f40d7e37a27305fad4ca4d.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "symbiflow-rr-graph": {
+        "branch": "master",
+        "description": "Collection of Routing Resources Graph (RR Graph) libraries for VPR",
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "symbiflow-rr-graph",
+        "rev": "8ce6e11d89971f8457bac0eada40b81dae007b1c",
+        "sha256": "163i1gw63x61hviab67qg1ng6icgjm7ybj22iml21b7svvc3717w",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/symbiflow-rr-graph/archive/8ce6e11d89971f8457bac0eada40b81dae007b1c.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "symbiflow-xc-fasm2bels": {
+        "branch": "master",
+        "description": "Library to convert a FASM file into BELs importable into Vivado.",
+        "homepage": "",
+        "owner": "SymbiFlow",
+        "repo": "symbiflow-xc-fasm2bels",
+        "rev": "9ed2a4d9033fb9bf80060114b6b122a2b7c296d7",
+        "sha256": "1acfn8ggbpyda5fgdj1bfwjrd53f0vn09ilm10spwbfrlfb4ggrb",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/symbiflow-xc-fasm2bels/archive/9ed2a4d9033fb9bf80060114b6b122a2b7c296d7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
@@ -57,6 +161,30 @@
         "sha256": "1sq7f1f3dzfm48a9vq5nvp0zllby0nasm3pvqab70f4jaq0m1aaa",
         "type": "tarball",
         "url": "https://github.com/SymbiFlow/vtr-verilog-to-routing/archive/8980e46218542888fac879961b13aa7b0fba8432.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "vtr-xml-utils": {
+        "branch": "master",
+        "description": null,
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "vtr-xml-utils",
+        "rev": "41d8a8d9e912bdae210830cb95b00ad076123726",
+        "sha256": "0cwpffg2ym90rqy7pn4fjp5s39wwjfmy89nnw3wc75nl0kg70j2y",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/vtr-xml-utils/archive/41d8a8d9e912bdae210830cb95b00ad076123726.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "xc-fasm": {
+        "branch": "master",
+        "description": null,
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "xc-fasm",
+        "rev": "0ddd951602d47d5b95f2072f8aa751af5e81e577",
+        "sha256": "15bzw92sx99s0zldr48na4yhrnp7b90nxsd8ya6ag1pvvijp2al4",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/xc-fasm/archive/0ddd951602d47d5b95f2072f8aa751af5e81e577.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow": {
@@ -77,10 +205,10 @@
         "homepage": "https://symbiflow.github.io",
         "owner": "SymbiFlow",
         "repo": "yosys-symbiflow-plugins",
-        "rev": "aa1b583be212b7cf17dd8863bcc5290f16e69318",
-        "sha256": "0y8m99np6gr5ac77pmsfnwfgqr2sd6n2l1qm0xjz7mr5mqy1xg0i",
+        "rev": "53260ea0d53e1ca560eb00658bff956b67ab9077",
+        "sha256": "1jx6yjlnbwznpk4inaz31f222ky77c4hb58spvh422npg85qqlqs",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/aa1b583be212b7cf17dd8863bcc5290f16e69318.tar.gz",
+        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/53260ea0d53e1ca560eb00658bff956b67ab9077.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
