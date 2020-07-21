@@ -441,7 +441,7 @@ rec {
             -printf "file data %p\n" >> $out/nix-support/hydra-build-products
       '';
     };
-    projectNames = map (n: head (match "([^.]*).json" n)) (attrNames (readDir (src + "/project/")));
+    projectNames = map (n: head (match "([^.]*).json$" n)) (attrNames (readDir (src + "/project/")));
   in
     listToAttrs (map (projectName:
       let
