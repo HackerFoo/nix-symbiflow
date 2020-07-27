@@ -382,13 +382,7 @@ rec {
   '';
 
   fpga-tool-perf = let
-    src = fetchgit {
-      url = "https://github.com/HackerFoo/fpga-tool-perf.git";
-      branchName = "nextpnr-vexriscv";
-      fetchSubmodules = true;
-      rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
-      sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
-    };
+    src = sources.fpga-tool-perf;
     mkTest = { projectName, toolchain, board }: let
       symbiflow-arch-defs-install = if board == "nexys-video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
       yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79

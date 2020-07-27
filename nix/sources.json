@@ -25,10 +25,10 @@
     },
     "fpga-tool-perf": {
         "fetchSubmodules": true,
-        "ref": "nextpnr-vexriscv",
+        "ref": "200t_blinky",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "978d76d47a29013e49a295badd9ccb5b296bdf67",
-        "sha256": "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl",
+        "rev": "7adba53b44c90d99babb7974ade7675f5684ff34",
+        "sha256": "0n82bpa12fw26dl9ryjif0biicpmsn86mn138hh02qa0707rk8v3",
         "type": "git"
     },
     "nextpnr-xilinx": {
