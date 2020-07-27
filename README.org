@@ -12,7 +12,6 @@ These packages are for developers working on the SymbiFlow project, and not desi
    #+END_EXAMPLE
 * Options
 Set optional arguments by adding `--arg <name> <value>` to the `nix-shell` command line.
-- use-prebuilt-symbiflow :: Set to `false` to build symbiflow-arch-defs
 - use-vivado :: Set to `true` to install and use Vivado, only works on Linux
 * Documentation
 See [[notes.org]] for more information.

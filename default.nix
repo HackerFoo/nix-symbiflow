@@ -1,6 +1,5 @@
 {
   sources ? import ./nix/sources.nix,
-  use-prebuilt-symbiflow ? false, # set to true to use prebuilt symbiflow-arch-defs
   use-vivado ? true,              # set to true to install and use Vivado, only works on Linux
   pkgs ? import <nixpkgs> (
     if use-vivado
@@ -219,7 +218,12 @@ rec {
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
       mkdir -p build
       pushd build
-      cmake -DUSE_CONDA=FALSE -DCMAKE_INSTALL_PREFIX=$out -DYOSYS_DATADIR="${yosys}/share/yosys" -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" ..
+      cmake \
+        -DUSE_CONDA=FALSE \
+        -DCMAKE_INSTALL_PREFIX=$out \
+        -DYOSYS_DATADIR="${yosys}/share/yosys" \
+        -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
+        ..
       popd
     '';
     buildPhase = ''
@@ -235,6 +239,22 @@ rec {
       export phases="configurePhase buildPhase"
     '';
   };
+
+  symbiflow-arch-defs-200t = symbiflow-arch-defs.overrideAttrs (attrs: {
+    configurePhase = ''
+      export XRAY_VIVADO_SETTINGS=${vivado_settings}
+      mkdir -p build
+      pushd build
+      cmake \
+        -DUSE_CONDA=FALSE \
+        -DCMAKE_INSTALL_PREFIX=$out \
+        -DYOSYS_DATADIR="${yosys}/share/yosys" \
+        -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
+        -DINSTALL_DEVICE=xc7a200t \
+        ..
+      popd
+    '';
+  });
 
   vivado_settings = writeScript "settings64.sh"
     (if use-vivado
@@ -351,21 +371,6 @@ rec {
     '';
   };
 
-  symbiflow-arch-defs-install = if use-prebuilt-symbiflow then symbiflow-arch-defs-download else symbiflow-arch-defs;
-  symbiflow-arch-defs-download = stdenv.mkDerivation {
-    name = "symbiflow-arch-defs-install";
-    src = fetchTarball {
-      url = "https://storage.googleapis.com/symbiflow-arch-defs/artifacts/prod/foss-fpga-tools/symbiflow-arch-defs/presubmit/install/206/20200526-034850/symbiflow-arch-defs-install-97519a47.tar.xz";
-      sha256 = "0jvb556k2q92sym94y696b5hcr84ab6mfdn52qb1v5spk7fd77db";
-    };
-    phases = [ "unpackPhase" "installPhase" ];
-    installPhase = ''
-      mkdir $out
-      cp -r * $out/
-      patchShebangs $out/bin
-    '';
-  };
-
   mac-lscpu = writeScriptBin "lscpu" ''
         #!${pkgs.stdenv.shell}
         sysctl -a | grep machdep.cpu
@@ -384,10 +389,12 @@ rec {
       rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
       sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
     };
-    mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
+    mkTest = { projectName, toolchain, board }: let
+      symbiflow-arch-defs-install = if board == "nexys-video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
+      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+    in stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
-      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
