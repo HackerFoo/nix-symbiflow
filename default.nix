@@ -15,6 +15,10 @@ with lib;
 
 rec {
 
+  # to force fetching all source
+  project_list = attrNames (fromJSON (readFile ./nix/sources.json));
+  all_source = linkFarm "all_source" (map (name: { inherit name; path = getAttr name sources; }) project_list);
+
   inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado migen;
 
   # toolchain
