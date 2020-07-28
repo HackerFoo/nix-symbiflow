@@ -383,10 +383,15 @@ rec {
         echo "lscpu not available"
   '';
 
+  prjxray-config = writeScriptBin "prjxray-config" ''
+    #!${pkgs.stdenv.shell}
+    echo "${prjxray-db}"
+  '';
+
   fpga-tool-perf = let
     src = sources.fpga-tool-perf;
     mkTest = { projectName, toolchain, board }: let
-      symbiflow-arch-defs-install = if board == "nexys-video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
+      symbiflow-arch-defs-install = if board == "nexys_video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
       yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
     in stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
@@ -409,6 +414,7 @@ rec {
         tqdm
         yapf
         symbiflow-xc-fasm2bels
+        xc-fasm
       ]);
       buildInputs = [
         getopt
@@ -416,6 +422,7 @@ rec {
         icestorm
         nextpnr-xilinx
         prjxray
+        prjxray-config
         python-with-packages
         symbiflow-arch-defs-install
         vtr
