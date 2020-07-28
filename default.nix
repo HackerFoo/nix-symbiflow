@@ -1,7 +1,7 @@
 {
   sources ? import ./nix/sources.nix,
   use-vivado ? true,              # set to true to install and use Vivado, only works on Linux
-  pkgs ? import <nixpkgs> (
+  pkgs ? import <nixpkgs> ( # s/<nixpkgs>/sources.nixpkgs/
     if use-vivado
     then { config.allowUnfree = true; }
     else { }
@@ -13,6 +13,8 @@ with pkgs;
 with lib;
 
 rec {
+
+  inherit pkgs;
 
   # to force fetching all source
   project_list = attrNames (fromJSON (readFile ./nix/sources.json));

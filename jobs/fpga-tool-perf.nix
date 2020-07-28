@@ -1,9 +1,9 @@
-{ pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
+args:
 
+with import ../default.nix args;
 with builtins;
 with pkgs;
 with lib;
-with import ../default.nix { inherit pkgs; use-vivado = true; };
 
 listToAttrs (concatMap (project:
   concatMap (toolchain:

@@ -1,6 +1,5 @@
-let
-  sf = import ../default.nix {};
-in
-{
-  inherit (sf) symbiflow-arch-defs;
+args: {
+  inherit (import ../default.nix args)
+    symbiflow-arch-defs
+    symbiflow-arch-defs-200t;
 }
