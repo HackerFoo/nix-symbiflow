@@ -500,7 +500,7 @@ rec {
   };
 
   litex-buildenv = let
-    riscvPkgs = bits: import <nixpkgs> {
+    riscvPkgs = bits: import source.nixpkgs {
       crossSystem = {
         config = "riscv${bits}-none-elf";
         libc = "newlib";
