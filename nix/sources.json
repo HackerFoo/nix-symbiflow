@@ -57,10 +57,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
         "repo": "nixpkgs-channels",
-        "rev": "274831839c4f2622019a35d773d4ee588a08c311",
-        "sha256": "1dn0cv8ciq83c75hjqlqljjmsns60wqyijx9hzm3j8jvfxm4gzgk",
+        "rev": "eeb91b03a5cef25c3931bdd4438f006a293adef9",
+        "sha256": "00cqfmfry5rjhz4kyybr4jc4vzslkk3csy28w9k1qlyn8arpqv3s",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/274831839c4f2622019a35d773d4ee588a08c311.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/eeb91b03a5cef25c3931bdd4438f006a293adef9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "prjxray": {
@@ -111,8 +111,8 @@
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
-        "rev": "8b5c0cbfc1007c867b7c9c26677d3b9f712512df",
-        "sha256": "0jrhmrpn5hpaqcv6k7ixpsbjjkfmcsv0g1qasgm9ksgvysk7jhm1",
+        "rev": "f0e7b4212544e1d55da776fb7a2ff79117e01454",
+        "sha256": "16bvnsydq49n9021swc73x1r3kx3k0mx503bf6ykq3zqj13s8ccl",
         "type": "git"
     },
     "symbiflow-examples": {
@@ -145,10 +145,10 @@
         "homepage": "",
         "owner": "SymbiFlow",
         "repo": "symbiflow-xc-fasm2bels",
-        "rev": "810006a1717d63446cacc2808894d22d5aa06f23",
-        "sha256": "0z2a6frxv02aq0yg34i0g2i80w5r84s7avk5r08b245q71fnldq4",
+        "rev": "a4626e1fa67fa3ccc4277dc0b614db07052dea87",
+        "sha256": "1f27npgv9kgs84ln9bnq3fxz0b9fzw4dqi6066x3spprdki37zk6",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/symbiflow-xc-fasm2bels/archive/810006a1717d63446cacc2808894d22d5aa06f23.tar.gz",
+        "url": "https://github.com/SymbiFlow/symbiflow-xc-fasm2bels/archive/a4626e1fa67fa3ccc4277dc0b614db07052dea87.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
