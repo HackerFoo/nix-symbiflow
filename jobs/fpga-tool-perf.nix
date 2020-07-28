@@ -1,4 +1,4 @@
-args:
+args@{ ... }:
 
 with import ../default.nix args;
 with builtins;
