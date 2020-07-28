@@ -1,7 +1,7 @@
 {
   sources ? import ./nix/sources.nix,
   use-vivado ? true,              # set to true to install and use Vivado, only works on Linux
-  pkgs ? import <nixpkgs> ( # s/<nixpkgs>/sources.nixpkgs/
+  pkgs ? import sources.nixpkgs (
     if use-vivado
     then { config.allowUnfree = true; }
     else { }
