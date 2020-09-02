@@ -1,7 +1,7 @@
 {
   sources ? import ./nix/sources.nix,
   use-vivado ? true,              # set to true to install and use Vivado, only works on Linux
-  pkgs ? import <nixpkgs> (
+  pkgs ? import sources.nixpkgs (
     if use-vivado
     then { config.allowUnfree = true; }
     else { }
@@ -11,8 +11,11 @@
 with builtins;
 with pkgs;
 with lib;
+with callPackage ./library.nix {};
 
 rec {
+
+  inherit pkgs;
 
   # to force fetching all source
   project_list = attrNames (fromJSON (readFile ./nix/sources.json));
@@ -62,23 +65,20 @@ rec {
         "";
     enableParallelBuilding = true;
   };
+  vtr-run = vtr.overrideAttrs (attrs: {
+    src = sources.vtr-run;
+  });
 
-  abc-verifier = attrs@{ rev, ... }:
-    pkgs.abc-verifier.overrideAttrs (oldAttrs: rec {
-      src = fetchGit ({
-        url = "https://github.com/berkeley-abc/abc";
-      } // attrs);
+  abc-verifier = src:
+    pkgs.abc-verifier.overrideAttrs (oldAttrs: {
+      inherit src;
     }) // {
-      inherit rev; # this doesn't update otherwise
+      inherit (src) rev; # this doesn't update otherwise
     };
 
   yosys-symbiflow = yosys-with-symbiflow-plugins {
     yosys = (pkgs.yosys.override {
-      abc-verifier = abc-verifier {
-        url = "https://github.com/YosysHQ/abc.git";
-        ref = "yosys-experimental";
-        rev = "341db25668f3054c87aa3372c794e180f629af5d";
-      };
+      abc-verifier = abc-verifier sources.abc-symbiflow;
     }).overrideAttrs (oldAttrs: rec {
       src = sources.yosys-symbiflow;
       doCheck = false;
@@ -86,16 +86,9 @@ rec {
   };
 
   yosys-git = (pkgs.yosys.override {
-    abc-verifier = abc-verifier {
-      url = "https://github.com/YosysHQ/abc.git";
-      ref = "yosys-experimental";
-      rev = "341db25668f3054c87aa3372c794e180f629af5d";
-    };
+    abc-verifier = abc-verifier sources.abc-yosys;
   }).overrideAttrs (oldAttrs: rec {
-    src = fetchGit {
-      url = "https://github.com/YosysHQ/yosys.git";
-      rev = "0835a86e30fc2a934f5e6c96b28c90b59654ed92";
-    };
+    src = sources.yosys;
     doCheck = false;
   });
 
@@ -337,7 +330,7 @@ rec {
       python37
       (boost.override { python = python37; enablePython = true; })
       eigen
-    ] ++ optional stdenv.cc.isClang [
+    ] ++ optionals stdenv.cc.isClang [
       llvmPackages.openmp
     ];
     enableParallelBuilding = true;
@@ -381,20 +374,50 @@ rec {
         echo "lscpu not available"
   '';
 
-  fpga-tool-perf = let
-    src = fetchgit {
-      url = "https://github.com/HackerFoo/fpga-tool-perf.git";
-      branchName = "nextpnr-vexriscv";
-      fetchSubmodules = true;
-      rev = "978d76d47a29013e49a295badd9ccb5b296bdf67";
-      sha256 = "1k1dy580d1iqvd2r02r022c5l85l3m4qp47q6yq7hx7g8gr315wl";
+  prjxray-config = writeScriptBin "prjxray-config" ''
+    #!${pkgs.stdenv.shell}
+    echo "${prjxray-db}"
+  '';
+
+  capnp-schemas-dir = writeScriptBin "capnp-schemas-dir" ''
+    #!${pkgs.stdenv.shell}
+    echo "${vtr}/capnp"
+  '';
+
+  fpga-tool-perf = make-fpga-tool-perf {};
+  make-fpga-tool-perf = extra_vpr_flags: let
+    src = sources.fpga-tool-perf;
+    default_vpr_flags = {
+      max_router_iterations = 500;
+      routing_failure_predictor = "off";
+      router_high_fanout_threshold = -1;
+      constant_net_method = "route";
+      route_chan_width = 500;
+      router_heap = "bucket";
+      clock_modeling = "route";
+      place_delta_delay_matrix_calculation_method = "dijkstra";
+      place_delay_model = "delta_override";
+      router_lookahead = "connection_box_map";
+      check_route = "quick";
+      strict_checks = "off";
+      allow_dangling_combinational_nodes = "on";
+      disable_errors = "check_unbuffered_edges:check_route";
+      congested_routing_iteration_threshold = 0.8;
+      incremental_reroute_delay_ripup = "off";
+      base_cost_type = "delay_normalized_length_bounded";
+      bb_factor = 10;
+      initial_pres_fac = 4.0;
+      check_rr_graph = "off";
+      suppress_warnings = ''''${OUT_NOISY_WARNINGS},sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment'';
     };
+    vpr_flags = default_vpr_flags // extra_vpr_flags;
     mkTest = { projectName, toolchain, board }: let
-      symbiflow-arch-defs-install = if board == "nexys-video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
-      yosys = if hasPrefix "vpr" toolchain then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+      symbiflow-arch-defs-install = if board == "nexys_video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
     in stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
+      usesVPR = hasPrefix "vpr" toolchain;
+      yosys = if usesVPR then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -413,22 +436,26 @@ rec {
         tqdm
         yapf
         symbiflow-xc-fasm2bels
+        xc-fasm
       ]);
       buildInputs = [
+        capnp-schemas-dir
         getopt
         nextpnr
         icestorm
         nextpnr-xilinx
         prjxray
+        prjxray-config
         python-with-packages
         symbiflow-arch-defs-install
-        vtr
+        vtr-run
         yosys
-      ] ++ optional stdenv.isLinux [
+      ] ++ optionals stdenv.isLinux [
         no-lscpu
-      ] ++ optional stdenv.isDarwin [
+      ] ++ optionals stdenv.isDarwin [
         mac-lscpu
       ];
+      toolchain-arg = if toolchain == "vivado-yosys" then "yosys-vivado" else toolchain;
       buildPhase = ''
         export PYTHONPATH=${prjxray}
         export VIVADO_SETTINGS=${vivado_settings}
@@ -440,7 +467,13 @@ rec {
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
-        python3 fpgaperf.py --project ${projectName} --toolchain ${toolchain} --board ${board} --out-dir $out --verbose
+        python3 fpgaperf.py \
+          --project ${projectName} \
+          --toolchain ${toolchain-arg} \
+          --board ${board} \
+          --out-dir $out \
+          --verbose \
+          ${optionalString usesVPR '' --params_string='${flags_to_string vpr_flags}' ''}
       '';
       installPhase = ''
         mkdir -p $out/nix-support
@@ -451,6 +484,7 @@ rec {
           ! -name hydra-build-products \
             -printf "file data %p\n" >> $out/nix-support/hydra-build-products
       '';
+      requiredSystemFeatures = [ "benchmark" ]; # only run these on benchmark machines
     };
     projectNames = map (n: head (match "([^.]*).json$" n)) (attrNames (readDir (src + "/project/")));
   in
@@ -497,7 +531,7 @@ rec {
   };
 
   litex-buildenv = let
-    riscvPkgs = bits: import <nixpkgs> {
+    riscvPkgs = bits: import source.nixpkgs {
       crossSystem = {
         config = "riscv${bits}-none-elf";
         libc = "newlib";

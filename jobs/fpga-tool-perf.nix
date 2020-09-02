@@ -1,15 +1,65 @@
-{ pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
+args@{ ... }:
 
+with import ../default.nix args;
 with builtins;
 with pkgs;
 with lib;
-with import ../default.nix { inherit pkgs; use-vivado = true; };
+with callPackage ../default.nix {};
 
-listToAttrs (concatMap (project:
-  concatMap (toolchain:
-    map (board: {
-      name = "${project}_${toolchain}_${board}";
-      value = fpga-tool-perf.${project}.${toolchain}.${board}.value; # strange that I need to add .value
-    }) (attrNames fpga-tool-perf.${project}.${toolchain}))
-    (attrNames fpga-tool-perf.${project}))
-  (attrNames fpga-tool-perf))
+let
+  fpga-tool-perf_dusty_sa = make-fpga-tool-perf {
+    alpha_min = 0.8;
+    alpha_max = 0.9;
+    alpha_decay = 0.4;
+    anneal_success_target = 0.6;
+    anneal_success_min = 0.18;
+  };
+  fpga-tool-perf_dusty_perf = make-fpga-tool-perf {
+    alpha_min = 0.8;
+    alpha_max = 0.9;
+    alpha_decay = 0.4;
+    anneal_success_target = 0.6;
+    anneal_success_min = 0.18;
+    reorder_rr_graph_nodes_algorithm = "degree_bfs";
+  };
+  fpga-tool-perf_reorder = make-fpga-tool-perf {
+    reorder_rr_graph_nodes_algorithm = "degree_bfs";
+  };
+  baseline_tests = concatMap (project:
+    concatMap (toolchain:
+      map (board: {
+        name = "${project}_${toolchain}_${board}";
+        value = fpga-tool-perf.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+      }) (attrNames fpga-tool-perf.${project}.${toolchain}))
+      (attrNames fpga-tool-perf.${project}))
+    (attrNames fpga-tool-perf);
+  dusty_sa_tests = concatMap (project:
+    concatMap (toolchain:
+      optionals (hasPrefix "vpr" toolchain)
+        (map (board: {
+          name = "${project}_${toolchain}_${board}_dusty_sa";
+          value = fpga-tool-perf_dusty_sa.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+        }) (attrNames fpga-tool-perf_dusty_sa.${project}.${toolchain})))
+      (attrNames fpga-tool-perf_dusty_sa.${project}))
+    (attrNames fpga-tool-perf_dusty_sa);
+  dusty_perf_tests = concatMap (project:
+    concatMap (toolchain:
+      optionals (hasPrefix "vpr" toolchain)
+        (map (board: {
+          name = "${project}_${toolchain}_${board}_dusty_perf";
+          value = fpga-tool-perf_dusty_perf.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+        }) (attrNames fpga-tool-perf_dusty_perf.${project}.${toolchain})))
+      (attrNames fpga-tool-perf_dusty_perf.${project}))
+    (attrNames fpga-tool-perf_dusty_perf);
+  reorder_tests = concatMap (project:
+    concatMap (toolchain:
+      optionals (hasPrefix "vpr" toolchain)
+        (map (board: {
+          name = "${project}_${toolchain}_${board}_reorder";
+          value = fpga-tool-perf_reorder.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+        }) (attrNames fpga-tool-perf_reorder.${project}.${toolchain})))
+      (attrNames fpga-tool-perf_reorder.${project}))
+    (attrNames fpga-tool-perf_reorder);
+in
+
+listToAttrs (baseline_tests ++ dusty_sa_tests ++ dusty_perf_tests ++ reorder_tests)
