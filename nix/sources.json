@@ -51,8 +51,8 @@
         "fetchSubmodules": true,
         "ref": "200t_blinky",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "0b9d484ca3feb3171593d0e9b4ee46665700c0dc",
-        "sha256": "1maixlf1bi37r4pvkhlmx5m67fw2955r9qc822kcqcr7dgb8lb35",
+        "rev": "de2c4093cb42a3764616f4e1d00096ea626d9b9c",
+        "sha256": "0iabmgirgc6a3mdndnddr67la9vag133v0ryyrrqna52f3j3j3vm",
         "type": "git"
     },
     "nextpnr-xilinx": {
