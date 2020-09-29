@@ -116,6 +116,29 @@ rec {
     buildInputs = [ yosys bison flex tk libffi readline ];
   };
 
+  sv2v = with haskellPackages.override {
+    overrides = self: super: {
+      githash = pkgs.haskell.lib.overrideCabal super.githash {
+        version = "0.1.4.0";
+        sha256 = "0rsz230srhszwybg5a40vhzzp9z0r4yvdz4xg2hwwwphmbi8pfy3";
+      };
+    };
+  }; mkDerivation {
+    pname = "sv2v";
+    version = "0.0.5";
+    src = sources.sv2v;
+    isLibrary = false;
+    isExecutable = true;
+    executableHaskellDepends = [
+      array base cmdargs containers directory filepath githash hashable
+      mtl
+    ];
+    executableToolDepends = [ alex happy pkgs.git ];
+    homepage = "https://github.com/zachjs/sv2v";
+    description = "SystemVerilog to Verilog conversion";
+    license = stdenv.lib.licenses.bsd3;
+  };
+
   # custom Python
   python = pkgs.python37.override {
     packageOverrides = import ./python-overlay.nix {
@@ -161,6 +184,7 @@ rec {
         six
         sortedcontainers
         svgwrite
+        sv2v
         terminaltables
         textx
         tinyfpgab

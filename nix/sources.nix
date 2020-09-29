@@ -18,10 +18,12 @@ let
     else
       pkgs.fetchzip { inherit (spec) url sha256; };
 
+  omit_attrs = [ "type" "repo" "ref" "sha256" "description" ];
+
   fetch_git = pkgs: spec:
-    if spec ? fetchSubmodules
-    then pkgs.fetchgit { url = spec.repo; branchName = spec.ref; inherit (spec) rev sha256; }
-    else builtins.fetchGit { url = spec.repo; inherit (spec) rev ref; };
+    if spec ? fetchSubmodules || spec ? leaveDotGit
+    then pkgs.fetchgit ({ url = spec.repo; branchName = spec.ref; inherit (spec) sha256; } // removeAttrs spec omit_attrs)
+    else builtins.fetchGit ({ url = spec.repo; } // removeAttrs spec omit_attrs);
 
   fetch_builtin-tarball = spec:
     builtins.trace
