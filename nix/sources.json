@@ -51,8 +51,8 @@
         "fetchSubmodules": true,
         "ref": "200t_blinky",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "53750de6abc4f6f3893a4b7cb0ddbeeca027a6db",
-        "sha256": "1pflzx07972hjkscqzpbs77dab78njqw51gk24bzdx1fvv4ilfwl",
+        "rev": "0b9d484ca3feb3171593d0e9b4ee46665700c0dc",
+        "sha256": "1maixlf1bi37r4pvkhlmx5m67fw2955r9qc822kcqcr7dgb8lb35",
         "type": "git"
     },
     "nextpnr-xilinx": {
@@ -132,9 +132,9 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "sv2v": {
+        "description": "SystemVerilog to Verilog conversion",
         "leaveDotGit": true,
         "ref": "master",
-        "description": "SystemVerilog to Verilog conversion",
         "repo": "https://github.com/zachjs/sv2v.git",
         "rev": "a170536382dd1b3613f94ef11102ff5309311ba7",
         "sha256": "13i6bn4s0603gkhg263hnz5fxrz1cfrx97l2q4mrgidzv9jchawi",
@@ -245,10 +245,10 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow": {
-        "leaveDotGit": true,
         "branch": "master+wip",
         "description": "SymbiFlow WIP changes for Yosys Open SYnthesis Suite",
         "homepage": "http://www.clifford.at/yosys/",
+        "leaveDotGit": true,
         "owner": "SymbiFlow",
         "repo": "yosys",
         "rev": "d8b2d1a2b1a93057678cf49bb8f0329f191faba1",
