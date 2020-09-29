@@ -258,15 +258,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow-plugins": {
-        "branch": "aa1b583be212b7cf17dd8863bcc5290f16e69318",
+        "branch": "7454cd6b5e4fd22854e2ada219a5e3c3a06e0717",
         "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
         "homepage": "https://symbiflow.github.io",
         "owner": "SymbiFlow",
         "repo": "yosys-symbiflow-plugins",
-        "rev": "aa1b583be212b7cf17dd8863bcc5290f16e69318",
-        "sha256": "0y8m99np6gr5ac77pmsfnwfgqr2sd6n2l1qm0xjz7mr5mqy1xg0i",
+        "rev": "7454cd6b5e4fd22854e2ada219a5e3c3a06e0717",
+        "sha256": "0r9r31p7fy4ylfrwvwlbivq5a03xrph34blxbxzx2c8bc02mbv0s",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/aa1b583be212b7cf17dd8863bcc5290f16e69318.tar.gz",
+        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/7454cd6b5e4fd22854e2ada219a5e3c3a06e0717.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
