@@ -51,8 +51,8 @@
         "fetchSubmodules": true,
         "ref": "200t_blinky",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "de2c4093cb42a3764616f4e1d00096ea626d9b9c",
-        "sha256": "0iabmgirgc6a3mdndnddr67la9vag133v0ryyrrqna52f3j3j3vm",
+        "rev": "228cc5ebe6f189f39736e6644715e7a290bfcfe5",
+        "sha256": "1rrc8z87v9223gr32c428csga6lb7q3xc2ngwbfk2rskyfb9jag9",
         "type": "git"
     },
     "nextpnr-xilinx": {
@@ -197,15 +197,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-run": {
-        "branch": "dusty-perf",
+        "branch": "master+wip",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
-        "owner": "HackerFoo",
+        "owner": "SymbiFlow",
         "repo": "vtr-verilog-to-routing",
-        "rev": "2ab83062266222b151ca1a349c08316da3d311e1",
-        "sha256": "0bqq6hci37xkcayl4a1bb3z7aqcdmd07gwq9n7xgbmvm5adl6lvr",
+        "rev": "f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32",
+        "sha256": "141gfg7qf3m8jh2mxrzc7lm54h8b18kxmv831p5x15k8q1sm96yl",
         "type": "tarball",
-        "url": "https://github.com/HackerFoo/vtr-verilog-to-routing/archive/2ab83062266222b151ca1a349c08316da3d311e1.tar.gz",
+        "url": "https://github.com/SymbiFlow/vtr-verilog-to-routing/archive/f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-xml-utils": {
@@ -267,6 +267,18 @@
         "sha256": "0r9r31p7fy4ylfrwvwlbivq5a03xrph34blxbxzx2c8bc02mbv0s",
         "type": "tarball",
         "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/7454cd6b5e4fd22854e2ada219a5e3c3a06e0717.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "yosys-symbiflow-plugins-run": {
+        "branch": "trim_port_id_strings",
+        "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
+        "homepage": "https://symbiflow.github.io",
+        "owner": "hackerfoo",
+        "repo": "yosys-symbiflow-plugins",
+        "rev": "4fff4b3be807a720336d4d133a388e977f91fdae",
+        "sha256": "146skasn3gvgqrvpvsvy0xassp39nxgyxxyziivypr37h250j3b6",
+        "type": "tarball",
+        "url": "https://github.com/hackerfoo/yosys-symbiflow-plugins/archive/4fff4b3be807a720336d4d133a388e977f91fdae.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

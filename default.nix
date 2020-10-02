@@ -69,8 +69,8 @@ rec {
     src = sources.vtr-run;
   });
 
-  abc-verifier = src:
-    pkgs.abc-verifier.overrideAttrs (oldAttrs: {
+  abc-verifier = src: attrs:
+    (pkgs.abc-verifier.override attrs).overrideAttrs (oldAttrs: {
       inherit src;
     }) // {
       inherit (src) rev; # this doesn't update otherwise
@@ -78,21 +78,44 @@ rec {
 
   yosys-symbiflow = yosys-with-symbiflow-plugins {
     yosys = (pkgs.yosys.override {
-      abc-verifier = abc-verifier sources.abc-symbiflow;
+      abc-verifier = abc-verifier sources.abc-symbiflow {};
     }).overrideAttrs (oldAttrs: rec {
       src = sources.yosys-symbiflow;
       doCheck = false;
     });
   };
 
+  yosys-symbiflow-run = yosys-with-symbiflow-plugins-run {
+    stdenv = clangStdenv;
+    yosys = (pkgs.yosys.override {
+      stdenv = clangStdenv;
+      abc-verifier = abc-verifier sources.abc-symbiflow {
+        stdenv = clangStdenv;
+      };
+    }).overrideAttrs (oldAttrs: rec {
+      src = sources.yosys-symbiflow;
+      preBuild = oldAttrs.preBuild + ''
+        echo 'CXXFLAGS += "-std=c++11 -Os -fno-merge-constants"' > Makefile.conf
+        echo 'ABCREV=default' >> Makefile.conf
+        echo 'ABCMKARGS="CC=clang" "CXX=clang++"' >> Makefile.conf
+        cp -r ${sources.abc-symbiflow} abc
+        chmod -R a+w abc
+      '';
+      postInstall = ''
+        cp yosys-abc $out/bin/
+      '';
+      doCheck = false;
+    });
+  };
+
   yosys-git = (pkgs.yosys.override {
-    abc-verifier = abc-verifier sources.abc-yosys;
+    abc-verifier = abc-verifier sources.abc-yosys {};
   }).overrideAttrs (oldAttrs: rec {
     src = sources.yosys;
     doCheck = false;
   });
 
-  yosys-with-symbiflow-plugins = { yosys }: stdenv.mkDerivation {
+  yosys-with-symbiflow-plugins = { yosys, stdenv ? pkgs.stdenv }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
     src = sources.yosys-symbiflow-plugins;
     phases = "unpackPhase buildPhase installPhase";
@@ -106,6 +129,30 @@ rec {
       mkdir -p $out/bin $out/share/yosys/plugins
       cp -rs ${yosys}/share $out/
       cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc} $out/bin/
+      sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
+      ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
+      chmod +x $out/bin/{yosys,yosys-config}
+      for i in $plugins; do
+        make -C ''${i}-plugin install PLUGINS_DIR=$out/share/yosys/plugins
+      done
+    '';
+    buildInputs = [ yosys bison flex tk libffi readline ];
+  };
+
+  yosys-with-symbiflow-plugins-run = { yosys, stdenv ? pkgs.stdenv }: stdenv.mkDerivation {
+    inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
+    src = sources.yosys-symbiflow-plugins-run;
+    phases = "unpackPhase buildPhase installPhase";
+    plugins = "xdc fasm";
+    buildPhase = ''
+      for i in $plugins; do
+        make -C ''${i}-plugin ''${i}.so
+      done
+    '';
+    installPhase = ''
+      mkdir -p $out/bin $out/share/yosys/plugins
+      cp -rs ${yosys}/share $out/
+      cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc,yosys-abc} $out/bin/
       sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
       ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
       chmod +x $out/bin/{yosys,yosys-config}
@@ -441,7 +488,7 @@ rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = if usesVPR then yosys-symbiflow else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+      yosys = if usesVPR then yosys-symbiflow-run else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -474,6 +521,7 @@ rec {
         symbiflow-arch-defs-install
         vtr-run
         yosys
+        coreutils
       ] ++ optionals stdenv.isLinux [
         no-lscpu
       ] ++ optionals stdenv.isDarwin [
@@ -487,7 +535,10 @@ rec {
         export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
         export XRAY_TOOLS_DIR="${prjxray}/bin"
         export SYMBIFLOW="${symbiflow-arch-defs-install}"
+        export FPGA_TOOL_PERF_BASE_DIR=$(pwd)
         mkdir -p env/conda/pkgs
+        mkdir -p env/conda/bin
+        touch env/conda/bin/activate
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
