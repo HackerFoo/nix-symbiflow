@@ -81,18 +81,18 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
         "repo": "nixpkgs-channels",
-        "rev": "5659cb448e9b615d642c5fe52779c2223e72f7eb",
-        "sha256": "1ijwr9jlvdnvr1qqpfdm61nwd871sj4dam28pcv0pvnmp8ndylak",
+        "rev": "b4db68ff563895eea6aab4ff24fa04ef403dfe14",
+        "sha256": "1qbs7p0mmcmpg70ibd437hl57byqx5q0pc61p1dckrkazj7kq0pc",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/5659cb448e9b615d642c5fe52779c2223e72f7eb.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs-channels/archive/b4db68ff563895eea6aab4ff24fa04ef403dfe14.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "prjxray": {
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/prjxray.git",
-        "rev": "58df67f243ebdce6d09d6644c018d6b5107465d4",
-        "sha256": "1vg4bdnzzbjaxx9vc74j8p37j9pvqcvp385w23yfipxf5w5qlf46",
+        "rev": "2e96cd27818b333fcfddf382ab8b40e051f2b4e6",
+        "sha256": "071fl1ivm2s34s9zbsp6nmilrjix9wjkbf6wmsgsc7g8hlalw66s",
         "type": "git"
     },
     "prjxray-db": {
@@ -125,10 +125,10 @@
         "homepage": null,
         "owner": "SymbiFlow",
         "repo": "python-symbiflow-v2x",
-        "rev": "4b31933c4d5e45b1f5e41c94a62cd2245ca798d2",
-        "sha256": "0jmdcyy2q9ka51kxmwy8ayw5kpwxapmk6n833bwp7x580qcc99n7",
+        "rev": "f5d27b310bb9b4240920cdfa0ae4ebffbb2838ef",
+        "sha256": "1ydlzg6cq61njrqc9rfwyihw9jnr9gh1sng9k4qb9x7h5jvlzcwx",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/python-symbiflow-v2x/archive/4b31933c4d5e45b1f5e41c94a62cd2245ca798d2.tar.gz",
+        "url": "https://github.com/SymbiFlow/python-symbiflow-v2x/archive/f5d27b310bb9b4240920cdfa0ae4ebffbb2838ef.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "sv2v": {
@@ -136,16 +136,16 @@
         "leaveDotGit": true,
         "ref": "master",
         "repo": "https://github.com/zachjs/sv2v.git",
-        "rev": "a170536382dd1b3613f94ef11102ff5309311ba7",
-        "sha256": "13i6bn4s0603gkhg263hnz5fxrz1cfrx97l2q4mrgidzv9jchawi",
+        "rev": "e9f969634294cdefc6fc5527bd7ee513eb3657bb",
+        "sha256": "08zna87hfxlb2z4lavmpwbi9kckvz9cc2cz661miygnc1nnikyyv",
         "type": "git"
     },
     "symbiflow-arch-defs": {
         "fetchSubmodules": true,
-        "ref": "update_fix_pins_flag",
-        "repo": "https://github.com/HackerFoo/symbiflow-arch-defs.git",
-        "rev": "844ce8c7cb6f336659a39689f4ace3d9f5b123d4",
-        "sha256": "0i03c8rnqyyb086ndjhv1kvhc899m5i0npvf0gjshwjjvfa6dwcd",
+        "ref": "master",
+        "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
+        "rev": "d84e79824981f4e8d4255e09443747fde24dfcdc",
+        "sha256": "0d5zh5fy5avpwmxi6iqrivw3dh53cpf34p2yaf04178sy7dc29fd",
         "type": "git"
     },
     "symbiflow-examples": {
@@ -185,15 +185,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
-        "branch": "dusty-perf",
+        "branch": "master+wip",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
-        "owner": "HackerFoo",
+        "owner": "SymbiFlow",
         "repo": "vtr-verilog-to-routing",
-        "rev": "2ab83062266222b151ca1a349c08316da3d311e1",
-        "sha256": "0bqq6hci37xkcayl4a1bb3z7aqcdmd07gwq9n7xgbmvm5adl6lvr",
+        "rev": "f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32",
+        "sha256": "141gfg7qf3m8jh2mxrzc7lm54h8b18kxmv831p5x15k8q1sm96yl",
         "type": "tarball",
-        "url": "https://github.com/HackerFoo/vtr-verilog-to-routing/archive/2ab83062266222b151ca1a349c08316da3d311e1.tar.gz",
+        "url": "https://github.com/SymbiFlow/vtr-verilog-to-routing/archive/f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-run": {
@@ -238,10 +238,10 @@
         "homepage": "http://www.clifford.at/yosys/",
         "owner": "YosysHQ",
         "repo": "yosys",
-        "rev": "dfc43c38f8f3498c04b86e48a22858b1dc6721db",
-        "sha256": "0ymljjmky3v1p8advmh8fa1w62pd37jfzcc29sip422fjqfr6qsw",
+        "rev": "73cd115e0866f2efea622ba5f54d39a621838baa",
+        "sha256": "1vmw8wyba665a2saxny8vb8m2jjh5cbg0dzyxmjqa6xilcqkrdyx",
         "type": "tarball",
-        "url": "https://github.com/YosysHQ/yosys/archive/dfc43c38f8f3498c04b86e48a22858b1dc6721db.tar.gz",
+        "url": "https://github.com/YosysHQ/yosys/archive/73cd115e0866f2efea622ba5f54d39a621838baa.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow": {

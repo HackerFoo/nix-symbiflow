@@ -65,6 +65,7 @@ rec {
         "";
     enableParallelBuilding = true;
   };
+
   vtr-run = vtr.overrideAttrs (attrs: {
     src = sources.vtr-run;
   });
@@ -77,15 +78,6 @@ rec {
     };
 
   yosys-symbiflow = yosys-with-symbiflow-plugins {
-    yosys = (pkgs.yosys.override {
-      abc-verifier = abc-verifier sources.abc-symbiflow {};
-    }).overrideAttrs (oldAttrs: rec {
-      src = sources.yosys-symbiflow;
-      doCheck = false;
-    });
-  };
-
-  yosys-symbiflow-run = yosys-with-symbiflow-plugins-run {
     stdenv = clangStdenv;
     yosys = (pkgs.yosys.override {
       stdenv = clangStdenv;
@@ -108,6 +100,30 @@ rec {
     });
   };
 
+  yosys-symbiflow-run = yosys-with-symbiflow-plugins {
+    stdenv = clangStdenv;
+    yosys = (pkgs.yosys.override {
+      stdenv = clangStdenv;
+      abc-verifier = abc-verifier sources.abc-symbiflow {
+        stdenv = clangStdenv;
+      };
+    }).overrideAttrs (oldAttrs: rec {
+      src = sources.yosys-symbiflow;
+      preBuild = oldAttrs.preBuild + ''
+        echo 'CXXFLAGS += "-std=c++11 -Os -fno-merge-constants"' > Makefile.conf
+        echo 'ABCREV=default' >> Makefile.conf
+        echo 'ABCMKARGS="CC=clang" "CXX=clang++"' >> Makefile.conf
+        cp -r ${sources.abc-symbiflow} abc
+        chmod -R a+w abc
+      '';
+      postInstall = ''
+        cp yosys-abc $out/bin/
+      '';
+      doCheck = false;
+    });
+    src = sources.yosys-symbiflow-plugins-run;
+  };
+
   yosys-git = (pkgs.yosys.override {
     abc-verifier = abc-verifier sources.abc-yosys {};
   }).overrideAttrs (oldAttrs: rec {
@@ -115,9 +131,13 @@ rec {
     doCheck = false;
   });
 
-  yosys-with-symbiflow-plugins = { yosys, stdenv ? pkgs.stdenv }: stdenv.mkDerivation {
+  yosys-with-symbiflow-plugins = {
+    yosys,
+    stdenv ? pkgs.stdenv,
+    src ? sources.yosys-symbiflow-plugins
+  }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
-    src = sources.yosys-symbiflow-plugins;
+    inherit src;
     phases = "unpackPhase buildPhase installPhase";
     plugins = "xdc fasm";
     buildPhase = ''
@@ -129,30 +149,6 @@ rec {
       mkdir -p $out/bin $out/share/yosys/plugins
       cp -rs ${yosys}/share $out/
       cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc} $out/bin/
-      sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
-      ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
-      chmod +x $out/bin/{yosys,yosys-config}
-      for i in $plugins; do
-        make -C ''${i}-plugin install PLUGINS_DIR=$out/share/yosys/plugins
-      done
-    '';
-    buildInputs = [ yosys bison flex tk libffi readline ];
-  };
-
-  yosys-with-symbiflow-plugins-run = { yosys, stdenv ? pkgs.stdenv }: stdenv.mkDerivation {
-    inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
-    src = sources.yosys-symbiflow-plugins-run;
-    phases = "unpackPhase buildPhase installPhase";
-    plugins = "xdc fasm";
-    buildPhase = ''
-      for i in $plugins; do
-        make -C ''${i}-plugin ''${i}.so
-      done
-    '';
-    installPhase = ''
-      mkdir -p $out/bin $out/share/yosys/plugins
-      cp -rs ${yosys}/share $out/
-      cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc,yosys-abc} $out/bin/
       sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
       ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
       chmod +x $out/bin/{yosys,yosys-config}
