@@ -279,6 +279,8 @@ rec {
     '';
     configurePhase = ''
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
+      export XDG_CACHE_HOME=$PWD/.cache
+      mkdir -p $XDG_CACHE_HOME
       mkdir -p build
       pushd build
       cmake \
@@ -304,8 +306,11 @@ rec {
   };
 
   symbiflow-arch-defs-200t = symbiflow-arch-defs.overrideAttrs (attrs: {
+    name = "symbiflow-200t";
     configurePhase = ''
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
+      export XDG_CACHE_HOME=$PWD/.cache
+      mkdir -p $XDG_CACHE_HOME
       mkdir -p build
       pushd build
       cmake \
