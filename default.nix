@@ -122,6 +122,8 @@ rec {
       doCheck = false;
     });
     src = sources.yosys-symbiflow-plugins-run;
+    plugins = "xdc fasm params selection";
+    bin = "yosys-filterlib,yosys-smtbmc,yosys-abc";
   };
 
   yosys-git = (pkgs.yosys.override {
@@ -134,12 +136,13 @@ rec {
   yosys-with-symbiflow-plugins = {
     yosys,
     stdenv ? pkgs.stdenv,
-    src ? sources.yosys-symbiflow-plugins
+    src ? sources.yosys-symbiflow-plugins,
+    plugins ? "xdc fasm",
+    bin ? "yosys-filterlib,yosys-smtbmc"
   }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
-    inherit src;
+    inherit src plugins;
     phases = "unpackPhase buildPhase installPhase";
-    plugins = "xdc fasm";
     buildPhase = ''
       for i in $plugins; do
         make -C ''${i}-plugin ''${i}.so
@@ -148,7 +151,7 @@ rec {
     installPhase = ''
       mkdir -p $out/bin $out/share/yosys/plugins
       cp -rs ${yosys}/share $out/
-      cp -s ${yosys}/bin/{yosys-filterlib,yosys-smtbmc} $out/bin/
+      cp -s ${yosys}/bin/{${bin}} $out/bin/
       sed "s|${yosys}|''${out}|g" ${yosys}/bin/yosys-config > $out/bin/yosys-config
       ${bbe}/bin/bbe -e "s|${yosys}|''${out}|g" ${yosys}/bin/yosys > $out/bin/yosys
       chmod +x $out/bin/{yosys,yosys-config}
