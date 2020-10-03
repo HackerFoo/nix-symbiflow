@@ -237,6 +237,9 @@ rec {
         vtr-xml-utils
         xc-fasm
         yapf
+        Mako
+        edalize-lowRISC
+        fusesoc-lowRISC
       ]);
     in
       [

@@ -35,6 +35,18 @@
         "url": "https://github.com/SymbiFlow/edalize/archive/5b4b83d0307e97ec35381942ffa779792bc14752.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "edalize-lowRISC": {
+        "branch": "ot",
+        "description": "An abstraction library for interfacing EDA tools",
+        "homepage": "",
+        "owner": "lowRISC",
+        "repo": "edalize",
+        "rev": "ee5f9f71c7eedbf7d04f551753e827966c3fd6c5",
+        "sha256": "1p6gf75y89qfchpxhfmv1zs2gb9nl4apcj93ww19jljsjnnzpqy6",
+        "type": "tarball",
+        "url": "https://github.com/lowRISC/edalize/archive/ee5f9f71c7eedbf7d04f551753e827966c3fd6c5.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "fasm": {
         "branch": "master",
         "description": "FPGA Assembly (FASM) Parser and Generator",
@@ -53,6 +65,14 @@
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
         "rev": "228cc5ebe6f189f39736e6644715e7a290bfcfe5",
         "sha256": "1rrc8z87v9223gr32c428csga6lb7q3xc2ngwbfk2rskyfb9jag9",
+        "type": "git"
+    },
+    "fusesoc-lowRISC": {
+        "leaveDotGit": true,
+        "ref": "ot",
+        "repo": "https://github.com/lowRISC/fusesoc.git",
+        "rev": "1fb8c939a0fb165bb1ca96233bcc7fc9b6e78369",
+        "sha256": "0bj6y5yn7qgv3icqdnbw9klcn58w4866imiq23b2hnslriyhs3da",
         "type": "git"
     },
     "nextpnr-xilinx": {

@@ -175,6 +175,49 @@ in
     propagatedBuildInputs = [ markupsafe ];
   };
 
+  ipyxact = buildPythonPackage rec {
+    pname = "ipyxact";
+    version = "0.2.4";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "18mvgwnj7ccnrqx7x3cg70fyklrkymf9nadb0sh3is5csmz8gj7b";
+    };
+    propagatedBuildInputs = [ pyyaml ];
+    doCheck = false;
+  };
+
+  simplesat = buildPythonPackage rec {
+    pname = "simplesat";
+    version = "0.8.2";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "0n6qm2gzwji19ykp3i6wm6vjw7dnn92h2flm42708fxh6lkz6hqr";
+    };
+    propagatedBuildInputs = [ okonomiyaki attrs six enum34 ];
+    doCheck = false;
+  };
+
+  okonomiyaki = buildPythonPackage rec {
+    pname = "okonomiyaki";
+    version = "1.2.0";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "0cak484nldyp4l2f12xlmn8qpz32k7dwf2h688g90368mliqdh3f";
+    };
+    propagatedBuildInputs = [ attrs six jsonschema zipfile2 ];
+    doCheck = false;
+  };
+
+  zipfile2 = buildPythonPackage rec {
+    pname = "zipfile2";
+    version = "0.0.12";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "0256m134qs045j1c8mmgii8ipkwhww9sjbc6xyawhykid34zfxkk";
+    };
+    doCheck = false;
+  };
+
   litexPackages = let
     buildLitexPackages = attrs: listToAttrs (concatMap (user:
       map (name: {
@@ -230,6 +273,22 @@ in
       '';
     };
   });
+
+  edalize-lowRISC = buildPythonPackage {
+    name = "edalize-lowRISC";
+    src = sources.edalize-lowRISC;
+    propagatedBuildInputs = [ pytest jinja2 ];
+    doCheck = false;
+  };
+
+  fusesoc-lowRISC = buildPythonPackage {
+    name = "fusesoc-lowRISC";
+    src = sources.fusesoc-lowRISC;
+    propagatedBuildInputs = [ edalize-lowRISC ipyxact pyparsing pyyaml simplesat setuptools_scm ];
+    nativeBuildInputs = [ pkgs.git ];
+    doCheck = false;
+  };
+
 }
 
 # Local Variables:
