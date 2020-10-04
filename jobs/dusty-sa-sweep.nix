@@ -20,7 +20,11 @@ let
       });
 in
 
-listToAttrs (map (params: {
+listToAttrs ((map (params: {
   name = "baselitex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
   value = (make-fpga-tool-perf params).baselitex.vpr.arty.value;
-}) params_list)
+}) params_list) ++
+(map (params: {
+  name = "ibex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
+  value = (make-fpga-tool-perf params).ibex.vpr.arty.value;
+}) params_list))
