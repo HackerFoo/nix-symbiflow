@@ -278,27 +278,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow-plugins": {
-        "branch": "7454cd6b5e4fd22854e2ada219a5e3c3a06e0717",
-        "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
-        "homepage": "https://symbiflow.github.io",
-        "owner": "SymbiFlow",
-        "repo": "yosys-symbiflow-plugins",
-        "rev": "7454cd6b5e4fd22854e2ada219a5e3c3a06e0717",
-        "sha256": "0r9r31p7fy4ylfrwvwlbivq5a03xrph34blxbxzx2c8bc02mbv0s",
-        "type": "tarball",
-        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/7454cd6b5e4fd22854e2ada219a5e3c3a06e0717.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "yosys-symbiflow-plugins-run": {
         "branch": "trim_port_id_strings",
         "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
         "homepage": "https://symbiflow.github.io",
-        "owner": "hackerfoo",
+        "owner": "HackerFoo",
         "repo": "yosys-symbiflow-plugins",
         "rev": "4fff4b3be807a720336d4d133a388e977f91fdae",
         "sha256": "146skasn3gvgqrvpvsvy0xassp39nxgyxxyziivypr37h250j3b6",
         "type": "tarball",
-        "url": "https://github.com/hackerfoo/yosys-symbiflow-plugins/archive/4fff4b3be807a720336d4d133a388e977f91fdae.tar.gz",
+        "url": "https://github.com/HackerFoo/yosys-symbiflow-plugins/archive/4fff4b3be807a720336d4d133a388e977f91fdae.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

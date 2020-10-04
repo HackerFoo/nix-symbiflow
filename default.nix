@@ -100,32 +100,6 @@ rec {
     });
   };
 
-  yosys-symbiflow-run = yosys-with-symbiflow-plugins {
-    stdenv = clangStdenv;
-    yosys = (pkgs.yosys.override {
-      stdenv = clangStdenv;
-      abc-verifier = abc-verifier sources.abc-symbiflow {
-        stdenv = clangStdenv;
-      };
-    }).overrideAttrs (oldAttrs: rec {
-      src = sources.yosys-symbiflow;
-      preBuild = oldAttrs.preBuild + ''
-        echo 'CXXFLAGS += "-std=c++11 -Os -fno-merge-constants"' > Makefile.conf
-        echo 'ABCREV=default' >> Makefile.conf
-        echo 'ABCMKARGS="CC=clang" "CXX=clang++"' >> Makefile.conf
-        cp -r ${sources.abc-symbiflow} abc
-        chmod -R a+w abc
-      '';
-      postInstall = ''
-        cp yosys-abc $out/bin/
-      '';
-      doCheck = false;
-    });
-    src = sources.yosys-symbiflow-plugins-run;
-    plugins = "xdc fasm params selection";
-    bin = "yosys-filterlib,yosys-smtbmc,yosys-abc";
-  };
-
   yosys-git = (pkgs.yosys.override {
     abc-verifier = abc-verifier sources.abc-yosys {};
   }).overrideAttrs (oldAttrs: rec {
@@ -137,8 +111,8 @@ rec {
     yosys,
     stdenv ? pkgs.stdenv,
     src ? sources.yosys-symbiflow-plugins,
-    plugins ? "xdc fasm",
-    bin ? "yosys-filterlib,yosys-smtbmc"
+    plugins ? "xdc fasm params selection",
+    bin ? "yosys-filterlib,yosys-smtbmc,yosys-abc"
   }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
     inherit src plugins;
@@ -495,7 +469,7 @@ rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = if usesVPR then yosys-symbiflow-run else yosys-git; # https://github.com/SymbiFlow/yosys/issues/79
+      yosys = yosys-symbiflow;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
