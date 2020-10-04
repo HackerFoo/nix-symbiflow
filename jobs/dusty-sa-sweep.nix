@@ -1,9 +1,10 @@
-{ pkgs ? import <nixpkgs> { config.allowUnfree = true; } }:
+args@{ ... }:
 
+with import ../default.nix args;
 with builtins;
 with pkgs;
 with lib;
-with callPackage ../default.nix { use-vivado = true; };
+with callPackage ../default.nix {};
 with callPackage ../library.nix {};
 
 let
