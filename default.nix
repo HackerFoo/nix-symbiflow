@@ -475,7 +475,7 @@ rec {
       clock_modeling = "route";
       place_delta_delay_matrix_calculation_method = "dijkstra";
       place_delay_model = "delta_override";
-      router_lookahead = "connection_box_map";
+      router_lookahead = "extended_map";
       check_route = "quick";
       strict_checks = "off";
       allow_dangling_combinational_nodes = "on";
