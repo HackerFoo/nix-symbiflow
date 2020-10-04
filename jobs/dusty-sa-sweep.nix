@@ -12,11 +12,11 @@ let
     filter
       (x: (x.alpha_min < x.alpha_max) && (x.anneal_success_min < x.anneal_success_target))
       (attr_sweep {
-        alpha_min = [0.4 0.6 0.8];
-        alpha_max = [0.8 0.9 0.95];
-        alpha_decay = [0.4 0.5];
-        anneal_success_target = [0.15 0.6];
-        anneal_success_min = [0.1 0.18];
+        alpha_min = [0.2 0.3 0.4 0.6 0.8];
+        alpha_max = [0.8 0.9 0.95 0.98];
+        alpha_decay = [0.2 0.3 0.4 0.5];
+        anneal_success_target = [0.15 0.44 0.6 0.7];
+        anneal_success_min = [0.08 0.1 0.18];
       });
 in
 
