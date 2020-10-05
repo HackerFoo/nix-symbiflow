@@ -63,8 +63,8 @@
         "fetchSubmodules": true,
         "ref": "earlgray",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "a9c82f6943ab3dc713e3ac43fc2b1e78e42e4e4b",
-        "sha256": "1dalprcprprpzjcniymi0dsgmihd55ib9m7pshxiijb68hjq59sz",
+        "rev": "5707d9054f91db7707c6f5887f8d0b3755e82369",
+        "sha256": "0izflil8qwllafxkhc0k7wlbv7ypmba8f6aqb71d3ri2df9lpnb1",
         "type": "git"
     },
     "fusesoc-lowRISC": {

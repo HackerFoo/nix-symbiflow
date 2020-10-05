@@ -29,7 +29,7 @@ let
     concatMap (toolchain:
       map (board: {
         name = "${project}_${toolchain}_${board}";
-        value = fpga-tool-perf.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+        value = fpga-tool-perf.${project}.${toolchain}.${board};
       }) (attrNames fpga-tool-perf.${project}.${toolchain}))
       (attrNames fpga-tool-perf.${project}))
     (attrNames fpga-tool-perf);
@@ -38,7 +38,7 @@ let
       optionals (hasPrefix "vpr" toolchain)
         (map (board: {
           name = "${project}_${toolchain}_${board}_dusty_sa";
-          value = fpga-tool-perf_dusty_sa.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+          value = fpga-tool-perf_dusty_sa.${project}.${toolchain}.${board};
         }) (attrNames fpga-tool-perf_dusty_sa.${project}.${toolchain})))
       (attrNames fpga-tool-perf_dusty_sa.${project}))
     (attrNames fpga-tool-perf_dusty_sa);
@@ -47,7 +47,7 @@ let
       optionals (hasPrefix "vpr" toolchain)
         (map (board: {
           name = "${project}_${toolchain}_${board}_dusty_perf";
-          value = fpga-tool-perf_dusty_perf.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+          value = fpga-tool-perf_dusty_perf.${project}.${toolchain}.${board};
         }) (attrNames fpga-tool-perf_dusty_perf.${project}.${toolchain})))
       (attrNames fpga-tool-perf_dusty_perf.${project}))
     (attrNames fpga-tool-perf_dusty_perf);
@@ -56,7 +56,7 @@ let
       optionals (hasPrefix "vpr" toolchain)
         (map (board: {
           name = "${project}_${toolchain}_${board}_reorder";
-          value = fpga-tool-perf_reorder.${project}.${toolchain}.${board}.value; # strange that I need to add .value
+          value = fpga-tool-perf_reorder.${project}.${toolchain}.${board};
         }) (attrNames fpga-tool-perf_reorder.${project}.${toolchain})))
       (attrNames fpga-tool-perf_reorder.${project}))
     (attrNames fpga-tool-perf_reorder);

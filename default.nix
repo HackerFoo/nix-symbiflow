@@ -543,19 +543,24 @@ rec {
       requiredSystemFeatures = [ "benchmark" ]; # only run these on benchmark machines
     };
     projectNames = map (n: head (match "([^.]*).json$" n)) (attrNames (readDir (src + "/project/")));
+    boards = fromJSON (readFile (src + "/other/boards.json"));
   in
     listToAttrs (map (projectName:
       let
         projectInfo = fromJSON (readFile (src + "/project/${projectName}.json"));
+        boards = concatMap (vendor: projectInfo.vendors.${vendor}) (attrNames projectInfo.vendors);
+        mkBoard = toolchain: board: {
+          name = board;
+          value = mkTest { inherit projectName toolchain board; };
+        };
+        mkToolchain = toolchain: {
+          name = toolchain;
+          value = listToAttrs (map (mkBoard toolchain) boards);
+        };
       in
         {
           name = projectName;
-          value = mapAttrs (toolchain: boards:
-            mapAttrs (board: dont-care: {
-              name = board;
-              value = mkTest { inherit projectName toolchain board; };
-            }) boards)
-            projectInfo.toolchains;
+          value = listToAttrs (map mkToolchain projectInfo.required_toolchains);
         }) projectNames);
 
   symbiflow-examples = stdenv.mkDerivation rec {
