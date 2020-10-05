@@ -15,9 +15,9 @@ let
     anneal_success_min = 0.18;
   };
   fpga-tool-perf_dusty_perf = make-fpga-tool-perf {
-    alpha_min = 0.8;
+    alpha_min = 0.4;
     alpha_max = 0.9;
-    alpha_decay = 0.4;
+    alpha_decay = 0.5;
     anneal_success_target = 0.6;
     anneal_success_min = 0.18;
     reorder_rr_graph_nodes_algorithm = "degree_bfs";
