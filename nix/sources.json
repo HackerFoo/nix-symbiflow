@@ -61,10 +61,10 @@
     },
     "fpga-tool-perf": {
         "fetchSubmodules": true,
-        "ref": "200t_blinky",
+        "ref": "earlgray",
         "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "228cc5ebe6f189f39736e6644715e7a290bfcfe5",
-        "sha256": "1rrc8z87v9223gr32c428csga6lb7q3xc2ngwbfk2rskyfb9jag9",
+        "rev": "a9c82f6943ab3dc713e3ac43fc2b1e78e42e4e4b",
+        "sha256": "1dalprcprprpzjcniymi0dsgmihd55ib9m7pshxiijb68hjq59sz",
         "type": "git"
     },
     "fusesoc-lowRISC": {
