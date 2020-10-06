@@ -510,6 +510,7 @@ rec {
       ];
       toolchain-arg = if toolchain == "vivado-yosys" then "yosys-vivado" else toolchain;
       buildPhase = ''
+        cat << EOF > env.sh
         export PYTHONPATH=${prjxray}
         export VIVADO_SETTINGS=${vivado_settings}
         export XRAY_DATABASE_DIR=${prjxray-db}
@@ -517,9 +518,10 @@ rec {
         export XRAY_TOOLS_DIR="${prjxray}/bin"
         export SYMBIFLOW="${symbiflow-arch-defs-install}"
         export FPGA_TOOL_PERF_BASE_DIR=$(pwd)
+        EOF
+        source env.sh
+
         mkdir -p env/conda/pkgs
-        mkdir -p env/conda/bin
-        touch env/conda/bin/activate
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
         source $VIVADO_SETTINGS
