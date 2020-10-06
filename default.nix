@@ -460,7 +460,7 @@ rec {
       bb_factor = 10;
       initial_pres_fac = 4.0;
       check_rr_graph = "off";
-      suppress_warnings = ''''${OUT_NOISY_WARNINGS},sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment'';
+      suppress_warnings = "noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment:calculate_average_switch";
     };
     vpr_flags = default_vpr_flags // extra_vpr_flags;
     mkTest = { projectName, toolchain, board }: let
