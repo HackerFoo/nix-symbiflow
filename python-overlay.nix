@@ -14,7 +14,7 @@ let
 
 in
 
-{
+rec {
   fasm = buildPythonPackage {
     name = "fasm";
     src = sources.fasm;
@@ -215,6 +215,50 @@ in
       inherit pname version;
       sha256 = "0256m134qs045j1c8mmgii8ipkwhww9sjbc6xyawhykid34zfxkk";
     };
+    doCheck = false;
+  };
+
+  cloudpickle = buildPythonPackage rec {
+    pname = "cloudpickle";
+    version = "1.5.0";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "820c9245cebdec7257211cbe88745101d5d6a042bca11336d78ebd4897ddbc82";
+    };
+    buildInputs = [ pytest mock ];
+    doCheck = false;
+  };
+
+  rich = let
+    pygments = buildPythonPackage rec {
+      pname = "Pygments";
+      version = "2.6.1";
+      src = fetchPypi {
+        inherit pname version;
+        sha256 = "647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44";
+      };
+      propagatedBuildInputs = [ docutils ];
+      doCheck = false;
+    };
+  in buildPythonPackage rec {
+    pname = "rich";
+    version = "8.0.0";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "15yz7rcn5cjv233xcvka9vd573pwafl31s6z9ni54r8y4k926l0v";
+    };
+    propagatedBuildInputs = [ CommonMark typing-extensions colorama pygments ];
+    doCheck = false;
+  };
+
+  scalene = buildPythonPackage rec {
+    pname = "scalene";
+    version = "1.1.4";
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "1vbdmj159va6ylifzgiynr2wkg6ag0my3jn1km97ray1b34cs26r";
+    };
+    propagatedBuildInputs = [ cloudpickle rich ];
     doCheck = false;
   };
 

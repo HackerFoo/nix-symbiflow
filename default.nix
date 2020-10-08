@@ -482,19 +482,21 @@ rec {
         pytest
         python-constraint
         python-prjxray
+        scalene
         simplejson
+        symbiflow-xc-fasm2bels
         terminaltables
         textx
         tqdm
-        yapf
-        symbiflow-xc-fasm2bels
         xc-fasm
+        yapf
       ]);
       buildInputs = [
         capnp-schemas-dir
+        coreutils
         getopt
-        nextpnr
         icestorm
+        nextpnr
         nextpnr-xilinx
         prjxray
         prjxray-config
@@ -502,7 +504,6 @@ rec {
         symbiflow-arch-defs-install
         vtr-run
         yosys
-        coreutils
       ] ++ optionals stdenv.isLinux [
         no-lscpu
       ] ++ optionals stdenv.isDarwin [
@@ -541,6 +542,16 @@ rec {
           ! -name meta.json \
           ! -name hydra-build-products \
             -printf "file data %p\n" >> $out/nix-support/hydra-build-products
+      '';
+      shellHook = ''
+        export PYTHONPATH=${prjxray}
+        export VIVADO_SETTINGS=${vivado_settings}
+        export XRAY_DATABASE_DIR=${prjxray-db}
+        export XRAY_FASM2FRAMES="-m prjxray.fasm2frames"
+        export XRAY_TOOLS_DIR="${prjxray}/bin"
+        export SYMBIFLOW="${symbiflow-arch-defs-install}"
+        export FPGA_TOOL_PERF_BASE_DIR=$(pwd)
+        export LD_LIBRARY_PATH=${lib.makeLibraryPath [stdenv.cc.cc]}
       '';
       requiredSystemFeatures = [ "benchmark" ]; # only run these on benchmark machines
     };
