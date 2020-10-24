@@ -1,0 +1,20 @@
+diff --git a/vpr/src/route/route_common.cpp b/vpr/src/route/route_common.cpp
+index 01facdda4..7e05d1a22 100644
+--- a/vpr/src/route/route_common.cpp
++++ b/vpr/src/route/route_common.cpp
+@@ -702,6 +702,7 @@ float get_rr_cong_cost(int inode, float pres_fac) {
+ 
+     float cost = get_single_rr_cong_cost(inode, pres_fac);
+ 
++    /*
+     if (route_ctx.non_configurable_bitset.get(inode)) {
+         // Access unordered_map only when the node is part of a non-configurable set
+         auto itr = device_ctx.rr_node_to_non_config_node_set.find(inode);
+@@ -715,6 +716,7 @@ float get_rr_cong_cost(int inode, float pres_fac) {
+             }
+         }
+     }
++    */
+     return (cost);
+ }
+ 

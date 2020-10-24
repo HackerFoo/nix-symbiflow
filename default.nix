@@ -66,9 +66,25 @@ rec {
     enableParallelBuilding = true;
   };
 
-  vtr-run = vtr.overrideAttrs (attrs: {
+  vtr-profile = vtr.overrideAttrs (attrs: rec {
     src = sources.vtr-run;
+    cmakeFlags = "-DVTR_ENABLE_PROFILING=ON -DCMAKE_BUILD_TYPE=RelWithDebInfo";
+    #dontStrip = true;
+    #patches = [ ./patches/vpr-run.patch ];
   });
+  vtr-pgo-gen = vtr.overrideAttrs (attrs: rec {
+    src = sources.vtr-run;
+    cmakeFlags = "-DVPR_PGO_CONFIG=prof_gen";
+    patches = [ ./patches/vpr_fix_pgo.patch ];
+  });
+  vtr-pgo = vtr.overrideAttrs (attrs: rec {
+    src = sources.vtr-run;
+    cmakeFlags = "-DVPR_PGO_CONFIG=prof_use";
+    profileData = ./vpr-pgo.tar.gz;
+    preConfigure = "tar xzf ${profileData} -C /tmp";
+    patches = [ ./patches/vpr_fix_pgo.patch ];
+  });
+  vtr-run = vtr-pgo-gen;
 
   abc-verifier = src: attrs:
     (pkgs.abc-verifier.override attrs).overrideAttrs (oldAttrs: {
