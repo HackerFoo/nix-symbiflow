@@ -9,13 +9,10 @@ with callPackage ../library.nix {};
 
 let
   params_list = attr_sweep {
-    router_heap = [ "bucket" "binary" ];
     place_delay_model = [ "delta" "delta_override" ];
-    bb_factor = [ 8 10 ];
-    initial_pres_fac = [ 0.5 1 2 4 8 ];
-    congested_routing_iteration_threshold = [ 0.8 1 ];
-    base_cost_type = [ "delay_normalized_length" "delay_normalized_length_bounded" ];
-    astar_fac = [ 1.2 1.5 2 ];
+    bb_factor = [ 6 8 10 ];
+    initial_pres_fac = [ 1 2 3 4 8 ];
+    astar_fac = [ 1.2 1.5 2 3 ];
   };
 in
 
