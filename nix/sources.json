@@ -61,10 +61,10 @@
     },
     "fpga-tool-perf": {
         "fetchSubmodules": true,
-        "ref": "earlgray",
-        "repo": "https://github.com/HackerFoo/fpga-tool-perf.git",
-        "rev": "5707d9054f91db7707c6f5887f8d0b3755e82369",
-        "sha256": "0izflil8qwllafxkhc0k7wlbv7ypmba8f6aqb71d3ri2df9lpnb1",
+        "ref": "master",
+        "repo": "https://github.com/SymbiFlow/fpga-tool-perf.git",
+        "rev": "38a3af073612bd5855d501433e77a9946809d4f0",
+        "sha256": "1kq572lf356awcq9m38h7l560sjvisi68j3k8kw5d15njsixr3nm",
         "type": "git"
     },
     "fusesoc-lowRISC": {
@@ -299,6 +299,18 @@
         "sha256": "146skasn3gvgqrvpvsvy0xassp39nxgyxxyziivypr37h250j3b6",
         "type": "tarball",
         "url": "https://github.com/HackerFoo/yosys-symbiflow-plugins/archive/4fff4b3be807a720336d4d133a388e977f91fdae.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "yosys-symbiflow-plugins-run": {
+        "branch": "trim_port_id_strings",
+        "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
+        "homepage": "https://symbiflow.github.io",
+        "owner": "HackerFoo",
+        "repo": "yosys-symbiflow-plugins",
+        "rev": "4ff5cc901ec15225324250c43695dc55263fa27a",
+        "sha256": "05pcgg5ghldpqdip1lz86rlnz6h9kjy9921207blrfnvffc02mbv",
+        "type": "tarball",
+        "url": "https://github.com/HackerFoo/yosys-symbiflow-plugins/archive/4ff5cc901ec15225324250c43695dc55263fa27a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

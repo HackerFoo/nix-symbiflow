@@ -99,6 +99,29 @@ rec {
       doCheck = false;
     });
   };
+  yosys-symbiflow-run = yosys-with-symbiflow-plugins {
+    stdenv = clangStdenv;
+    yosys = (pkgs.yosys.override {
+      stdenv = clangStdenv;
+      abc-verifier = abc-verifier sources.abc-symbiflow {
+        stdenv = clangStdenv;
+      };
+    }).overrideAttrs (oldAttrs: rec {
+      src = sources.yosys-symbiflow;
+      preBuild = oldAttrs.preBuild + ''
+        echo 'CXXFLAGS += "-std=c++11 -Os -fno-merge-constants"' > Makefile.conf
+        echo 'ABCREV=default' >> Makefile.conf
+        echo 'ABCMKARGS="CC=clang" "CXX=clang++"' >> Makefile.conf
+        cp -r ${sources.abc-symbiflow} abc
+        chmod -R a+w abc
+      '';
+      postInstall = ''
+        cp yosys-abc $out/bin/
+      '';
+      doCheck = false;
+    });
+    src = sources.yosys-symbiflow-plugins-run;
+  };
 
   yosys-git = (pkgs.yosys.override {
     abc-verifier = abc-verifier sources.abc-yosys {};
@@ -469,7 +492,7 @@ rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = yosys-symbiflow;
+      yosys = yosys-symbiflow-run;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
