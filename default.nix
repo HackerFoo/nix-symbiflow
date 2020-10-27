@@ -80,6 +80,7 @@ rec {
 
   vtr-custom = subst: vtr.overrideAttrs (attrs: rec {
     src = sources.vtr-run;
+    patches = [ ./patches/vpr_kscale.patch ];
     postPatch = ''
       touch constants.patch
       ${replace_constants subst}

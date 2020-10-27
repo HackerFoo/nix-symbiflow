@@ -12,6 +12,7 @@ let
     kInitialDivisionScaling = [ 10000 50000 100000 ];
     kInitialMaxBuckets = [ 10000 1000000 10000000 ];
     kIncreaseFocusLimit = [ 256 2039 2048 16000 ];
+    kScale = [ 2 3 5 ];
   };
 in
 
