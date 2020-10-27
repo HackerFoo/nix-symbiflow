@@ -7,7 +7,7 @@ expr=""
 for s in "$@"
 do
     a=(${s//=/ })
-    expr="$expr 's/\(const.*\)\(${a[0]}\ *=\ *\)\(\w*\);/\1\2${a[1]};/'"
+    expr="$expr -e 's/\(const.*\)\(${a[0]}\ *=\ *\)\(.*\);/\1\2${a[1]};/'"
 done
 
 eval "sed --in-place=.orig ${expr} ${file}"
