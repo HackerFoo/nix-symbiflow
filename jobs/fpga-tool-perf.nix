@@ -8,22 +8,28 @@ with callPackage ../default.nix {};
 
 let
   fpga-tool-perf_dusty_sa = make-fpga-tool-perf {
-    alpha_min = 0.4;
-    alpha_max = 0.9;
-    alpha_decay = 0.5;
-    anneal_success_target = 0.6;
-    anneal_success_min = 0.18;
+    extra_vpr_flags = {
+      alpha_min = 0.4;
+      alpha_max = 0.9;
+      alpha_decay = 0.5;
+      anneal_success_target = 0.6;
+      anneal_success_min = 0.18;
+    };
   };
   fpga-tool-perf_dusty_perf = make-fpga-tool-perf {
-    alpha_min = 0.4;
-    alpha_max = 0.9;
-    alpha_decay = 0.5;
-    anneal_success_target = 0.6;
-    anneal_success_min = 0.18;
-    reorder_rr_graph_nodes_algorithm = "degree_bfs";
+    extra_vpr_flags = {
+      alpha_min = 0.4;
+      alpha_max = 0.9;
+      alpha_decay = 0.5;
+      anneal_success_target = 0.6;
+      anneal_success_min = 0.18;
+      reorder_rr_graph_nodes_algorithm = "degree_bfs";
+    };
   };
   fpga-tool-perf_reorder = make-fpga-tool-perf {
-    reorder_rr_graph_nodes_algorithm = "degree_bfs";
+    extra_vpr_flags = {
+      reorder_rr_graph_nodes_algorithm = "degree_bfs";
+    };
   };
   baseline_tests = concatMap (project:
     concatMap (toolchain:

@@ -22,5 +22,5 @@ in
 
 listToAttrs (map (params: {
   name = "ibex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf params).ibex.vpr.arty.value;
+  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).ibex.vpr.arty.value;
 }) params_list)

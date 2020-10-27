@@ -9,20 +9,17 @@ with callPackage ../library.nix {};
 
 let
   params_list = attr_sweep {
-    place_delay_model = [ "delta" ];
-    initial_pres_fac = [ 2 2.828 4 ];
-    astar_fac = [ 1.5 1.6 1.8 2 ]; # 2, 1.5
-    first_iter_pres_fac = [ 0.5 ];
-    pres_fac_mult = [ 1.1 1.15 1.2 1.25 1.3 ]; # 1.1, 1.3
-    acc_fac = [ 0.4 0.5 0.7 ]; # 0.5, 1
+    kInitialDivisionScaling = [ 10000 50000 100000 ];
+    kInitialMaxBuckets = [ 10000 1000000 10000000 ];
+    kIncreaseFocusLimit = [ 256 2039 2048 16000 ];
   };
 in
 
 listToAttrs ((map (params: {
   name = "baselitex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).baselitex.vpr.arty;
+  value = (make-fpga-tool-perf { constants = { "vpr/src/route/bucket.cpp" = params; }; }).baselitex.vpr.arty;
 }) params_list) ++
 (map (params: {
   name = "ibex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).ibex.vpr.arty;
+  value = (make-fpga-tool-perf { constants = { "vpr/src/route/bucket.cpp" = params; }; }).ibex.vpr.arty;
 }) params_list))

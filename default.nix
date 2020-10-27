@@ -70,6 +70,24 @@ rec {
     src = sources.vtr-run;
   });
 
+  replace_constants = subst:
+    concatMapStrings (name:
+      let
+        m = getAttr name subst;
+      in
+        "bash ${./scripts/replace-consts.sh} ${name} ${concatMapStrings (key: " ${key}=${toString (getAttr key m)}") (attrNames m)}\n")
+      (attrNames subst);
+
+  vtr-custom = subst: vtr.overrideAttrs (attrs: rec {
+    src = sources.vtr-run;
+    postPatch = ''
+      touch constants.patch
+      ${replace_constants subst}
+      mkdir -p $out
+      cp constants.patch $out
+    '';
+  });
+
   abc-verifier = src: attrs:
     (pkgs.abc-verifier.override attrs).overrideAttrs (oldAttrs: {
       inherit src;
@@ -460,7 +478,14 @@ rec {
   '';
 
   fpga-tool-perf = make-fpga-tool-perf {};
-  make-fpga-tool-perf = extra_vpr_flags: let
+  fpga-tool-perf-test = make-fpga-tool-perf {
+    constants = {
+      "vpr/src/route/bucket.cpp" = {
+        kMaxMaxBuckets = 42;
+      };
+    };
+  };
+  make-fpga-tool-perf = options@{extra_vpr_flags ? {}, constants ? {}}: let
     src = sources.fpga-tool-perf;
     default_vpr_flags = {
       max_router_iterations = 500;
@@ -493,6 +518,7 @@ rec {
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
       yosys = yosys-symbiflow-run;
+      vtr = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -525,7 +551,7 @@ rec {
         prjxray-config
         python-with-packages
         symbiflow-arch-defs-install
-        vtr-run
+        vtr
         yosys
       ] ++ optionals stdenv.isLinux [
         no-lscpu
@@ -559,6 +585,10 @@ rec {
       '';
       installPhase = ''
         mkdir -p $out/nix-support
+        cp ${vtr}/constants.patch $out
+        cat <<EOF > $out/options.json
+        ${toJSON options}
+        EOF
         echo "file json $out/meta.json" > $out/nix-support/hydra-build-products
         find $out \
             -type f \
