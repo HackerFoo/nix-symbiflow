@@ -9,10 +9,8 @@ with callPackage ../library.nix {};
 
 let
   params_list = attr_sweep {
-    kInitialDivisionScaling = [ 10000 50000 100000 ];
-    kInitialMaxBuckets = [ 10000 1000000 10000000 ];
-    kIncreaseFocusLimit = [ 256 2039 2048 16000 ];
-    kScale = [ 2 3 5 ];
+    kIncreaseFocusLimit = [ 31 64 256 2039 2048 16000 ]; # 256
+    kScale = [ 2 3 5 ]; # 3
   };
 in
 
