@@ -10,7 +10,7 @@ with callPackage ../library.nix {};
 let
   params_list = attr_sweep {
     kIncreaseFocusLimit = [ 7 17 31 61 127 253 256 511 512 1021 1543 2039 2048 ];
-    kScale = [ 2 3 5 ]; # 3
+    kScale = [ 1.4 1.7 2 2.5 3 5 ]; # 3
   };
 in
 
