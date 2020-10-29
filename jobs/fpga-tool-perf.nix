@@ -18,12 +18,12 @@ let
   };
   fpga-tool-perf_dusty_perf = make-fpga-tool-perf {
     extra_vpr_flags = {
-      alpha_min = 0.4;
-      alpha_max = 0.9;
-      alpha_decay = 0.5;
-      anneal_success_target = 0.6;
-      anneal_success_min = 0.18;
-      reorder_rr_graph_nodes_algorithm = "degree_bfs";
+      place_delay_model = "delta";
+      initial_pres_fac = 2.828;
+      astar_fac = 1.8;
+      first_iter_pres_fac = 0.5;
+      pres_fac_mult = 1.2;
+      acc_fac = 0.7;
     };
   };
   fpga-tool-perf_reorder = make-fpga-tool-perf {
