@@ -10,11 +10,11 @@ with callPackage ../library.nix {};
 let
   params_list = attr_sweep {
     place_delay_model = [ "delta" "delta_override" ];
-    initial_pres_fac = [ 2 2.828 4 ]; # 2.828
-    astar_fac = [ 1.2 1.5 1.6 1.8 2 ]; # 1.8
-    first_iter_pres_fac = [ 0.5 ];
-    pres_fac_mult = [ 1.1 1.15 1.2 1.25 1.3 ]; # 1.2
-    acc_fac = [ 0.4 0.5 0.7 ]; # 0.7
+    initial_pres_fac = [ 0.5 2 2.828 4 ]; # 2.828
+    astar_fac = [ 1.2 1.5 1.8 2 ]; # 1.8
+    first_iter_pres_fac = [ 0 0.5 ];
+    pres_fac_mult = [ 1.1 1.2 1.3 ]; # 1.2
+    acc_fac = [ 0.5 0.7 1 ]; # 0.7
   };
 in
 
