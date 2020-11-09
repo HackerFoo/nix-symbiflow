@@ -8,6 +8,7 @@ with callPackage ../default.nix {};
 with callPackage ../library.nix {};
 
 let
+  # Parameter combinations to try
   params_list = attr_sweep {
     place_delay_model = [ "delta" "delta_override" ];
     initial_pres_fac = [ 0.5 2 2.828 4 ]; # 2.828
@@ -16,17 +17,18 @@ let
     pres_fac_mult = [ 1.1 1.2 1.3 ]; # 1.2
     acc_fac = [ 0.5 0.7 1 ]; # 0.7
   };
+
+  # Projects to run with each combination of parameters in params_list
+  projects = [
+    { name = "baselitex"; board = "arty"; }
+    { name = "ibex";      board = "arty"; }
+    { name = "bram-n3";   board = "basys3"; }
+  ];
 in
 
-listToAttrs ((map (params: {
-  name = "baselitex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).baselitex.vpr.arty;
-}) params_list) ++
-(map (params: {
-  name = "ibex" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).ibex.vpr.arty;
-}) params_list) ++
-(map (params: {
-  name = "bram-n3" + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-  value = (make-fpga-tool-perf { extra_vpr_flags = params; }).bram-n3.vpr.basys3;
-}) params_list))
+# Create a job for each project and combination of parameters.
+listToAttrs (concatMap (project:
+  map (params: {
+    name = project.name + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
+    value = (make-fpga-tool-perf { extra_vpr_flags = params; }).${project.name}.vpr.${project.board};
+  }) params_list) projects)
