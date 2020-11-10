@@ -174,10 +174,10 @@
     },
     "symbiflow-arch-defs": {
         "fetchSubmodules": true,
-        "ref": "master",
-        "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
-        "rev": "fd04a2edfdf573d8e55e2de2ed64dba9621d7b52",
-        "sha256": "0dp693yh11wmh46przmjrfsvcgw7fxq93sa155b3ds56p15mpq0j",
+        "ref": "flags_reduce_runtime",
+        "repo": "https://github.com/HackerFoo/symbiflow-arch-defs.git",
+        "rev": "8ed658933deb6e068ccdcf4b4e71da0d5c513169",
+        "sha256": "0li7g4mvdyrnknw245r6ld34s0k0kblb3qrszifmmjxgiqrdfnx8",
         "type": "git"
     },
     "symbiflow-examples": {
