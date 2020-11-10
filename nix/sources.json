@@ -176,8 +176,8 @@
         "fetchSubmodules": true,
         "ref": "flags_reduce_runtime",
         "repo": "https://github.com/HackerFoo/symbiflow-arch-defs.git",
-        "rev": "8ed658933deb6e068ccdcf4b4e71da0d5c513169",
-        "sha256": "0li7g4mvdyrnknw245r6ld34s0k0kblb3qrszifmmjxgiqrdfnx8",
+        "rev": "7037d4812f685f72071e3aa7c34fa1fb7f8a5340",
+        "sha256": "1gxrsncynkkc18m8xch8whr9xnhhrk937grm8nz11lr54dvf0g8g",
         "type": "git"
     },
     "symbiflow-examples": {
