@@ -1,0 +1,3 @@
+* Getting Vivado
+1. Download Vivado 2017.2 from: https://www.xilinx.com/products/design-tools/vivado.html
+2. Run `sh scripts/store-large-file Xilinx_Vivado_SDK_2017.2_0616_1.tar.gz`

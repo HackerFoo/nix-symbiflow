@@ -1,0 +1,17 @@
+#+TITLE: Nix packages for SymbiFlow projects and dependencies
+
+These packages are for developers working on the SymbiFlow project, and not designed for users.
+
+* Usage
+1. [[https://nixos.org/download.html#getting-nix][Install Nix]]
+2. Navigate to the source repo of a project with a corresponding attribute in default.nix, such as fpga-tool-perf, and use =nix-shell=.
+   #+BEGIN_EXAMPLE
+   cd ~/src/fpga-tool-perf
+   nix-shell ~/src/nix-symbiflow -A fpga-tool-perf
+   python3 fpgaperf.py --toolchain vpr --project oneblink --board basys3 # <-- should work
+   #+END_EXAMPLE
+* Options
+Set optional arguments by adding `--arg <name> <value>` to the `nix-shell` command line.
+- use-vivado :: Set to `true` to install and use Vivado, only works on Linux
+* Documentation
+See [[notes.org]] for more information.

@@ -1,0 +1,33 @@
+diff --git a/vpr/src/route/bucket.cpp b/vpr/src/route/bucket.cpp
+index 4654df5e1..f3f12bae0 100644
+--- a/vpr/src/route/bucket.cpp
++++ b/vpr/src/route/bucket.cpp
+@@ -82,6 +82,8 @@ static constexpr size_t kIncreaseFocusLimit = 2048;
+ // will not be increased again.
+ static constexpr ssize_t kMaxMaxBuckets = 16000000;
+ 
++static constexpr float kScale = 2;
++
+ BucketItems::BucketItems() noexcept
+     : alloced_items_(0)
+     , num_heap_allocated_(0)
+@@ -140,7 +142,7 @@ void Bucket::free_all_memory() {
+ 
+ void Bucket::expand(size_t required_number_of_buckets) {
+     auto old_size = heap_size_;
+-    heap_size_ = required_number_of_buckets * 2;
++    heap_size_ = required_number_of_buckets * kScale;
+ 
+     heap_ = (BucketItem**)vtr::realloc((void*)(heap_),
+                                        heap_size_ * sizeof(BucketItem*));
+@@ -364,8 +366,8 @@ t_heap* Bucket::get_heap_head() {
+         //
+         // kMaxMaxBuckets prevents this scaling from continuing without limit.
+         if (front_list_.size() > kIncreaseFocusLimit && max_buckets_ < kMaxMaxBuckets) {
+-            division_scaling_ *= 2;
+-            max_buckets_ *= 2;
++            division_scaling_ *= kScale;
++            max_buckets_ *= kScale;
+             rescale();
+             return get_heap_head();
+         }
