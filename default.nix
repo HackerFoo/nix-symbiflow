@@ -572,6 +572,7 @@ rec {
         EOF
         source env.sh
 
+        touch utils/__init__.py # fix: ModuleNotFoundError: No module named 'utils.utils'
         mkdir -p env/conda/pkgs
         rm -f env/conda/pkgs/nextpnr-xilinx
         ln -s ${nextpnr-xilinx} env/conda/pkgs/nextpnr-xilinx
