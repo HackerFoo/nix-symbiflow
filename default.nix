@@ -180,6 +180,10 @@ rec {
     description = "SystemVerilog to Verilog conversion";
     license = stdenv.lib.licenses.bsd3;
   };
+  zachjs-sv2v = writeScriptBin "zachjs-sv2v" ''
+    #!${pkgs.stdenv.shell}
+    ${sv2v}/bin/sv2v $@
+  '';
 
   # custom Python
   python = pkgs.python37.override {
@@ -226,7 +230,6 @@ rec {
         six
         sortedcontainers
         svgwrite
-        sv2v
         terminaltables
         textx
         tinyfpgab
@@ -257,6 +260,7 @@ rec {
         python-with-packages
         readline
         sqlite-interactive
+        zachjs-sv2v
         tcl
         tinyprog
         verilog
