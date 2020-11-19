@@ -168,16 +168,16 @@
         "leaveDotGit": true,
         "ref": "master",
         "repo": "https://github.com/zachjs/sv2v.git",
-        "rev": "e9f969634294cdefc6fc5527bd7ee513eb3657bb",
-        "sha256": "08zna87hfxlb2z4lavmpwbi9kckvz9cc2cz661miygnc1nnikyyv",
+        "rev": "a170536",
+        "sha256": "13i6bn4s0603gkhg263hnz5fxrz1cfrx97l2q4mrgidzv9jchawi",
         "type": "git"
     },
     "symbiflow-arch-defs": {
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
-        "rev": "f71a5548de1fd16a6e5fb4de80d0dca140f580e0",
-        "sha256": "0lxxkcc32a0hxmqvlgk4l4yl9qbbj93mgyzaav0xqcx1gp1fmfaa",
+        "rev": "9453694f098660a4de98d2bc80e377c7b44d7c72",
+        "sha256": "0wd4qv4cfxdsayd68xbr8jmc6lmr5wqm6pkyhwpa1d3r6hrdi037",
         "type": "git"
     },
     "symbiflow-examples": {
@@ -217,7 +217,7 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
-        "branch": "master+wip",
+        "branch": "f1a3bcc2a",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
         "owner": "SymbiFlow",
@@ -290,27 +290,27 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow-plugins": {
-        "branch": "trim_port_id_strings",
+        "branch": "5e6370a",
         "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
         "homepage": "https://symbiflow.github.io",
-        "owner": "HackerFoo",
+        "owner": "SymbiFlow",
         "repo": "yosys-symbiflow-plugins",
-        "rev": "4fff4b3be807a720336d4d133a388e977f91fdae",
-        "sha256": "146skasn3gvgqrvpvsvy0xassp39nxgyxxyziivypr37h250j3b6",
+        "rev": "5e6370a47c87fc6d348ffbad3cc6af03de3e4b39",
+        "sha256": "03b0qpzmigk8lnf8spd1gf7lm3sqa6j2i65r3wdhabbhczi3kawp",
         "type": "tarball",
-        "url": "https://github.com/HackerFoo/yosys-symbiflow-plugins/archive/4fff4b3be807a720336d4d133a388e977f91fdae.tar.gz",
+        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/5e6370a47c87fc6d348ffbad3cc6af03de3e4b39.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow-plugins-run": {
-        "branch": "trim_port_id_strings",
+        "branch": "master",
         "description": "Plugins for Yosys developed as part of the SymbiFlow project.",
         "homepage": "https://symbiflow.github.io",
-        "owner": "HackerFoo",
+        "owner": "SymbiFlow",
         "repo": "yosys-symbiflow-plugins",
-        "rev": "4ff5cc901ec15225324250c43695dc55263fa27a",
-        "sha256": "05pcgg5ghldpqdip1lz86rlnz6h9kjy9921207blrfnvffc02mbv",
+        "rev": "5e6370a47c87fc6d348ffbad3cc6af03de3e4b39",
+        "sha256": "03b0qpzmigk8lnf8spd1gf7lm3sqa6j2i65r3wdhabbhczi3kawp",
         "type": "tarball",
-        "url": "https://github.com/HackerFoo/yosys-symbiflow-plugins/archive/4ff5cc901ec15225324250c43695dc55263fa27a.tar.gz",
+        "url": "https://github.com/SymbiFlow/yosys-symbiflow-plugins/archive/5e6370a47c87fc6d348ffbad3cc6af03de3e4b39.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
