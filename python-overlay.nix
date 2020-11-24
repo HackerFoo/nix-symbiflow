@@ -322,6 +322,7 @@ rec {
     name = "edalize-lowRISC";
     src = sources.edalize-lowRISC;
     propagatedBuildInputs = [ pytest jinja2 ];
+    patches = [ ./patches/edalize.patch ];
     doCheck = false;
   };
 

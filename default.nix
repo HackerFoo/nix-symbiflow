@@ -538,6 +538,7 @@ rec {
         symbiflow-arch-defs-install
         vtr
         yosys
+        zachjs-sv2v
       ] ++ optionals stdenv.isLinux [
         no-lscpu
       ] ++ optionals stdenv.isDarwin [
