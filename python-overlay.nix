@@ -70,6 +70,7 @@ rec {
       rr_graph
       simplejson
       textx
+      python-fpga-interchange
     ];
     doCheck = false;
   };
@@ -85,6 +86,13 @@ rec {
     name = "xc-fasm";
     src = sources.xc-fasm;
     propagatedBuildInputs = [ textx simplejson intervaltree python-prjxray fasm yapf ];
+    doCheck = false;
+  };
+
+  python-fpga-interchange = buildPythonPackage {
+    name = "python-fpga-interchange";
+    src = sources.python-fpga-interchange;
+    propagatedBuildInputs = [ pycapnp ];
     doCheck = false;
   };
 

@@ -139,6 +139,18 @@
         "url": "https://github.com/SymbiFlow/prjxray-db/archive/90eb76b7a6579b6442b64d39d327881f9fd60978.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "python-fpga-interchange": {
+        "branch": "master",
+        "description": "Python interface to FPGA interchange format",
+        "homepage": null,
+        "owner": "SymbiFlow",
+        "repo": "python-fpga-interchange",
+        "rev": "5d4ac572f5924083702aaf4d171d9ad56e93f1e1",
+        "sha256": "1q80gkqhas5nf56q2cvi5mzclw6xh1yw5qqr324h804idh86388c",
+        "type": "tarball",
+        "url": "https://github.com/SymbiFlow/python-fpga-interchange/archive/5d4ac572f5924083702aaf4d171d9ad56e93f1e1.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "python-sdf-timing": {
         "branch": "15b9fe23feb925bab5b2bf92927057c000bbb9bf",
         "description": "Python library for working Standard Delay Format (SDF) Timing Annotation files.",
