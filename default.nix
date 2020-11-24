@@ -586,6 +586,7 @@ rec {
         vtr
         yosys
         zachjs-sv2v
+        which
       ] ++ optionals stdenv.isLinux [
         no-lscpu
       ] ++ optionals stdenv.isDarwin [
