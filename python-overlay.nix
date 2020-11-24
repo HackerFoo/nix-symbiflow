@@ -102,10 +102,10 @@ rec {
 
   hilbertcurve = buildPythonPackage rec {
     pname = "hilbertcurve";
-    version = "1.0.1";
+    version = "1.0.5";
     src = fetchPypi {
       inherit pname version;
-      sha256 = "b1ddf58f529219d3b76e8b61ed03e2975a724aff4848b720397c7d5601f49521";
+      sha256 = "0dpb5zvdpb72gvffx9q8lqcgl6h9n8rjqwivwphzxplwkj2h1z5f";
     };
     doCheck = false;
   };
