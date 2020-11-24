@@ -10,12 +10,12 @@ with callPackage ../library.nix {};
 let
   # Parameter combinations to try
   params_list = attr_sweep {
-    place_delay_model = [ "delta" "delta_override" ];
-    initial_pres_fac = [ 0.5 2 2.828 4 ]; # 2.828
+    acc_fac = [ 0.5 0.7 1 ]; # 0.7
     astar_fac = [ 1.2 1.5 1.8 2 ]; # 1.8
     first_iter_pres_fac = [ 0 0.5 ];
+    initial_pres_fac = [ 0.5 2 2.828 4 ]; # 2.828
+    place_delay_model = [ "delta" "delta_override" ];
     pres_fac_mult = [ 1.1 1.2 1.3 ]; # 1.2
-    acc_fac = [ 0.5 0.7 1 ]; # 0.7
   };
 
   # Projects to run with each combination of parameters in params_list
