@@ -20,8 +20,10 @@ let
 
   # Projects to run with each combination of parameters in params_list
   projects = [
-    { name = "baselitex"; board = "arty"; }
-    { name = "ibex";      board = "arty"; }
+    { name = "baselitex"; board = "arty-a35t"; }
+    { name = "baselitex"; board = "nexys-video"; }
+    { name = "ibex";      board = "arty-a35t"; }
+    { name = "ibex";      board = "arty-a100t"; }
     { name = "bram-n3";   board = "basys3"; }
   ];
 in
