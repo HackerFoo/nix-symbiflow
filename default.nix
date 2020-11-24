@@ -544,7 +544,7 @@ rec {
     };
     vpr_flags = default_vpr_flags // extra_vpr_flags;
     mkTest = { projectName, toolchain, board }: let
-      symbiflow-arch-defs-install = if board == "nexys-video" then symbiflow-arch-defs-200t else symbiflow-arch-defs;
+      symbiflow-arch-defs-install = if hasPrefix "nexys" board then symbiflow-arch-defs-200t else symbiflow-arch-defs;
     in stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
