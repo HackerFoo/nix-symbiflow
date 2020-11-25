@@ -63,8 +63,8 @@
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/fpga-tool-perf.git",
-        "rev": "6b28d25b60bd4eafd6f6240ed6cbdb2ec6012eea",
-        "sha256": "1mfgjckzq3p2qcxwq4ckhpsgx0h8vvwwyx0h3hb33p637qa8m7rj",
+        "rev": "ea7a4c8c1bcfb6456902fbe0b3c17e26525e29ed",
+        "sha256": "1hz8jblba7n8ghzvxsh6vdali9kb5bwc9lndp7zz38sfvzbz9lfb",
         "type": "git"
     },
     "fusesoc-lowRISC": {
