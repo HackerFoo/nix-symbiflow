@@ -188,8 +188,8 @@
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/symbiflow-arch-defs.git",
-        "rev": "d299ba7",
-        "sha256": "0w3lxzipcrrs6czfc3waidwybrh2gasaws54gihma4p8y60p3qcz",
+        "rev": "8c499dc5f1e13b420ca14abef8e917459ad9e331",
+        "sha256": "1inq2khzcz0a8nvb6dpx7sgbybkamc2pvkgslxxyw2vqajlgrl8y",
         "type": "git"
     },
     "symbiflow-examples": {
@@ -229,15 +229,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
-        "branch": "f1a3bcc2a",
+        "branch": "master+wip",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
         "owner": "SymbiFlow",
         "repo": "vtr-verilog-to-routing",
-        "rev": "f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32",
-        "sha256": "141gfg7qf3m8jh2mxrzc7lm54h8b18kxmv831p5x15k8q1sm96yl",
+        "rev": "d6d69ff92e68729f1fe112b75bce9bea2b504003",
+        "sha256": "1cx7dckvsyg23i3sfj2dqr04s9257xifn01kl29f2576g3yqhnda",
         "type": "tarball",
-        "url": "https://github.com/SymbiFlow/vtr-verilog-to-routing/archive/f1a3bcc2a8aa93d88cb26ca7f1853962fff57c32.tar.gz",
+        "url": "https://github.com/SymbiFlow/vtr-verilog-to-routing/archive/d6d69ff92e68729f1fe112b75bce9bea2b504003.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-run": {
