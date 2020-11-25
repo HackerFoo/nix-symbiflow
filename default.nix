@@ -99,39 +99,6 @@ rec {
   yosys-symbiflow = let
     abc = abc-verifier sources.abc-symbiflow {};
   in yosys-with-symbiflow-plugins {
-    yosys = (pkgs.yosys.override {
-      abc-verifier = abc;
-    }).overrideAttrs (oldAttrs: rec {
-      src = sources.yosys-symbiflow;
-      doCheck = false;
-      patchPhase = ''
-        substituteInPlace ./Makefile \
-          --replace 'CXX = clang' "" \
-          --replace 'LD = clang++' 'LD = $(CXX)' \
-          --replace 'CXX = gcc' "" \
-          --replace 'LD = gcc' 'LD = $(CXX)' \
-          --replace 'ABCMKARGS = CC="$(CXX)" CXX="$(CXX)"' 'ABCMKARGS =' \
-          --replace 'echo UNKNOWN' 'echo ${builtins.substring 0 10 src.rev}'
-        substituteInPlace ./misc/yosys-config.in \
-          --replace '/bin/bash' '${bash}/bin/bash'
-        patchShebangs tests
-      '';
-      preBuild = let
-        shortAbcRev = builtins.substring 0 7 abc.rev;
-      in ''
-        chmod -R u+w .
-        make config-${if stdenv.cc.isClang or false then "clang" else "gcc"}
-        echo 'ABCEXTERNAL = ${abc}/bin/abc' >> Makefile.conf
-        echo 'ENABLE_NDEBUG := 1' >> Makefile.conf
-        export CXXFLAGS="-fvisibility-inlines-hidden -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -fPIC -Os -fno-merge-constants"
-        # we have to do this ourselves for some reason...
-        (cd misc && ${protobuf}/bin/protoc --cpp_out ../backends/protobuf/ ./yosys.proto)
-      '';
-    });
-  };
-  yosys-symbiflow-run = let
-    abc = abc-verifier sources.abc-symbiflow {};
-  in yosys-with-symbiflow-plugins {
     bin = "yosys-filterlib,yosys-smtbmc,yosys-abc";
     yosys = (pkgs.yosys.override {
       abc-verifier = abc;
@@ -549,7 +516,7 @@ rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = yosys-symbiflow-run;
+      yosys = yosys-symbiflow;
       vtr = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
