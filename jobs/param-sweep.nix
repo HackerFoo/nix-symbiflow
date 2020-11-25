@@ -21,9 +21,9 @@ let
   # Projects to run with each combination of parameters in params_list
   projects = [
     { name = "baselitex"; board = "arty-a35t"; }
-    { name = "baselitex"; board = "nexys-video"; }
+    { name = "baselitex"; board = "arty-a100t"; }
     { name = "ibex";      board = "arty-a35t"; }
-    { name = "ibex";      board = "arty-a100t"; }
+    { name = "ibex";      board = "nexys-video"; }
     { name = "bram-n3";   board = "basys3"; }
   ];
 in
@@ -31,6 +31,6 @@ in
 # Create a job for each project and combination of parameters.
 listToAttrs (concatMap (project:
   map (params: {
-    name = project.name + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
+    name = project.name + "-" + project.board + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
     value = (make-fpga-tool-perf { extra_vpr_flags = params; }).${project.name}.vpr.${project.board};
   }) params_list) projects)
