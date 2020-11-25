@@ -25,6 +25,7 @@ let
     { name = "ibex";      board = "arty-a35t"; }
     { name = "ibex";      board = "nexys-video"; }
     { name = "bram-n3";   board = "basys3"; }
+    { name = "bram-n3";   board = "nexys-video"; }
   ];
 in
 
