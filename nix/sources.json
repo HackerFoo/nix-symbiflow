@@ -48,16 +48,12 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "fasm": {
-        "branch": "master",
-        "description": "FPGA Assembly (FASM) Parser and Generator",
-        "homepage": "https://fasm.readthedocs.io",
-        "owner": "SymbiFlow",
-        "repo": "fasm",
-        "rev": "4857dde757edd88688c2faf808774d85bdbe3900",
-        "sha256": "1za7f8slf8wvp1mfbfc3vdv61115p49k0vwngs4db6ips1qg1435",
-        "type": "tarball",
-        "url": "https://github.com/SymbiFlow/fasm/archive/4857dde757edd88688c2faf808774d85bdbe3900.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+        "fetchSubmodules": true,
+        "ref": "antlr_cpp",
+        "repo": "https://github.com/HackerFoo/fasm.git",
+        "rev": "d3cf1d5ed9098fd144421e1435b6afda5bbce5fa",
+        "sha256": "18xrksg6bp03y7h01gawd0kvlywdk5m82zkiiy4n35cddsq9nkv7",
+        "type": "git"
     },
     "fpga-tool-perf": {
         "fetchSubmodules": true,
