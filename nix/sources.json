@@ -49,10 +49,10 @@
     },
     "fasm": {
         "fetchSubmodules": true,
-        "ref": "antlr_cpp",
+        "ref": "antltr_cpp",
         "repo": "https://github.com/HackerFoo/fasm.git",
-        "rev": "d3cf1d5ed9098fd144421e1435b6afda5bbce5fa",
-        "sha256": "18xrksg6bp03y7h01gawd0kvlywdk5m82zkiiy4n35cddsq9nkv7",
+        "rev": "99dfc828985e8efe49641885a8a6c4ba675b0cfb",
+        "sha256": "1fhs7ml52njl3bp3nnxwaihyfbagghyic3xjbqmjivxhl84kyk12",
         "type": "git"
     },
     "fpga-tool-perf": {
