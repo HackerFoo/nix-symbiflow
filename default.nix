@@ -212,51 +212,64 @@ rec {
     name = "symbiflow";
     yosys = yosys-symbiflow;
     buildInputs = let
-      python-with-packages = python.withPackages (p: with p; [
-        GitPython
-        arpeggio
-        cairosvg
-        colorclass
-        cytoolz
-        fasm
-        flake8
-        hilbertcurve
-        intervaltree
-        lxml
-        matplotlib
-        numpy
-        pandas
-        pdfminer
-        pip
-        progressbar2
-        pycapnp
-        pyjson
-        pyserial
-        pytest
-        python-constraint
-        python-prjxray
-        python-sdf-timing
-        python-symbiflow-v2x
-        python-utils
-        scipy
-        setuptools
-        simplejson
-        six
-        sortedcontainers
-        svgwrite
-        terminaltables
-        textx
-        tinyfpgab
-        tox
-        tqdm
-        virtualenv
-        vtr-xml-utils
-        xc-fasm
-        yapf
-        Mako
-        edalize-lowRISC
-        fusesoc-lowRISC
-      ]);
+      python-with-packages = ignore-collisions (python.withPackages (p:
+        with p;
+        with p.litexPackages;
+        [
+          GitPython
+          arpeggio
+          cairosvg
+          colorclass
+          cytoolz
+          fasm
+          flake8
+          hilbertcurve
+          intervaltree
+          litex
+          liteeth
+          litedram
+          litepcie
+          litevideo
+          liteiclink
+          litesdcard
+          litex-boards
+          pythondata-cpu-vexriscv
+          pythondata-cpu-rocket
+          lxml
+          matplotlib
+          numpy
+          pandas
+          pdfminer
+          pip
+          progressbar2
+          pycapnp
+          pyjson
+          pyserial
+          pytest
+          python-constraint
+          python-prjxray
+          python-sdf-timing
+          python-symbiflow-v2x
+          python-utils
+          scipy
+          setuptools
+          simplejson
+          six
+          sortedcontainers
+          svgwrite
+          terminaltables
+          textx
+          tinyfpgab
+          tox
+          tqdm
+          virtualenv
+          vtr-xml-utils
+          xc-fasm
+          yapf
+          Mako
+          edalize-lowRISC
+          fusesoc-lowRISC
+        ]));
     in
       [
         cmake
@@ -732,6 +745,9 @@ rec {
   with-yosys-git = mkShell {
     buildInputs = [ yosys-git ];
   };
+
+  # use this as a temporary fix for Python collisions
+  ignore-collisions = p: p.override (args: { ignoreCollisions = true; });
 }
 
 # Local Variables:
