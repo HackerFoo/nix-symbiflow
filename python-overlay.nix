@@ -309,7 +309,7 @@ rec {
       name = "litex";
       src = fetchGit {
         url = "https://github.com/enjoy-digital/litex.git";
-        rev = "56aa7897df99d7ad68ea537ab096c3abdc683666"; # 2020.04
+        rev = "32989c17b66e81bd895f7812fa068938cee8040c";
       };
       propagatedBuildInputs = [ migen pyserial requests pythondata-software-compiler_rt ];
       doCheck = false;
