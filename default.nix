@@ -271,6 +271,7 @@ rec {
         openocd
         perl
         pkg-config
+        prjxray
         python-with-packages
         readline
         sqlite-interactive
