@@ -187,7 +187,7 @@ rec {
     isExecutable = true;
     executableHaskellDepends = [
       array base cmdargs containers directory filepath githash hashable
-      mtl
+      mtl vector
     ];
     executableToolDepends = [ alex happy pkgs.git ];
     homepage = "https://github.com/zachjs/sv2v";
