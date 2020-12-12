@@ -306,6 +306,7 @@ rec {
         -DCMAKE_INSTALL_PREFIX=$out \
         -DYOSYS_DATADIR="${yosys}/share/yosys" \
         -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
+        -DPRJXRAY_DB_DIR=${prjxray-db} \
         ..
       popd
     '';
@@ -337,6 +338,7 @@ rec {
         -DYOSYS_DATADIR="${yosys}/share/yosys" \
         -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
         -DINSTALL_DEVICE=xc7a200t \
+        -DPRJXRAY_DB_DIR=${prjxray-db} \
         ..
       popd
     '';
