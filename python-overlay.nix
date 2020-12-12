@@ -18,8 +18,12 @@ rec {
   fasm = buildPythonPackage {
     name = "fasm";
     src = sources.fasm;
-    buildInputs = [ textx ];
+    ANTLR4_RUNTIME_INCLUDE = "${antlr4.runtime.cpp.dev}/include/antlr4-runtime";
+    TOXENV = "py37";
+    nativeBuildInputs = [ cmake adoptopenjdk-jre-bin antlr4.runtime.cpp tox pytest yapf flake8 pkg-config ];
+    buildInputs = [ antlr4.runtime.cpp textx libossp_uuid ];
     doCheck = false;
+    dontConfigure = true;
   };
 
   python-sdf-timing = buildPythonPackage {
