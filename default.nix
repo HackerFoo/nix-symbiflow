@@ -208,7 +208,8 @@ rec {
   };
 
   # SymbiFlow architecture definitions
-  symbiflow-arch-defs = clangStdenv.mkDerivation rec {
+  symbiflow-arch-defs = make-symbiflow-arch-defs "all";
+  make-symbiflow-arch-defs = target: clangStdenv.mkDerivation rec {
     name = "symbiflow";
     yosys = yosys-symbiflow;
     buildInputs = let
@@ -305,6 +306,9 @@ rec {
         riscv64Pkgs.stdenv.cc
       ];
     src = sources.symbiflow-arch-defs;
+    patches = [
+      ./patches/symbiflow-arch-defs-disable-litex-tests.patch
+    ];
     postPatch = ''
       patchShebangs utils
       patchShebangs third_party/prjxray/utils
@@ -326,7 +330,7 @@ rec {
     '';
     buildPhase = ''
       export VPR_NUM_WORKERS=$NIX_BUILD_CORES
-      make -C build -j $NIX_BUILD_CORES all
+      make -C build -j $NIX_BUILD_CORES ${target}
     '';
     enableParallelBuilding = true;
     installPhase = "make -C build -j $NIX_BUILD_CORES install";
