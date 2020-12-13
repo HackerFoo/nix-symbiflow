@@ -302,6 +302,7 @@ rec {
         xxd
         yosys
         zlib
+        riscv64Pkgs.stdenv.cc
       ];
     src = sources.symbiflow-arch-defs;
     postPatch = ''
@@ -675,21 +676,23 @@ rec {
     '';
   };
 
-  litex-buildenv = let
-    riscvPkgs = bits: import source.nixpkgs {
-      crossSystem = {
-        config = "riscv${bits}-none-elf";
-        libc = "newlib";
-        platform = systems.platforms.riscv-multiplatform "${bits}";
-      };
+  riscvPkgs = bits: import sources.nixpkgs {
+    crossSystem = {
+      config = "riscv${toString bits}-none-elf";
+      libc = "newlib";
+      platform = systems.platforms.riscv-multiplatform "${toString bits}";
     };
+  };
+  riscv64Pkgs = riscvPkgs 64;
+
+  litex-buildenv = let
     with-litex-buildenv = attrs@{ name, platform, cpu, target, bits }:
       (riscvPkgs bits).stdenv.mkDerivation rec {
         name = "litex-buildenv-${attrs.name}";
         src = fetchgit {
           url = "https://github.com/timvideos/litex-buildenv.git";
-          rev = "bbe77980b3006f0c656dab3b9fa886eb0c86f59b";
-          sha256 = "0c8js5mvj2fdpfqcwz5w90yn091223an09573jxd2x9r08krsi4y";
+          rev = "690901d9c86c0d74e154a5a47de1e850e6f4ea40";
+          sha256 = "0gibrk7nacypmcm6yfr88rl4b33xv1lr3prhvqragiaxxkpl35wi";
           leaveDotGit = true;
           deepClone = true;
         };
@@ -732,13 +735,13 @@ rec {
         platform = "arty";
         cpu = "vexriscv";
         target = "base";
-        bits = "64";
+        bits = 64;
       };
       rocket = {
         platform = "arty";
         cpu = "rocket";
         target = "base";
-        bits = "64";
+        bits = 64;
       };
     };
 
