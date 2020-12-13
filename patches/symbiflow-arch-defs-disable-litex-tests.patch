@@ -1,0 +1,8 @@
+diff --git a/xc/xc7/tests/soc/CMakeLists.txt b/xc/xc7/tests/soc/CMakeLists.txt
+index be8fdd30..aa7cf30e 100644
+--- a/xc/xc7/tests/soc/CMakeLists.txt
++++ b/xc/xc7/tests/soc/CMakeLists.txt
+@@ -1,2 +1,2 @@
+-add_subdirectory(litex)
++# add_subdirectory(litex)
+ add_subdirectory(ibex)
