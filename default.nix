@@ -307,7 +307,7 @@ rec {
       ];
     src = sources.symbiflow-arch-defs;
     patches = [
-      ./patches/symbiflow-arch-defs-disable-litex-tests.patch
+      ./patches/symbiflow-arch-defs-disable-tests.patch
     ];
     postPatch = ''
       patchShebangs utils
