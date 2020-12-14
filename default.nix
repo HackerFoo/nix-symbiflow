@@ -320,7 +320,6 @@ rec {
       mkdir -p build
       pushd build
       cmake \
-        -DUSE_CONDA=FALSE \
         -DCMAKE_INSTALL_PREFIX=$out \
         -DYOSYS_DATADIR="${yosys}/share/yosys" \
         -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
@@ -357,7 +356,6 @@ rec {
       mkdir -p build
       pushd build
       cmake \
-        -DUSE_CONDA=FALSE \
         -DCMAKE_INSTALL_PREFIX=$out \
         -DYOSYS_DATADIR="${yosys}/share/yosys" \
         -DVPR_CAPNP_SCHEMA_DIR="${vtr}/capnp" \
