@@ -208,7 +208,7 @@ rec {
   };
 
   # SymbiFlow architecture definitions
-  symbiflow-arch-defs = make-symbiflow-arch-defs "all";
+  symbiflow-arch-defs = make-symbiflow-arch-defs "";
   make-symbiflow-arch-defs = target: clangStdenv.mkDerivation rec {
     name = "symbiflow";
     yosys = yosys-symbiflow;
@@ -330,10 +330,15 @@ rec {
     '';
     buildPhase = ''
       export VPR_NUM_WORKERS=$NIX_BUILD_CORES
-      make -C build -j $NIX_BUILD_CORES ${target}
+      if [ -n "${target}" ]; then
+        make -C build -j $NIX_BUILD_CORES ${target}
+      fi
     '';
     enableParallelBuilding = true;
-    installPhase = "make -C build -j $NIX_BUILD_CORES install";
+    installPhase = ''
+      export VPR_NUM_WORKERS=$NIX_BUILD_CORES
+      make -C build -j $NIX_BUILD_CORES install
+    '';
 
     # so genericBuild works from source directory in nix-shell
     shellHook = ''
@@ -342,7 +347,8 @@ rec {
     '';
   };
 
-  symbiflow-arch-defs-200t = symbiflow-arch-defs.overrideAttrs (attrs: {
+  symbiflow-arch-defs-200t = make-symbiflow-arch-defs-200t "";
+  make-symbiflow-arch-defs-200t = target: (make-symbiflow-arch-defs target).overrideAttrs (attrs: {
     name = "symbiflow-200t";
     configurePhase = ''
       export XRAY_VIVADO_SETTINGS=${vivado_settings}
