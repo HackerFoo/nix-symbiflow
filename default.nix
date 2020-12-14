@@ -32,7 +32,11 @@ rec {
       flex
       pkg-config
     ];
-    buildInputs = [
+    buildInputs = let
+      python-with-packages = python.withPackages (p: with p; [
+        prettytable
+      ]);
+    in [
       cairo
       clang-tools
       coreutils
@@ -43,8 +47,7 @@ rec {
       mount
       pcre
       perl
-      python27
-      python3
+      python-with-packages
       tbb
       time
       xorg.libX11
@@ -583,7 +586,7 @@ rec {
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
       yosys = yosys-symbiflow;
-      vtr = vtr-custom constants;
+      vtr-fpga-tool-perf = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
@@ -616,7 +619,7 @@ rec {
         prjxray-config
         python-with-packages
         symbiflow-arch-defs-install
-        vtr
+        vtr-fpga-tool-perf
         yosys
         zachjs-sv2v
         which

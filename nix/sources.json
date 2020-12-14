@@ -237,15 +237,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-run": {
-        "branch": "b0223dc59",
+        "branch": "cache_nonconfig_base_cost",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
-        "owner": "verilog-to-routing",
+        "owner": "HackerFoo",
         "repo": "vtr-verilog-to-routing",
-        "rev": "b0223dc5927e9ac5833d0d21c2becf69c4ce9c08",
-        "sha256": "0v74j5nl5837xb0h9gwncc42prkvc4zbx3swcgr45lg7qgynhn87",
+        "rev": "994148bb7127db7542844135dff4fabc7ee158c2",
+        "sha256": "09mc4sr47s1g24xr92a2idv4368y7pbvizf25h4i0n4dr2q9qfzv",
         "type": "tarball",
-        "url": "https://github.com/verilog-to-routing/vtr-verilog-to-routing/archive/b0223dc5927e9ac5833d0d21c2becf69c4ce9c08.tar.gz",
+        "url": "https://github.com/HackerFoo/vtr-verilog-to-routing/archive/994148bb7127db7542844135dff4fabc7ee158c2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-xml-utils": {
