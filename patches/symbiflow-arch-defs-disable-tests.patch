@@ -1,0 +1,91 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 0ef8c558..e20894c6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -187,11 +187,6 @@ add_dependencies(all_xc7
+     all_xc7_route_tests
+     all_xc7_tests
+     )
+-if (NOT DEFINED ENV{CI} OR NOT $ENV{CI})
+-add_dependencies(all_xc7
+-    test_dram_packing
+-    )
+-endif()
+ 
+ add_custom_target(all_xc7_200t)
+ if (NOT DEFINED ENV{CI} OR NOT $ENV{CI})
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 8ecfd47c..039d9bb3 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -98,24 +98,3 @@ function(add_simple_test)
+     add_dependencies(all_${BOARD} ${ADD_SIMPLE_TEST_NAME}_${BOARD}_route)
+   endforeach()
+ endfunction()
+-
+-add_subdirectory(0-const)
+-add_subdirectory(1-wire)
+-add_subdirectory(2-mwire)
+-add_subdirectory(3-ff)
+-add_subdirectory(3-lut4)
+-add_subdirectory(3-lut5x2)
+-add_subdirectory(3-lut6)
+-add_subdirectory(3-lut7)
+-add_subdirectory(3-lut8)
+-add_subdirectory(4-lutff)
+-add_subdirectory(4-mlut)
+-add_subdirectory(5-lut_cascade_1)
+-add_subdirectory(6-big_xor)
+-add_subdirectory(6-counter)
+-add_subdirectory(6-led)
+-add_subdirectory(6-rot)
+-add_subdirectory(7-carry_stress)
+-add_subdirectory(9-soc)
+-add_subdirectory(9-scalable_proc)
+-
+diff --git a/xc/xc7/tests/CMakeLists.txt b/xc/xc7/tests/CMakeLists.txt
+index 862a9d4e..2a2e4624 100644
+--- a/xc/xc7/tests/CMakeLists.txt
++++ b/xc/xc7/tests/CMakeLists.txt
+@@ -1,41 +1 @@
+ set(COMMON ${symbiflow-arch-defs_SOURCE_DIR}/xc/xc7/tests/common)
+-
+-add_subdirectory(common)
+-add_subdirectory(buttons)
+-add_subdirectory(counter)
+-add_subdirectory(dram_test)
+-add_subdirectory(bram_test)
+-add_subdirectory(bram_sdp_test)
+-add_subdirectory(bram_init_test)
+-add_subdirectory(bram_sdp_init_test)
+-add_subdirectory(bufgce)
+-add_subdirectory(carry)
+-add_subdirectory(simple_ff)
+-add_subdirectory(dram)
+-add_subdirectory(bram)
+-add_subdirectory(chain_packing)
+-add_subdirectory(uart_loopback)
+-add_subdirectory(ff_sr_ce)
+-add_subdirectory(dram_shifter)
+-add_subdirectory(bram_shifter)
+-add_subdirectory(srl)
+-add_subdirectory(pll)
+-add_subdirectory(iobuf)
+-add_subdirectory(iobuf_infer)
+-add_subdirectory(iobuf_i2c)
+-add_subdirectory(obuftds)
+-add_subdirectory(obufds)
+-add_subdirectory(serdes)
+-add_subdirectory(soc)
+-add_subdirectory(switch_processing)
+-add_subdirectory(ps7)
+-add_subdirectory(iosettings)
+-add_subdirectory(oserdes_routing)
+-add_subdirectory(gclk_active)
+-add_subdirectory(ddr)
+-add_subdirectory(install_test)
+-add_subdirectory(iologic_packing)
+-add_subdirectory(lcu)
+-add_subdirectory(iddr_oddr)
+-add_subdirectory(obuf_packing)
+-add_subdirectory(idelayctrl)
