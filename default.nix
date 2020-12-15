@@ -66,6 +66,8 @@ rec {
     enableParallelBuilding = true;
   };
 
+  vtr-verilog-to-routing = vtr;
+
   vtr-run = vtr.overrideAttrs (attrs: {
     src = sources.vtr-run;
   });
