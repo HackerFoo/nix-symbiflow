@@ -82,7 +82,8 @@ rec {
 
   vtr-custom = subst: vtr.overrideAttrs (attrs: rec {
     src = sources.vtr-run;
-    patches = [ ./patches/vpr_kscale.patch ];
+    # patches = [ ./patches/vpr_kscale.patch ];
+    # cmakeFlags = "-DVTR_ASSERT_LEVEL=3";
     postPatch = ''
       touch constants.patch
       ${replace_constants subst}
@@ -106,6 +107,46 @@ rec {
       abc-verifier = abc;
     }).overrideAttrs (oldAttrs: rec {
       src = sources.yosys-symbiflow;
+      doCheck = false;
+      patchPhase = ''
+        substituteInPlace ./Makefile \
+          --replace 'CXX = clang' "" \
+          --replace 'LD = clang++' 'LD = $(CXX)' \
+          --replace 'CXX = gcc' "" \
+          --replace 'LD = gcc' 'LD = $(CXX)' \
+          --replace 'ABCMKARGS = CC="$(CXX)" CXX="$(CXX)"' 'ABCMKARGS =' \
+          --replace 'echo UNKNOWN' 'echo ${builtins.substring 0 10 src.rev}'
+        substituteInPlace ./misc/yosys-config.in \
+          --replace '/bin/bash' '${bash}/bin/bash'
+        patchShebangs tests
+      '';
+      preBuild = let
+        shortAbcRev = builtins.substring 0 7 abc.rev;
+      in ''
+        chmod -R u+w .
+        make config-${if stdenv.cc.isClang or false then "clang" else "gcc"}
+        echo 'ABCREV = default' >> Makefile.conf
+        echo 'ENABLE_NDEBUG := 1' >> Makefile.conf
+        export CXXFLAGS="-fvisibility-inlines-hidden -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -fPIC -Os -fno-merge-constants"
+        # we have to do this ourselves for some reason...
+        (cd misc && ${protobuf}/bin/protoc --cpp_out ../backends/protobuf/ ./yosys.proto)
+        cp -r ${sources.abc-symbiflow} abc
+        chmod -R a+w abc
+      '';
+      postInstall = ''
+        cp yosys-abc $out/bin/
+      '';
+    });
+  };
+
+  yosys-symbiflow-run = let
+    abc = abc-verifier sources.abc-yosys {};
+  in yosys-with-symbiflow-plugins {
+    bin = "yosys-filterlib,yosys-smtbmc,yosys-abc";
+    yosys = (pkgs.yosys.override {
+      abc-verifier = abc;
+    }).overrideAttrs (oldAttrs: rec {
+      src = sources.yosys;
       doCheck = false;
       patchPhase = ''
         substituteInPlace ./Makefile \
@@ -522,7 +563,7 @@ rec {
       router_heap = "bucket";
       clock_modeling = "route";
       place_delta_delay_matrix_calculation_method = "dijkstra";
-      place_delay_model = "delta_override";
+      place_delay_model = "delta";
       router_lookahead = "extended_map";
       check_route = "quick";
       strict_checks = "off";
@@ -532,7 +573,10 @@ rec {
       incremental_reroute_delay_ripup = "off";
       base_cost_type = "delay_normalized_length_bounded";
       bb_factor = 10;
-      initial_pres_fac = 4.0;
+      acc_fac = 0.7;
+      astar_fac = 1.8;
+      initial_pres_fac = 2.828;
+      pres_fac_mult = 1.2;
       check_rr_graph = "off";
       suppress_warnings = "noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment:calculate_average_switch";
     };
@@ -543,7 +587,7 @@ rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = yosys-symbiflow;
+      yosys = yosys-symbiflow-run;
       vtr = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
@@ -610,7 +654,7 @@ rec {
           --board ${board} \
           --out-dir $out \
           --verbose \
-          ${optionalString usesVPR '' --params_string='${flags_to_string vpr_flags}' ''}
+          ${optionalString (extra_vpr_flags != {}) '' --params_string='${flags_to_string vpr_flags}' ''}
       '';
       installPhase = ''
         mkdir -p $out/nix-support
