@@ -150,7 +150,7 @@ rec {
     yosys,
     stdenv ? pkgs.stdenv,
     src ? sources.yosys-symbiflow-plugins,
-    plugins ? "fasm xdc params selection sdc get_count ql-iob design_introspection integrateinv",
+    plugins ? "fasm xdc params selection sdc get_count ql-iob design_introspection",
     bin ? "yosys-filterlib,yosys-smtbmc"
   }: stdenv.mkDerivation {
     inherit (yosys) name; # HACK keep path the same size to allow bbe replacement
