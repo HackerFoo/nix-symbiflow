@@ -210,6 +210,43 @@ rec {
     };
   };
 
+  symbiflow-arch-defs-install = runCommand "symbiflow-arch-defs-install" {
+    arch_50t = fetchurl {
+      name = "arch-50t";
+      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a50t_test-59beae61.tar.xz?generation=1608107279645161&alt=media";
+      sha256 = "1xfxl60mg111iijsl2i19mc31nsrlpbnqj7iw8x8v4www7wpg66r";
+    };
+    toolchain = fetchurl {
+      name = "toolchain";
+      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-install-59beae61.tar.xz?generation=1608107277709289&alt=media";
+      sha256 = "1rqlznpya318kslfypwc5syx6a5pdr4bfcrcyjz48v9g3dgjs5ik";
+    };
+    benchmarks = fetchurl {
+      name = "benchmarks";
+      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-benchmarks-59beae61.tar.xz?generation=1608107277775116&alt=media";
+      sha256 = "1kdskqiryfchk0r7pir32xglfrlfwkl15v3li2ii7wjqd99rjfgm";
+    };
+    arch_100t = fetchurl {
+      name = "arch-100t";
+      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a100t_test-59beae61.tar.xz?generation=1608107280725966&alt=media";
+      sha256 = "09a5j7cf9lgj1wxgwprsnplqbdmy119b2dh9h6rhbkzp4i88qwnw";
+    };
+    arch_200t = fetchurl {
+      name = "arch-200t";
+      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a200t_test-59beae61.tar.xz?generation=1608107286052757&alt=media";
+      sha256 = "18ywc4jhjlpygp9adh6s7axigxxzjwmsrhp05xpq72q22q942sq8";
+    };
+  } ''
+   mkdir -p $out
+   cd $out
+   tar xJf $toolchain
+   tar xJf $benchmarks
+   tar xJf $arch_50t
+   tar xJf $arch_100t
+   tar xJf $arch_200t
+   patchShebangs bin
+  '';
+
   # SymbiFlow architecture definitions
   symbiflow-arch-defs = make-symbiflow-arch-defs "";
   make-symbiflow-arch-defs = target: clangStdenv.mkDerivation rec {
@@ -541,13 +578,11 @@ rec {
       suppress_warnings = "noisy_warnings.log,sum_pin_class:check_unbuffered_edges:load_rr_indexed_data_T_values:check_rr_node:trans_per_R:check_route:set_rr_graph_tool_comment:calculate_average_switch";
     };
     vpr_flags = default_vpr_flags // extra_vpr_flags;
-    mkTest = { projectName, toolchain, board }: let
-      symbiflow-arch-defs-install = if hasPrefix "nexys" board then symbiflow-arch-defs-200t else symbiflow-arch-defs;
-    in stdenv.mkDerivation rec {
+    mkTest = { projectName, toolchain, board }: stdenv.mkDerivation rec {
       name = "fpga-tool-perf-${projectName}-${toolchain}-${board}";
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
-      yosys = yosys-symbiflow-run;
+      yosys = yosys-symbiflow;
       vtr = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
