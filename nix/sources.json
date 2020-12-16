@@ -119,8 +119,8 @@
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/prjxray.git",
-        "rev": "291d9b91d39dd460b1a34a74125ffc4796fd9a1f",
-        "sha256": "1xjhw8kmwryd2xkh5ywjjy0i0n485i92drg2nzlm6m61jx2b3xlc",
+        "rev": "0f939808",
+        "sha256": "185w4xzsrzm9cwvxrms5is0k92fjd3cyh0s12q6agfnymyyhf98n",
         "type": "git"
     },
     "prjxray-db": {
@@ -176,8 +176,8 @@
         "leaveDotGit": true,
         "ref": "master",
         "repo": "https://github.com/zachjs/sv2v.git",
-        "rev": "2a2d819baad19ef650e2a5ad23e9969810728c65",
-        "sha256": "134231yprkz5793c40sqky84ydimxbclj6n95gy5lnyxiwkjrjv1",
+        "rev": "e9f9696",
+        "sha256": "1ca3vr8h7dxzg6wwrkg9yniw2yqbpj372a1q8yascmb9x6r1ka77",
         "type": "git"
     },
     "symbiflow-arch-defs": {
@@ -225,27 +225,27 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr": {
-        "branch": "master",
+        "branch": "d912bdb88",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
         "owner": "verilog-to-routing",
         "repo": "vtr-verilog-to-routing",
-        "rev": "64d15e2ddda5860645220ec44e6baeadabc1b4c3",
-        "sha256": "1b9qjki0r6i61wr4ph301bjilmiv3cd1bb62c9fw5mxav4da6ams",
+        "rev": "d912bdb88c05ec2a81637358c94e864b9443a332",
+        "sha256": "0r0rav422vpdbch90zbpf2ykq9g1k5028hj85iwj5ch1d49b56gw",
         "type": "tarball",
-        "url": "https://github.com/verilog-to-routing/vtr-verilog-to-routing/archive/64d15e2ddda5860645220ec44e6baeadabc1b4c3.tar.gz",
+        "url": "https://github.com/verilog-to-routing/vtr-verilog-to-routing/archive/d912bdb88c05ec2a81637358c94e864b9443a332.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-run": {
-        "branch": "master",
+        "branch": "b0223dc59",
         "description": "SymbiFlow WIP changes for Verilog to Routing -- Open Source CAD Flow for FPGA Research",
         "homepage": "https://verilogtorouting.org",
         "owner": "verilog-to-routing",
         "repo": "vtr-verilog-to-routing",
-        "rev": "64d15e2ddda5860645220ec44e6baeadabc1b4c3",
-        "sha256": "1b9qjki0r6i61wr4ph301bjilmiv3cd1bb62c9fw5mxav4da6ams",
+        "rev": "b0223dc5927e9ac5833d0d21c2becf69c4ce9c08",
+        "sha256": "0v74j5nl5837xb0h9gwncc42prkvc4zbx3swcgr45lg7qgynhn87",
         "type": "tarball",
-        "url": "https://github.com/verilog-to-routing/vtr-verilog-to-routing/archive/64d15e2ddda5860645220ec44e6baeadabc1b4c3.tar.gz",
+        "url": "https://github.com/verilog-to-routing/vtr-verilog-to-routing/archive/b0223dc5927e9ac5833d0d21c2becf69c4ce9c08.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vtr-xml-utils": {
@@ -273,28 +273,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys": {
-        "branch": "master",
+        "branch": "2116c585",
         "description": "Yosys Open SYnthesis Suite",
         "homepage": "http://www.clifford.at/yosys/",
         "owner": "YosysHQ",
         "repo": "yosys",
-        "rev": "40e35993af6ecb6207f15cc176455ff8d66bcc69",
-        "sha256": "14p483dxi8a4famc303f9krvqbfvjkpmsisy1i2a6ihz0dgjcvny",
+        "rev": "2116c585810cddb73777b46ea9aad0d6d511d82b",
+        "sha256": "1r91pvgidi8ymxifprsss96n8iysqw0278w9n9pxd4ccrf8sczc0",
         "type": "tarball",
-        "url": "https://github.com/YosysHQ/yosys/archive/40e35993af6ecb6207f15cc176455ff8d66bcc69.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "yosys-symbiflow": {
-        "branch": "master+wip",
-        "description": "SymbiFlow WIP changes for Yosys Open SYnthesis Suite",
-        "homepage": "http://www.clifford.at/yosys/",
-        "leaveDotGit": true,
-        "owner": "SymbiFlow",
-        "repo": "yosys",
-        "rev": "40d9e120fa7f5343fb25da8e42e230e96d32a735",
-        "sha256": "03f86gllypd7hwxvc0qhbxss0r3rrdz74qgb31jfmlkbckci86bc",
-        "type": "tarball",
-        "url": "https://github.com/SymbiFlow/yosys/archive/40d9e120fa7f5343fb25da8e42e230e96d32a735.tar.gz",
+        "url": "https://github.com/YosysHQ/yosys/archive/2116c585810cddb73777b46ea9aad0d6d511d82b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "yosys-symbiflow-plugins": {
