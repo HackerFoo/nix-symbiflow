@@ -44,10 +44,10 @@ index 8ecfd47c..039d9bb3 100644
 -add_subdirectory(9-scalable_proc)
 -
 diff --git a/xc/xc7/tests/CMakeLists.txt b/xc/xc7/tests/CMakeLists.txt
-index 862a9d4e..2a2e4624 100644
+index 5b2297bd..2a2e4624 100644
 --- a/xc/xc7/tests/CMakeLists.txt
 +++ b/xc/xc7/tests/CMakeLists.txt
-@@ -1,41 +1 @@
+@@ -1,42 +1 @@
  set(COMMON ${symbiflow-arch-defs_SOURCE_DIR}/xc/xc7/tests/common)
 -
 -add_subdirectory(common)
@@ -59,6 +59,7 @@ index 862a9d4e..2a2e4624 100644
 -add_subdirectory(bram_init_test)
 -add_subdirectory(bram_sdp_init_test)
 -add_subdirectory(bufgce)
+-add_subdirectory(bufgmux)
 -add_subdirectory(carry)
 -add_subdirectory(simple_ff)
 -add_subdirectory(dram)
