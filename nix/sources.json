@@ -51,8 +51,8 @@
         "fetchSubmodules": true,
         "ref": "master",
         "repo": "https://github.com/SymbiFlow/fasm.git",
-        "rev": "0448187babe4ec2408e8c821fed60401848b0a58",
-        "sha256": "0whd59wkcqgkn451rzslyyhg2kz7n5ik8sdb5p0pywfd024vsxx0",
+        "rev": "7124d4f2239065886dbcf80e5e3ba289a8fec1c1",
+        "sha256": "0120xgb2r4pa5w57bnxgki49bg5yqhgcmmmhvyapkxn2rzbqilmm",
         "type": "git"
     },
     "fpga-tool-perf": {
