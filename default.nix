@@ -32,7 +32,13 @@ rec {
       flex
       pkg-config
     ];
-    buildInputs = [
+    buildInputs = let
+      python-with-packages = python.withPackages (p: with p; [
+        prettytable
+        python-constraint
+        lxml
+      ]);
+    in [
       cairo
       clang-tools
       coreutils
@@ -40,13 +46,14 @@ rec {
       gperftools
       gtk3
       harfbuzz
+      libxml2
       mount
       pcre
       perl
-      python27
-      python3
+      python-with-packages
       tbb
       time
+      getopt
       xorg.libX11
       xorg.libXdmcp
       xorg.libXft
@@ -67,6 +74,50 @@ rec {
   };
 
   vtr-verilog-to-routing = vtr;
+  vtr-verilog-to-routing-optimized = vtr-optimized;
+
+  vtr-optimized = vtr.overrideAttrs (attrs: {
+    src = sources.vtr-run;
+    buildInputs = attrs.buildInputs ++ [
+      symbiflow-arch-defs-install
+    ];
+    dontConfigure = true;
+    buildPhase = ''
+      set -e
+      BUILD_ROOT=$PWD
+      PGO_TARGETS="vpr genfasm" # Executables needed for PGO
+      export SYMBIFLOW=${symbiflow-arch-defs-install}
+      mkdir build
+      pushd build
+
+      # ODIN and ABC are disabled to minimize build time.
+      COMMON_CMAKE_FLAGS="\
+          -DCMAKE_BUILD_TYPE=Release \
+          -DWITH_ODIN=OFF \
+          -DWITH_ABC=OFF"
+
+      cmake ''${COMMON_CMAKE_FLAGS} \
+          -DVPR_PGO_CONFIG=prof_gen \
+          -DVPR_PGO_DATA_DIR=''${BUILD_ROOT}/pgo \
+          ..
+
+      make -k -j$NIX_BUILD_CORES $PGO_TARGETS || make VERBOSE=1
+      popd
+
+      mkdir -p symbiflow
+      source ${./run-sf.sh}
+
+      pushd build
+      make clean
+      cmake ''${COMMON_CMAKE_FLAGS} \
+          -DCMAKE_INSTALL_PREFIX=$out \
+          -DVPR_PGO_CONFIG=prof_use \
+          -DVPR_PGO_DATA_DIR=''${BUILD_ROOT}/pgo \
+          ..
+      grep -i flags CMakeCache.txt
+      make -k -j$NIX_BUILD_CORES || make VERBOSE=1
+    '';
+  });
 
   vtr-run = vtr.overrideAttrs (attrs: {
     src = sources.vtr-run;
@@ -583,7 +634,7 @@ rec {
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
       yosys = yosys-symbiflow;
-      vtr = vtr-custom constants;
+      vtr = if constants == {} then vtr-optimized else vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
