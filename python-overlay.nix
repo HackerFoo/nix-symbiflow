@@ -20,8 +20,10 @@ rec {
     src = sources.fasm;
     ANTLR4_RUNTIME_INCLUDE = "${antlr4.runtime.cpp.dev}/include/antlr4-runtime";
     TOXENV = "py37";
-    nativeBuildInputs = [ cmake adoptopenjdk-jre-bin antlr4.runtime.cpp tox pytest yapf flake8 pkg-config ];
+    nativeBuildInputs = [ cmake adoptopenjdk-jre-bin antlr4.runtime.cpp tox pytest yapf flake8 pkg-config setuptools ];
     buildInputs = [ antlr4.runtime.cpp textx libossp_uuid cython ];
+    format = "setuptools";
+    setupPyBuildFlags = [ "--antlr-runtime=shared" ];
     doCheck = false;
     dontConfigure = true;
   };
