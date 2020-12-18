@@ -611,7 +611,7 @@ rec {
       inherit src;
       usesVPR = hasPrefix "vpr" toolchain;
       yosys = yosys-symbiflow;
-      vtr = if constants == {} then vtr-optimized else vtr-custom constants;
+      vtr = vtr-custom constants;
       python-with-packages = python.withPackages (p: with p; [
         asciitable
         colorclass
