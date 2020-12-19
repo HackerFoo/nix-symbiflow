@@ -282,9 +282,7 @@ rec {
         inherit name;
         value = buildPythonPackage {
           inherit name;
-          src = fetchGit {
-            url = "https://github.com/${user}/${name}";
-          };
+          src = sources."${name}";
           propagatedBuildInputs = [ pyyaml ];
           doCheck = false;
         };
@@ -309,10 +307,7 @@ rec {
   in packages // (with packages; {
     litex = buildPythonPackage rec {
       name = "litex";
-      src = fetchGit {
-        url = "https://github.com/enjoy-digital/litex.git";
-        rev = "32989c17b66e81bd895f7812fa068938cee8040c";
-      };
+      src = sources.litex;
       propagatedBuildInputs = [ migen pyserial requests pythondata-software-compiler_rt ];
       doCheck = false;
       postPatch = ''
