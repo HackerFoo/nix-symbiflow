@@ -31,8 +31,15 @@ let
 in
 
 # Create a job for each project and combination of parameters.
-listToAttrs (concatMap (project:
-  map (params: {
-    name = project.name + "-" + project.board + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params);
-    value = (make-fpga-tool-perf { extra_vpr_flags = params; }).${project.name}.vpr.${project.board};
-  }) params_list) projects)
+listToAttrs (concatMap (iteration:
+  (concatMap (project:
+    map (params: {
+      name = project.name + "-" + project.board + replaceStrings ["."] ["_"] (attrs_to_string "_" "_" params) + "-" + (toString iteration);
+      value = (make-fpga-tool-perf {
+        extra_vpr_flags = params;
+        inherit iteration;
+      }).${project.name}.vpr.${project.board};
+    }) params_list)
+    projects))
+    (range 0 7)
+)
