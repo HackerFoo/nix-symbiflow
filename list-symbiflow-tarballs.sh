@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+OUTPUT="$1"
+
+if [ -z "$OUTPUT" ]; then
+    echo "$0 [output file name]"
+    exit 1
+fi
+
 URL_BASE=https://storage.googleapis.com/symbiflow-arch-defs-gha/
 declare -A PACKAGE HASH URL
 PACKAGE[benchmarks]=symbiflow-benchmarks-latest
@@ -13,11 +20,17 @@ for data in "${!PACKAGE[@]}"; do
     HASH[$data]=`nix-prefetch-url --name $data "${URL[$data]}"`
 done
 
+echo "# Generated with: $0 $@" > "$OUTPUT"
+echo "{ fetchurl }:" >> "$OUTPUT"
+echo "{" >> "$OUTPUT"
 for data in "${!PACKAGE[@]}"; do
-    echo "    $data = fetchurl {"
-    echo "      name = \"$data\";"
-    echo "      url = \"${URL[$data]}\";"
-    echo "      sha256 = \"${HASH[$data]}\";"
-    echo "    };"
+    echo "  $data = fetchurl {" >> "$OUTPUT"
+    echo "    name = \"$data\";" >> "$OUTPUT"
+    echo "    url = \"${URL[$data]}\";" >> "$OUTPUT"
+    echo "    sha256 = \"${HASH[$data]}\";" >> "$OUTPUT"
+    echo "  };" >> "$OUTPUT"
 done
+echo "}" >> "$OUTPUT"
+
+echo "Output written to: ${OUTPUT}"
 
