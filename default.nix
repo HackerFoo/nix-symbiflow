@@ -681,7 +681,9 @@ rec {
       '';
       installPhase = ''
         mkdir -p $out/nix-support
-        cp ${vtr}/constants.patch $out
+        if [ -f ${vtr}/constants.patch ]; then
+          cp ${vtr}/constants.patch $out
+        fi
         cat <<EOF > $out/options.json
         ${toJSON options}
         EOF
