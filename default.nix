@@ -261,42 +261,19 @@ rec {
     };
   };
 
-  symbiflow-arch-defs-install = runCommand "symbiflow-arch-defs-install" {
-    arch_50t = fetchurl {
-      name = "arch-50t";
-      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a50t_test-59beae61.tar.xz?generation=1608107279645161&alt=media";
-      sha256 = "1xfxl60mg111iijsl2i19mc31nsrlpbnqj7iw8x8v4www7wpg66r";
-    };
-    toolchain = fetchurl {
-      name = "toolchain";
-      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-install-59beae61.tar.xz?generation=1608107277709289&alt=media";
-      sha256 = "1rqlznpya318kslfypwc5syx6a5pdr4bfcrcyjz48v9g3dgjs5ik";
-    };
-    benchmarks = fetchurl {
-      name = "benchmarks";
-      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-benchmarks-59beae61.tar.xz?generation=1608107277775116&alt=media";
-      sha256 = "1kdskqiryfchk0r7pir32xglfrlfwkl15v3li2ii7wjqd99rjfgm";
-    };
-    arch_100t = fetchurl {
-      name = "arch-100t";
-      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a100t_test-59beae61.tar.xz?generation=1608107280725966&alt=media";
-      sha256 = "09a5j7cf9lgj1wxgwprsnplqbdmy119b2dh9h6rhbkzp4i88qwnw";
-    };
-    arch_200t = fetchurl {
-      name = "arch-200t";
-      url = "https://www.googleapis.com/download/storage/v1/b/symbiflow-arch-defs/o/artifacts%2Fprod%2Ffoss-fpga-tools%2Fsymbiflow-arch-defs%2Fcontinuous%2Finstall%2F115%2F20201215-201740%2Fsymbiflow-arch-defs-xc7a200t_test-59beae61.tar.xz?generation=1608107286052757&alt=media";
-      sha256 = "18ywc4jhjlpygp9adh6s7axigxxzjwmsrhp05xpq72q22q942sq8";
-    };
-  } ''
-   mkdir -p $out
-   cd $out
-   tar xJf $toolchain
-   tar xJf $benchmarks
-   tar xJf $arch_50t
-   tar xJf $arch_100t
-   tar xJf $arch_200t
-   patchShebangs bin
-  '';
+  symbiflow-arch-defs-install = runCommand
+    "symbiflow-arch-defs-install"
+    (import ./symbiflow-install-packages.nix { inherit fetchurl; })
+    ''
+      mkdir -p $out
+      cd $out
+      tar xJf $toolchain
+      tar xJf $benchmarks
+      tar xJf $arch_50t
+      tar xJf $arch_100t
+      tar xJf $arch_200t
+      patchShebangs bin
+    '';
 
   # SymbiFlow architecture definitions
   symbiflow-arch-defs = make-symbiflow-arch-defs "";
