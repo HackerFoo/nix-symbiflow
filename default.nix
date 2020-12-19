@@ -577,7 +577,7 @@ rec {
       };
     };
   };
-  make-fpga-tool-perf = options@{extra_vpr_flags ? {}, constants ? {}}: let
+  make-fpga-tool-perf = options@{extra_vpr_flags ? {}, constants ? {}, ...}: let
     src = sources.fpga-tool-perf;
     default_vpr_flags = {
       max_router_iterations = 500;
