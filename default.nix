@@ -24,7 +24,7 @@ rec {
   inherit (import ./nix-fpgapkgs { inherit pkgs; }) vivado migen;
 
   # toolchain
-  vtr = stdenv.mkDerivation {
+  vtr = makeOverridable ({ stdenv }: stdenv.mkDerivation {
     name = "vtr-symbiflow";
     nativeBuildInputs = [
       bison
@@ -71,15 +71,18 @@ rec {
       else
         "";
     enableParallelBuilding = true;
-  };
+  }) { inherit stdenv; };
 
   vtr-verilog-to-routing = vtr;
   vtr-verilog-to-routing-optimized = vtr-optimized;
 
-  vtr-optimized = vtr.overrideAttrs (attrs: {
+  vtr-optimized = (vtr.override {
+    stdenv = pkgs.llvmPackages_11.stdenv;
+  }).overrideAttrs (attrs: {
     src = sources.vtr-run;
+    patches = [ patches/vtr-clang-pgo.patch ];
     buildInputs = attrs.buildInputs ++ [
-      symbiflow-arch-defs-install
+      symbiflow-arch-defs-install pkgs.llvmPackages_11.bintools
     ];
     dontConfigure = true;
     buildPhase = ''
@@ -94,14 +97,16 @@ rec {
       COMMON_CMAKE_FLAGS="\
           -DCMAKE_BUILD_TYPE=Release \
           -DWITH_ODIN=OFF \
-          -DWITH_ABC=OFF"
+          -DWITH_ABC=OFF \
+          -DVTR_IPO_BUILD=on \
+          -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON"
 
       cmake ''${COMMON_CMAKE_FLAGS} \
           -DVPR_PGO_CONFIG=prof_gen \
           -DVPR_PGO_DATA_DIR=''${BUILD_ROOT}/pgo \
           ..
 
-      make -k -j$NIX_BUILD_CORES $PGO_TARGETS || make VERBOSE=1
+      make -k -j$NIX_BUILD_CORES $PGO_TARGETS VERBOSE=1
       popd
 
       mkdir -p symbiflow
@@ -115,7 +120,7 @@ rec {
           -DVPR_PGO_DATA_DIR=''${BUILD_ROOT}/pgo \
           ..
       grep -i flags CMakeCache.txt
-      make -k -j$NIX_BUILD_CORES || make VERBOSE=1
+      make -k -j$NIX_BUILD_CORES VERBOSE=1
     '';
   });
 
