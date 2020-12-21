@@ -17,4 +17,8 @@ let
     (attrNames fpga-tool-perf);
 in
 
-listToAttrs (make_tests fpga-tool-perf "")
+listToAttrs (concatMap (iteration:
+  make_tests
+    (make-fpga-tool-perf { inherit iteration; })
+    ("-" + (toString iteration)))
+  (range 0 7))
